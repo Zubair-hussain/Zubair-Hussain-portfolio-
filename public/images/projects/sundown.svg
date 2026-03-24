@@ -1,0 +1,5 @@
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="600" fill="#0a0a0a"/>
+  <text x="50%" y="45%" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#ff0000" text-anchor="middle" dominant-baseline="middle">Sundown Studio</text>
+  <text x="50%" y="55%" font-family="monospace" font-size="18" fill="#666" text-anchor="middle" dominant-baseline="middle">UNIQUE DESIGN LANGUAGE</text>
+</svg>

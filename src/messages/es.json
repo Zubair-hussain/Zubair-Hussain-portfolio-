@@ -1,0 +1,100 @@
+{
+  "nav": {
+    "about": "Sobre mí",
+    "skills": "Habilidades",
+    "projects": "Proyectos",
+    "services": "Servicios",
+    "contact": "Contacto",
+    "hire": "Contrátame"
+  },
+  "hero": {
+    "greeting": "Hola, soy",
+    "name": "Zubair Hussain",
+    "title": "Desarrollador Full Stack",
+    "subtitle": "Creando experiencias digitales que convierten.",
+    "description": "MERN · Next.js · React Native · Integraciones de IA",
+    "ctaPrimary": "Ver mi trabajo",
+    "ctaSecondary": "Descargar CV",
+    "available": "Disponible para contratar"
+  },
+  "about": {
+    "label": "Sobre Mí",
+    "heading": "Creando Experiencias\nDigitales",
+    "body": "Soy un desarrollador Full Stack con sede en Hyderabad, Pakistán, especializado en el ecosistema MERN, Next.js, React Native e integraciones de IA. Construyo aplicaciones web y móviles de alto rendimiento que lucen impresionantes y convierten a los visitantes en clientes.",
+    "body2": "Cofundador de Xovato, una agencia digital que ofrece soluciones web premium a clientes en EE. UU., Australia y más allá. Priorizo el código limpio, el diseño píxel-perfecto y los resultados medibles.",
+    "years": "Años de experiencia",
+    "projects": "Proyectos entregados",
+    "clients": "Clientes felices",
+    "rating": "Calificación prom."
+  },
+  "skills": {
+    "label": "Experiencia",
+    "heading": "Habilidades y\nTecnologías",
+    "description": "Un conjunto curado de herramientas que utilizo para construir productos digitales excepcionales."
+  },
+  "achievements": {
+    "label": "Hitos",
+    "heading": "En\nNúmeros"
+  },
+  "projects": {
+    "label": "Portafolio",
+    "heading": "Trabajos\nDestacados",
+    "all": "Todos",
+    "web": "Web",
+    "mobile": "Móvil",
+    "ai": "IA",
+    "view": "Ver Proyecto",
+    "live": "Demostración en vivo",
+    "code": "Código fuente"
+  },
+  "testimonials": {
+    "label": "Testimonios",
+    "heading": "Voces de\nClientes",
+    "form_heading": "Danos tu opinión",
+    "name": "Tu Nombre",
+    "role": "Tu Cargo",
+    "message": "Tu Mensaje",
+    "submit": "Enviar reseña",
+    "rating": "Calificación",
+    "success": "¡Gracias por tu reseña!"
+  },
+  "logos": {
+    "label": "Confían en mí"
+  },
+  "services": {
+    "label": "Servicios",
+    "heading": "Lo que\nOfrezco"
+  },
+  "faq": {
+    "label": "FAQ",
+    "heading": "Preguntas\nComunes"
+  },
+  "articles": {
+    "label": "Blog",
+    "heading": "Artículos\nRecientes",
+    "read_more": "Leer Artículo"
+  },
+  "contact": {
+    "label": "Contacto",
+    "heading": "Construyamos\nalgo grande",
+    "description": "¿Tienes un proyecto en mente? Hablemos de cómo puedo ayudarte a darle vida.",
+    "name": "Nombre completo",
+    "email": "Correo electrónico",
+    "subject": "Asunto",
+    "message": "Mensaje",
+    "submit": "Enviar mensaje",
+    "success": "¡Mensaje enviado! Responderé en menos de 24 horas.",
+    "whatsapp": "Chat por WhatsApp",
+    "email_label": "Envíame un correo",
+    "location": "Hyderabad, Pakistán"
+  },
+  "footer": {
+    "rights": "Todos los derechos reservados.",
+    "built": "Construido con Next.js 15 + React 19"
+  },
+  "cookie": {
+    "message": "Este sitio utiliza cookies para mejorar tu experiencia.",
+    "accept": "Aceptar",
+    "decline": "Rechazar"
+  }
+}

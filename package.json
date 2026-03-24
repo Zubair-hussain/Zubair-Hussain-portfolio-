@@ -1,0 +1,52 @@
+{
+  "name": "zubair-hussain-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@emailjs/browser": "^4.4.1",
+    "@hookform/resolvers": "^5.2.2",
+    "@huggingface/inference": "^4.13.15",
+    "@marsidev/react-turnstile": "^1.4.2",
+    "@radix-ui/react-accordion": "^1.2.0",
+    "@radix-ui/react-dialog": "^1.1.1",
+    "@radix-ui/react-tabs": "^1.1.0",
+    "@radix-ui/react-toast": "^1.2.1",
+    "@radix-ui/react-tooltip": "^1.1.2",
+    "@react-spring/three": "^9.7.3",
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.0.0-beta.1",
+    "@react-three/postprocessing": "^2.16.2",
+    "clsx": "^2.1.1",
+    "firebase": "^12.11.0",
+    "framer-motion": "^11.3.19",
+    "lenis": "^1.1.9",
+    "lucide-react": "^0.414.0",
+    "next": "15.0.3",
+    "next-intl": "^3.19.0",
+    "react": "19.0.0-rc.1",
+    "react-dom": "19.0.0-rc.1",
+    "react-hook-form": "^7.52.2",
+    "tailwind-merge": "^2.5.2",
+    "three": "^0.183.2",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^22.4.0",
+    "@types/react": "^18.3.4",
+    "@types/react-dom": "^18.3.0",
+    "@types/three": "^0.168.0",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.9.0",
+    "eslint-config-next": "15.0.3",
+    "postcss": "^8.4.41",
+    "tailwindcss": "^3.4.10",
+    "typescript": "^5.5.4"
+  }
+}

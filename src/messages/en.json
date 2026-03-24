@@ -1,0 +1,100 @@
+{
+  "nav": {
+    "about": "About",
+    "skills": "Skills",
+    "projects": "Projects",
+    "services": "Services",
+    "contact": "Contact",
+    "hire": "Hire Me"
+  },
+  "hero": {
+    "greeting": "Hello, I'm",
+    "name": "Zubair Hussain",
+    "title": "Full Stack Developer",
+    "subtitle": "Building digital experiences that convert.",
+    "description": "MERN · Next.js · React Native · AI Integrations",
+    "ctaPrimary": "View My Work",
+    "ctaSecondary": "Download CV",
+    "available": "Available for hire"
+  },
+  "about": {
+    "label": "About Me",
+    "heading": "Crafting Digital\nExperiences",
+    "body": "I'm a Full Stack Developer based in Hyderabad, Pakistan, specializing in MERN stack, Next.js, React Native, and AI integrations. I build high-performance web and mobile applications that look stunning and convert visitors into clients.",
+    "body2": "Co-founder of Xovato, a digital agency delivering premium web solutions to clients across the US, Australia, and beyond. I prioritize clean code, pixel-perfect UI, and measurable results.",
+    "years": "Years of Experience",
+    "projects": "Projects Delivered",
+    "clients": "Happy Clients",
+    "rating": "Avg. Rating"
+  },
+  "skills": {
+    "label": "Expertise",
+    "heading": "Skills &\nTechnologies",
+    "description": "A curated stack of tools I use to build exceptional digital products."
+  },
+  "achievements": {
+    "label": "Milestones",
+    "heading": "By The\nNumbers"
+  },
+  "projects": {
+    "label": "Portfolio",
+    "heading": "Featured\nWork",
+    "all": "All",
+    "web": "Web",
+    "mobile": "Mobile",
+    "ai": "AI",
+    "view": "View Project",
+    "live": "Live Demo",
+    "code": "Source Code"
+  },
+  "testimonials": {
+    "label": "Testimonials",
+    "heading": "Client\nVoices",
+    "form_heading": "Leave a Review",
+    "name": "Your Name",
+    "role": "Your Role",
+    "message": "Your Message",
+    "submit": "Submit Review",
+    "rating": "Rating",
+    "success": "Thank you for your review!"
+  },
+  "logos": {
+    "label": "Trusted By"
+  },
+  "services": {
+    "label": "Services",
+    "heading": "What I\nOffer"
+  },
+  "faq": {
+    "label": "FAQ",
+    "heading": "Common\nQuestions"
+  },
+  "articles": {
+    "label": "Blog",
+    "heading": "Recent\nArticles",
+    "read_more": "Read Article"
+  },
+  "contact": {
+    "label": "Contact",
+    "heading": "Let's Build\nSomething",
+    "description": "Have a project in mind? Let's discuss how I can help you bring it to life.",
+    "name": "Full Name",
+    "email": "Email Address",
+    "subject": "Subject",
+    "message": "Message",
+    "submit": "Send Message",
+    "success": "Message sent! I'll reply within 24 hours.",
+    "whatsapp": "Chat on WhatsApp",
+    "email_label": "Email Me",
+    "location": "Hyderabad, Pakistan"
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "built": "Built with Next.js 15 + React 19"
+  },
+  "cookie": {
+    "message": "This site uses cookies to enhance your experience.",
+    "accept": "Accept",
+    "decline": "Decline"
+  }
+}
