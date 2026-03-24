@@ -1,0 +1,7 @@
+name = "zubair--portfolio"
+compatibility_date = "2024-11-01"
+compatibility_flags = ["nodejs_compat"]
+
+[pages_build_config]
+build_command = "npx @cloudflare/next-on-pages@1"
+destination_dir = ".vercel/output/static"
