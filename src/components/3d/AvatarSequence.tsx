@@ -4,14 +4,34 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const TOTAL_FRAMES = 197;
-const CRITICAL_FRAMES_DESKTOP = 60;
-const CRITICAL_FRAMES_MOBILE = 30;
+const INITIAL_PRELOAD_DESKTOP = 8;
+const INITIAL_PRELOAD_MOBILE = 4;
+const PRELOAD_WINDOW = 10;
+// Self-hosted frames (public/frames/*.jpg) — reliable, no external dependency.
+// The old external host is kept only as a per-image onError fallback.
+const LOCAL_BASE = "/frames/";
 const VERCEL_BASE = "https://portfolio-assets-sigma.vercel.app/frames-webp/";
 
-const frames = Array.from({ length: TOTAL_FRAMES }, (_, i) => {
-  const num = String(i + 1).padStart(3, '0');
+export const avatarSequencePerfConfig = {
+  totalFrames: TOTAL_FRAMES,
+  initialPreloadDesktop: INITIAL_PRELOAD_DESKTOP,
+  initialPreloadMobile: INITIAL_PRELOAD_MOBILE,
+  preloadWindow: PRELOAD_WINDOW,
+  frameBaseUrl: LOCAL_BASE,
+};
+
+export function getAvatarFrameUrl(index: number) {
+  const num = String(index + 1).padStart(3, '0');
+  return `${LOCAL_BASE}ezgif-frame-${num}.jpg`;
+}
+
+// Fallback to the external host if a local frame ever fails to load.
+export function getAvatarFrameFallbackUrl(index: number) {
+  const num = String(index + 1).padStart(3, '0');
   return `${VERCEL_BASE}ezgif-frame-${num}.webp`;
-});
+}
+
+const frames = Array.from({ length: TOTAL_FRAMES }, (_, i) => getAvatarFrameUrl(i));
 
 const imageCache = new Map<number, HTMLImageElement>();
 
@@ -44,10 +64,18 @@ export default function AvatarSequence() {
     };
   }, []);
 
+  const handleInitialFrameLoad = useCallback(() => {
+    if (imgRef.current && !imageCache.has(0)) {
+      imageCache.set(0, imgRef.current);
+    }
+    setLoadedCount((prev) => Math.max(prev, 1));
+    setIsReady(true);
+  }, []);
+
   // Initial heavy preload — delayed to prevent blocking the website's initial load and LCP
   useEffect(() => {
     const timer = setTimeout(() => {
-      const batchSize = isMobile ? 30 : (CRITICAL_FRAMES_DESKTOP + 20);
+      const batchSize = isMobile ? INITIAL_PRELOAD_MOBILE : INITIAL_PRELOAD_DESKTOP;
       for (let i = 0; i < batchSize; i++) {
         preloadFrame(i);
       }
@@ -58,7 +86,7 @@ export default function AvatarSequence() {
 
   // Ready state logic
   useEffect(() => {
-    const threshold = isMobile ? CRITICAL_FRAMES_MOBILE : CRITICAL_FRAMES_DESKTOP;
+    const threshold = 1;
     if (loadedCount >= threshold) {
       setTimeout(() => setIsReady(true), 500);
     }
@@ -80,7 +108,7 @@ export default function AvatarSequence() {
     }
 
     // Proactive preloading
-    const preloadWindow = 40;
+    const preloadWindow = PRELOAD_WINDOW;
     for (let i = frameIndex; i < Math.min(frameIndex + preloadWindow, TOTAL_FRAMES); i++) {
         preloadFrame(i);
     }
@@ -175,7 +203,7 @@ export default function AvatarSequence() {
     };
   }, [isReady, setFrame]);
 
-  const criticalThreshold = isMobile ? CRITICAL_FRAMES_MOBILE : CRITICAL_FRAMES_DESKTOP;
+  const criticalThreshold = isMobile ? INITIAL_PRELOAD_MOBILE : INITIAL_PRELOAD_DESKTOP;
   const progress = Math.min(100, Math.round((loadedCount / criticalThreshold) * 100));
 
   return (
@@ -209,7 +237,7 @@ export default function AvatarSequence() {
                   <motion.div 
                     initial={{ width: 0 }}
                     animate={{ width: `${progress}%` }}
-                    className="absolute inset-y-0 left-0 bg-red-600 shadow-[0_0_20px_rgba(239,68,68,0.5)]"
+                    className="absolute inset-y-0 left-0 bg-red-600 shadow-[0_0_20px_rgba(var(--brand-rgb-5),0.5)]"
                     transition={{ type: 'spring', bounce: 0, duration: 0.5 }}
                   />
                </div>
@@ -231,38 +259,56 @@ export default function AvatarSequence() {
         className="relative z-10 w-full flex items-center justify-center"
       >
          {isMobile ? (
-           /* MOBILE FRAME - Smartphone */
-            <div className="relative w-[240px] h-[500px] xs:w-[280px] xs:h-[580px] sm:w-[320px] sm:h-[640px] bg-[#0a0a0a] rounded-[3rem] border-[8px] border-[#1a1a1a] shadow-[0_0_80px_rgba(0,0,0,0.8),0_0_30px_rgba(239,68,68,0.05)] overflow-hidden">
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-[#1a1a1a] rounded-b-2xl z-20" />
-              <div className="w-full h-full relative p-2">
+           /* MOBILE FRAME - Smartphone (hardware stays dark in both themes) */
+            <div
+              className="relative w-[240px] h-[500px] xs:w-[280px] xs:h-[580px] sm:w-[320px] sm:h-[640px] rounded-[3rem] border-[8px] overflow-hidden"
+              style={{ background: '#0a0a0a', borderColor: '#1a1a1a', boxShadow: '0 24px 70px -18px rgba(15,18,30,0.55)' }}
+            >
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 rounded-b-2xl z-20" style={{ background: '#1a1a1a' }} />
+              <div className="w-full h-full relative p-2" style={{ background: '#000', isolation: 'isolate' }}>
                  <img
                    ref={imgRef}
                    src={frames[0]}
                    alt="Avatar Animation Mobile"
+                   loading="eager"
+                   fetchPriority="high"
+                   decoding="async"
+                   onLoad={handleInitialFrameLoad}
+                   onError={(e) => { const t = e.currentTarget; if (!t.dataset.fb) { t.dataset.fb = '1'; t.src = getAvatarFrameFallbackUrl(0); } }}
                    className="w-full h-full object-cover rounded-[2rem] mix-blend-screen select-none"
                    style={{ willChange: 'contents' }}
                  />
               </div>
            </div>
          ) : (
-           /* LAPTOP FRAME - Premium ultrabook */
-           <div className="relative w-full max-w-[850px] aspect-[16/10] bg-[#0d0d0d] rounded-2xl border-[4px] border-[#1f1f1f] shadow-[0_0_100px_rgba(0,0,0,1),0_0_40px_rgba(239,68,68,0.1)] p-4 flex flex-col gap-4 overflow-visible group">
-              {/* Screen Content */}
-              <div className="relative flex-grow w-full h-full bg-black rounded-lg overflow-hidden border border-white/5 shadow-inner">
+           /* LAPTOP FRAME - Premium ultrabook (hardware stays dark in both themes) */
+           <div
+             className="relative w-full max-w-[850px] aspect-[16/10] rounded-2xl border-[4px] p-4 flex flex-col gap-4 overflow-visible group"
+             style={{ background: '#0d0d0d', borderColor: '#1f1f1f', boxShadow: '0 40px 100px -30px rgba(15,18,30,0.6), 0 10px 30px -12px rgba(15,18,30,0.35)' }}
+           >
+              {/* Screen Content — always black + isolated, so mix-blend-screen
+                  composites against the black screen (not the page behind it).
+                  Without isolation, screen-blend washes to white on a light page. */}
+              <div className="relative flex-grow w-full h-full rounded-lg overflow-hidden shadow-inner" style={{ background: '#000', borderColor: 'rgba(255,255,255,0.06)', isolation: 'isolate' }}>
                  <img
                    ref={imgRef}
                    src={frames[0]}
                    alt="Avatar Animation Desktop"
+                   loading="eager"
+                   fetchPriority="high"
+                   decoding="async"
+                   onLoad={handleInitialFrameLoad}
+                   onError={(e) => { const t = e.currentTarget; if (!t.dataset.fb) { t.dataset.fb = '1'; t.src = getAvatarFrameFallbackUrl(0); } }}
                    className="w-full h-full object-contain mix-blend-screen select-none transform scale-110"
                    style={{ willChange: 'contents' }}
                  />
                  {/* Glass reflection */}
                  <div className="absolute inset-0 bg-gradient-to-tr from-white/5 via-transparent to-white/10 opacity-30 pointer-events-none" />
               </div>
-              
+
               {/* Laptop Base (Handle) */}
-              <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-[110%] h-4 bg-gradient-to-b from-[#1a1a1a] to-[#0a0a0a] rounded-b-xl border-t border-white/10 shadow-2xl" />
-              <div className="absolute -bottom-9 left-1/2 -translate-x-1/2 w-[25%] h-1 bg-black rounded-full opacity-40" />
+              <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-[110%] h-4 rounded-b-xl shadow-2xl" style={{ background: 'linear-gradient(to bottom, #1a1a1a, #0a0a0a)', borderTop: '1px solid rgba(255,255,255,0.1)' }} />
+              <div className="absolute -bottom-9 left-1/2 -translate-x-1/2 w-[25%] h-1 rounded-full opacity-40" style={{ background: '#000' }} />
            </div>
          )}
       </motion.div>
