@@ -1,27 +1,18 @@
-import { HfInference } from "@huggingface/inference";
-
-const hf = new HfInference(process.env.NEXT_PUBLIC_HF_API_KEY);
-
+// NOTE: The timeline suggestion runs SERVER-SIDE at /api/suggest-timeline so
+// no AI/API key is ever shipped to the browser. This client helper just calls
+// that endpoint. (Previously this used NEXT_PUBLIC_HF_API_KEY, which leaked the
+// key into the client bundle — removed.)
 export const suggestTimeline = async (category: string, userLocation: string) => {
   try {
-    const prompt = `Act as a senior project manager. A client from ${userLocation} wants a ${category} project. 
-    Based on common industry standards for high-quality solo development, suggest a realistic timeline range (e.g., 2-4 weeks or 2-3 months) 
-    and a 1-sentence reasoning. Keep it brief and professional.
-    
-    Category: ${category}
-    Location: ${userLocation}
-    Suggested Timeline:`;
-
-    const response = await hf.textGeneration({
-      model: "mistralai/Mistral-7B-Instruct-v0.3",
-      inputs: prompt,
-      parameters: { max_new_tokens: 60, temperature: 0.7, return_full_text: false },
+    const res = await fetch("/api/suggest-timeline", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ category, location: userLocation }),
     });
-
-    return response.generated_text.trim() || "3-6 weeks (Based on project scope)";
-  } catch (error) {
-    // Log as warning instead of error to avoid Next.js dev overlay popups for non-critical failures
-    console.warn("AI Suggestion Fallback used (API unavailable or limit reached)");
+    if (!res.ok) throw new Error(`status ${res.status}`);
+    const data = await res.json();
+    return (data?.suggestion as string) || "2-4 weeks (Based on project complexity)";
+  } catch {
     return "2-4 weeks (Based on project complexity)";
   }
 };
