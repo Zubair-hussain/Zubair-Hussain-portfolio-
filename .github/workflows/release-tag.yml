@@ -1,0 +1,57 @@
+name: Release Tag
+
+# After a successful Build on main (i.e. a deploy-worthy commit), automatically
+# create the next version tag (v0.1 → v0.2 → …) and a GitHub Release.
+
+on:
+  workflow_run:
+    workflows: ["Build"]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  tag:
+    # Only tag when the Build actually succeeded.
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0
+
+      - name: Compute next version tag
+        id: ver
+        run: |
+          git fetch --tags --force
+          LATEST=$(git tag -l 'v[0-9]*.[0-9]*' | sort -V | tail -n1)
+          if [ -z "$LATEST" ]; then
+            NEXT="v0.1"
+          else
+            MAJOR=$(echo "${LATEST#v}" | cut -d. -f1)
+            MINOR=$(echo "${LATEST#v}" | cut -d. -f2)
+            NEXT="v${MAJOR}.$((MINOR + 1))"
+          fi
+          echo "next=$NEXT" >> "$GITHUB_OUTPUT"
+          echo "Latest: ${LATEST:-none} → Next: $NEXT"
+
+      - name: Create tag and release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          NEXT="${{ steps.ver.outputs.next }}"
+          if git rev-parse "$NEXT" >/dev/null 2>&1; then
+            echo "Tag $NEXT already exists — skipping."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "$NEXT" -m "Release $NEXT"
+          git push origin "$NEXT"
+          gh release create "$NEXT" \
+            --target "${{ github.event.workflow_run.head_sha }}" \
+            --title "$NEXT" \
+            --generate-notes

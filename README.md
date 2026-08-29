@@ -119,6 +119,26 @@ The application hits multiple performance ceilings through strategic build steps
 
 ---
 
+## 🧑‍💻 Contributing & Commits
+
+This repo follows **Conventional Commits**, enforced by CI and used to generate
+version tags automatically. Before committing, see
+**[CONTRIBUTING.md](./CONTRIBUTING.md)** for the format, allowed types, and examples.
+
+Quick reference:
+
+```
+feat: add projects showcase
+fix(chat): handle empty message
+docs: update readme
+chore: bump dependencies
+```
+
+CI on every PR: **Lint → Test → Build → Commit Test**. On a successful build on
+`main`, a new release tag (`v0.1 → v0.2 → …`) is created automatically.
+
+---
+
 ## 🤝 Let's Connect
 
 Currently open to new opportunities! Reach out if you'd like to collaborate or just say hi!
