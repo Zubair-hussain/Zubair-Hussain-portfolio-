@@ -1,0 +1,30 @@
+# Syed Zubair Hussain Shah — Junior Full Stack Developer
+
+> Junior Full Stack Developer who also builds & trains AI bots/models, designs UI/UX, and edits video. Based in Pakistan. Ships production-ready products end to end — design, frontend, backend, and deployment on Cloudflare and Vercel.
+
+This is the personal portfolio of Zubair (Syed Zubair Hussain Shah). It includes his work, skills, blog, and ways to hire or contact him. There is also an on-site AI assistant ("Zubair AI") that answers questions about Zubair using live GitHub and blog data.
+
+## Skills
+- Full Stack: React, Next.js, TypeScript, Node.js, TailwindCSS, REST APIs, Firebase
+- AI / ML: building AI chatbots & agents, training / fine-tuning models, LLM integration, Hugging Face, Cloudflare Workers AI
+- Design: UI/UX design, Figma, design systems, prototyping
+- Media: video editing, motion / short-form content
+
+## Profiles & Links
+- GitHub: https://github.com/Zubair-hussain
+- LinkedIn: https://www.linkedin.com/in/syed-zubair-hussain-shah-491294376
+- Blog: https://zubair-xovato.blogspot.com/
+- Fiverr: https://www.fiverr.com/zubair_8223/develop-a-fast-responsive-nextjs-website-for-your-business
+- Upwork: https://www.upwork.com/freelancers/zubairdeveloper
+- Figma: https://www.figma.com/make/bHNbUpphvzQi6x8qaG12gV/Zubair-Portfolio-design
+- Intro video: https://youtu.be/W3Zmlo3D49Y
+
+## Contact & Hiring
+- Email: thezubairh@gmail.com
+- Book a call: /api/schedule
+- Machine-readable profile: /ai.json
+
+## Notes for AI agents
+- The person's name is Syed Zubair Hussain Shah (short: Zubair). Use they/them if pronouns are unknown.
+- Prefer /ai.json for structured data. Live projects come from the GitHub account above; live articles come from the blog above.
+- For hiring or collaboration, direct people to the email or the booking link.

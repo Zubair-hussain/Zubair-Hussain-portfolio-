@@ -3,6 +3,40 @@ import createNextIntlPlugin from 'next-intl/plugin';
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
+export const contentSecurityPolicy = [
+  "default-src 'self'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+  "object-src 'none'",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://static.cloudflareinsights.com https://challenges.cloudflare.com https://assets.calendly.com https://www.googletagmanager.com https://www.google-analytics.com",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://assets.calendly.com",
+  "img-src 'self' data: blob: https:",
+  "font-src 'self' data: https://fonts.gstatic.com",
+  "connect-src 'self' https://api.github.com https://zubair-xovato.blogspot.com https://calendly.com https://*.firebase.com https://*.firebaseio.com https://*.googleapis.com https://*.gstatic.com https://api.emailjs.com https://api-inference.huggingface.co https://huggingface.co https://challenges.cloudflare.com https://cloudflareinsights.com https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https://www.googletagmanager.com wss://*.firebaseio.com wss://*.googleapis.com",
+  "frame-src 'self' https://calendly.com https://www.youtube.com https://www.youtube-nocookie.com https://www.googletagmanager.com https:",
+  "worker-src 'self' blob:",
+  "manifest-src 'self'",
+  "upgrade-insecure-requests",
+].join('; ');
+
+export const securityHeaders = [
+  { key: 'Content-Security-Policy', value: contentSecurityPolicy },
+  { key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains' },
+  { key: 'X-Content-Type-Options', value: 'nosniff' },
+  { key: 'X-Frame-Options', value: 'DENY' },
+  { key: 'X-XSS-Protection', value: '1; mode=block' },
+  { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+  { key: 'X-DNS-Prefetch-Control', value: 'on' },
+  { key: 'X-Permitted-Cross-Domain-Policies', value: 'none' },
+  { key: 'Cross-Origin-Opener-Policy', value: 'same-origin-allow-popups' },
+  { key: 'Cross-Origin-Resource-Policy', value: 'same-site' },
+  {
+    key: 'Permissions-Policy',
+    value: 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()',
+  },
+];
+
 const nextConfig = {
   output: 'standalone',
   experimental: {
@@ -15,9 +49,6 @@ const nextConfig = {
       'framer-motion',
     ],
     ppr: false,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
   },
   typescript: {
     ignoreBuildErrors: true,
@@ -34,16 +65,7 @@ const nextConfig = {
   headers: async () => [
     {
       source: '/(.*)',
-      headers: [
-        { key: 'X-Content-Type-Options', value: 'nosniff' },
-        { key: 'X-Frame-Options', value: 'DENY' },
-        { key: 'X-XSS-Protection', value: '1; mode=block' },
-        { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-        {
-          key: 'Permissions-Policy',
-          value: 'camera=(), microphone=(), geolocation=()',
-        },
-      ],
+      headers: securityHeaders,
     },
     {
       source: '/fonts/(.*)',
