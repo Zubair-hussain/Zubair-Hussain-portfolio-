@@ -53,6 +53,7 @@ function AdminLoginModal({ onClose }: { onClose: () => void }) {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    if (!auth) { setError('Auth is not configured.'); return; }
     setLoading(true);
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
@@ -203,12 +204,14 @@ export default function Testimonials() {
 
   // Auth listener
   useEffect(() => {
+    if (!auth) return;
     return onAuthStateChanged(auth, (u) => setUser(u));
   }, []);
 
   // Fetch approved reviews (and pending if admin)
   useEffect(() => {
-    const q = isAdmin 
+    if (!db) return;
+    const q = isAdmin
       ? query(collection(db, 'testimonials'), orderBy('createdAt', 'desc'))
       : query(collection(db, 'testimonials'), where('approved', '==', true), orderBy('createdAt', 'desc'));
     
@@ -245,8 +248,9 @@ export default function Testimonials() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!db) return;
     const newErrors: Record<string, string> = {};
-    
+
     if (!formData.name) newErrors.name = 'Name is required';
     if (!validateEmail(formData.email)) newErrors.email = 'Valid email is required';
     if (!formData.text) newErrors.text = 'Message is required';
@@ -374,8 +378,9 @@ export default function Testimonials() {
                            {isAdmin && (
                              <div className="flex items-center gap-2">
                                {!reviews[current]?.approved && (
-                                 <button 
+                                 <button
                                    onClick={async () => {
+                                     if (!db) return;
                                      await updateDoc(doc(db, 'testimonials', reviews[current].id), { approved: true });
                                    }}
                                    className="px-4 py-2 bg-green-600/20 border border-green-600/40 rounded-xl text-green-500 text-[10px] font-mono uppercase tracking-widest hover:bg-green-600/30 transition-all"
@@ -383,8 +388,9 @@ export default function Testimonials() {
                                    Approve
                                  </button>
                                )}
-                               <button 
+                               <button
                                  onClick={async () => {
+                                   if (!db) return;
                                    await deleteDoc(doc(db, 'testimonials', reviews[current].id));
                                  }}
                                  className="p-3 bg-red-600/10 hover:bg-red-600/20 rounded-xl text-red-500 transition-all border border-transparent hover:border-red-500/30"
@@ -420,7 +426,7 @@ export default function Testimonials() {
               <div className="mt-8 p-4 bg-red-600/10 border border-red-600/20 rounded-2xl flex items-center justify-between">
                 <span className="text-[10px] font-mono text-red-500 uppercase tracking-widest">Admin Control Panel</span>
                 <button 
-                  onClick={() => signOut(auth)} 
+                  onClick={() => auth && signOut(auth)}
                   className="text-[10px] font-mono text-white/40 hover:text-white uppercase tracking-widest underline"
                 >
                   Exit Session
@@ -526,7 +532,7 @@ export default function Testimonials() {
                     <button 
                       type="submit" 
                       disabled={loading}
-                      className="w-full py-5 bg-red-600 hover:bg-red-500 disabled:opacity-50 rounded-[2rem] text-white font-mono text-[10px] uppercase tracking-[0.4em] font-bold shadow-[0_10px_30px_rgba(200,20,30,0.3)] transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
+                      className="w-full py-5 bg-red-600 hover:bg-red-500 disabled:opacity-50 rounded-[2rem] text-white font-mono text-[10px] uppercase tracking-[0.4em] font-bold shadow-[0_10px_30px_rgba(var(--brand-rgb),0.3)] transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
                     >
                         {loading ? (
                           <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />

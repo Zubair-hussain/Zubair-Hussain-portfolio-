@@ -1,0 +1,53 @@
+rules_version = '2';
+
+// ============================================================================
+//  Firestore Security Rules — the real access-control layer for this site.
+//  The client-side "admin email" check is only UX; THESE rules are what
+//  actually stop anyone from reading unapproved reviews or writing/deleting
+//  data. Deploy with:  firebase deploy --only firestore:rules
+// ============================================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // The one admin (Zubair). Firebase Auth issues a verified ID token (a JWT)
+    // and these rules trust request.auth.token — no custom JWT needed.
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.token.email == 'thezubairh@gmail.com';
+    }
+
+    match /testimonials/{id} {
+      // Public sees only approved reviews; the admin sees everything.
+      allow read: if resource.data.approved == true || isAdmin();
+
+      // Anyone may SUBMIT a review, but only as an unapproved, well-formed doc.
+      // (Moderation happens in the admin panel; approval is admin-only below.)
+      allow create: if isValidSubmission();
+
+      // Approving / editing / deleting is admin-only.
+      allow update, delete: if isAdmin();
+    }
+
+    function isValidSubmission() {
+      let d = request.resource.data;
+      return d.approved == false
+        && d.rating is number && d.rating >= 1 && d.rating <= 5
+        && d.name is string  && d.name.size() > 0 && d.name.size() <= 80
+        && d.text is string  && d.text.size() > 0 && d.text.size() <= 1000
+        && d.role is string  && d.role.size() <= 80
+        && d.email is string && d.email.size() <= 160
+        && d.country is string
+        && d.avatar is string && d.avatar.size() <= 8
+        && d.createdAt is timestamp
+        // Reject any unexpected fields.
+        && d.keys().hasOnly(['name','role','text','email','rating','avatar','country','approved','createdAt']);
+    }
+
+    // Everything else is denied by default.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
