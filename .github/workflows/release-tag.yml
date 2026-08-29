@@ -1,13 +1,13 @@
 name: Release Tag
 
-# After a successful Build on main (i.e. a deploy-worthy commit), automatically
+# After a successful Build on _prod (i.e. a deploy-worthy commit), automatically
 # create the next version tag (v0.1 → v0.2 → …) and a GitHub Release.
 
 on:
   workflow_run:
     workflows: ["Build"]
     types: [completed]
-    branches: [main]
+    branches: [_prod]
 
 permissions:
   contents: write
