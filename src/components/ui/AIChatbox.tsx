@@ -10,6 +10,32 @@ interface Message {
   content: string;
 }
 
+// Turn URLs and emails inside a bot reply into clickable links.
+function renderRich(text: string) {
+  const parts = text.split(/(https?:\/\/[^\s]+|\/api\/schedule|[\w.+-]+@[\w-]+\.[\w.-]+)/g);
+  return parts.map((part, i) => {
+    if (part === '/api/schedule')
+      return (
+        <a key={i} href={part} target="_blank" rel="noopener noreferrer" className="text-red-400 underline underline-offset-2 hover:text-red-300 break-all">
+          secure schedule link
+        </a>
+      );
+    if (/^https?:\/\//.test(part))
+      return (
+        <a key={i} href={part} target="_blank" rel="noopener noreferrer" className="text-red-400 underline underline-offset-2 hover:text-red-300 break-all">
+          {part.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
+        </a>
+      );
+    if (/^[\w.+-]+@[\w-]+\.[\w.-]+$/.test(part))
+      return (
+        <a key={i} href={`mailto:${part}`} className="text-red-400 underline underline-offset-2 hover:text-red-300 break-all">
+          {part}
+        </a>
+      );
+    return <span key={i}>{part}</span>;
+  });
+}
+
 export default function AIChatbox() {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
@@ -17,7 +43,7 @@ export default function AIChatbox() {
     {
       id: '1',
       role: 'assistant',
-      content: "Hi! I'm Zubair's AI Assistant. Ask me about his skills, services, pricing, or how to get in touch! 👋",
+      content: "Hi! I'm Zubair AI 👋 Ask me about his projects, skills, latest blog posts, or book a call. How can I help?",
     },
   ]);
   const [isLoading, setIsLoading] = useState(false);
@@ -30,14 +56,23 @@ export default function AIChatbox() {
     }
   }, [messages, isLoading]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const QUICK_ASKS = [
+    'What can Zubair build?',
+    'Show recent projects',
+    'Latest blog posts',
+    'Book a call',
+    'My Intro',
+  ];
+
+  const handleSubmit = async (e: React.FormEvent, preset?: string) => {
     e.preventDefault();
-    if (!input.trim() || isLoading) return;
+    const text = (preset ?? input).trim();
+    if (!text || isLoading) return;
 
     const userMessage: Message = {
       id: Date.now().toString(),
       role: 'user',
-      content: input,
+      content: text,
     };
 
     setMessages((prev) => [...prev, userMessage]);
@@ -45,11 +80,12 @@ export default function AIChatbox() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('https://zubair-agent.vercel.app/api/chat', {
+      // Self-contained Cloudflare edge endpoint — no external backend.
+      const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          message: input,
+          message: userMessage.content,
           // Pass sessionId to maintain conversation memory
           ...(sessionId && { sessionId }),
         }),
@@ -97,7 +133,7 @@ export default function AIChatbox() {
             animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
             exit={{ opacity: 0, y: 20, scale: 0.9, filter: 'blur(10px)' }}
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="w-[min(calc(100vw-32px),380px)] h-[min(500px,calc(100vh-120px))] bg-[#0a0a0a] border border-white/10 rounded-3xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.8),0_0_20px_rgba(200,20,30,0.1)] flex flex-col"
+            className="w-[min(calc(100vw-32px),380px)] h-[min(500px,calc(100vh-120px))] bg-[#0a0a0a] border border-white/10 rounded-3xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.8),0_0_20px_rgba(var(--brand-rgb),0.1)] flex flex-col"
           >
             {/* Header */}
             <div className="p-5 border-b border-white/5 bg-gradient-to-r from-red-600/10 to-transparent flex items-center justify-between">
@@ -152,10 +188,10 @@ export default function AIChatbox() {
                     className={`max-w-[80%] p-4 rounded-2xl text-[13px] leading-relaxed whitespace-pre-wrap ${
                       msg.role === 'assistant'
                         ? 'bg-white/[0.03] text-white/80 rounded-tl-none'
-                        : 'bg-red-600 text-white rounded-tr-none shadow-[0_4px_12px_rgba(239,68,68,0.2)]'
+                        : 'bg-red-600 text-white rounded-tr-none shadow-[0_4px_12px_rgba(var(--brand-rgb-5),0.2)]'
                     }`}
                   >
-                    {msg.content}
+                    {msg.role === 'assistant' ? renderRich(msg.content) : msg.content}
                   </div>
                 </div>
               ))}
@@ -176,6 +212,22 @@ export default function AIChatbox() {
               )}
             </div>
 
+            {/* Quick asks — shown until the user sends their first message */}
+            {messages.length === 1 && !isLoading && (
+              <div className="px-4 pt-1 pb-2 flex flex-wrap gap-2">
+                {QUICK_ASKS.map((q) => (
+                  <button
+                    key={q}
+                    type="button"
+                    onClick={(e) => handleSubmit(e, q)}
+                    className="text-[11px] px-3 py-1.5 rounded-full border border-white/10 bg-white/[0.03] text-white/60 hover:text-white hover:border-red-500/40 hover:bg-red-600/10 transition-all"
+                  >
+                    {q}
+                  </button>
+                ))}
+              </div>
+            )}
+
             {/* Input */}
             <form
               onSubmit={handleSubmit}
@@ -193,7 +245,7 @@ export default function AIChatbox() {
                 <button
                   type="submit"
                   disabled={!input.trim() || isLoading}
-                  className="absolute right-2 p-2 bg-red-600 hover:bg-red-500 disabled:opacity-50 disabled:hover:bg-red-600 rounded-xl text-white transition-all shadow-[0_4px_12px_rgba(239,68,68,0.2)]"
+                  className="absolute right-2 p-2 bg-red-600 hover:bg-red-500 disabled:opacity-50 disabled:hover:bg-red-600 rounded-xl text-white transition-all shadow-[0_4px_12px_rgba(var(--brand-rgb-5),0.2)]"
                   aria-label="Send message"
                 >
                   <Send size={16} />
@@ -209,7 +261,7 @@ export default function AIChatbox() {
         whileHover={{ scale: 1.05, rotate: 5 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen((prev) => !prev)}
-        className="relative w-16 h-16 rounded-full bg-red-600 flex items-center justify-center text-white shadow-[0_10px_30px_rgba(239,68,68,0.4)] transition-all group overflow-hidden"
+        className="relative w-16 h-16 rounded-full bg-red-600 flex items-center justify-center text-white shadow-[0_10px_30px_rgba(var(--brand-rgb-5),0.4)] transition-all group overflow-hidden"
         aria-label={isOpen ? 'Close AI chat' : 'Open AI chat'}
       >
         <AnimatePresence mode="wait" initial={false}>
