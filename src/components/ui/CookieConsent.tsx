@@ -20,8 +20,8 @@ declare global {
 
 function updateGoogleConsent(value: GoogleConsentValue) {
   window.dataLayer = window.dataLayer || [];
-  window.gtag = window.gtag || function gtagFallback() {
-    window.dataLayer?.push(arguments);
+  window.gtag = window.gtag || function gtagFallback(...args) {
+    window.dataLayer?.push(args);
   };
 
   window.gtag('consent', 'update', {

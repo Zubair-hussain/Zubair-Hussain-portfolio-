@@ -7,7 +7,7 @@ import { PROFILE } from '../src/lib/zubair-profile';
 vi.mock('framer-motion', () => {
   const passthrough =
     (tag: 'a' | 'button' | 'div') =>
-    ({
+    function MotionPassthrough({
       animate: _animate,
       children,
       initial: _initial,
@@ -16,8 +16,9 @@ vi.mock('framer-motion', () => {
       whileHover: _whileHover,
       whileTap: _whileTap,
       ...props
-    }: { children?: React.ReactNode; [key: string]: unknown }) =>
-      React.createElement(tag, props as React.HTMLAttributes<HTMLElement>, children);
+    }: { children?: React.ReactNode; [key: string]: unknown }) {
+      return React.createElement(tag, props as React.HTMLAttributes<HTMLElement>, children);
+    };
 
   return {
     AnimatePresence: ({ children }: { children?: React.ReactNode }) =>
