@@ -2,6 +2,13 @@ name = "zubair--portfolio"
 compatibility_date = "2024-11-01"
 compatibility_flags = ["nodejs_compat"]
 
+# Cloudflare Workers AI — powers "Zubair AI".
+# This binding makes the AI serverless and free-tier friendly. If it is ever
+# unavailable, the bot automatically falls back to a fast rule-based engine
+# (see src/app/api/chat/route.ts), so the chat never goes down.
+[ai]
+binding = "AI"
+
 [pages_build_config]
 build_command = "npx @cloudflare/next-on-pages@1"
 destination_dir = ".vercel/output/static"
