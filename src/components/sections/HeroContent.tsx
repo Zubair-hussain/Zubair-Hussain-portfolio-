@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 import dynamic from 'next/dynamic';
 const AvatarSequence = dynamic(() => import('@/components/3d/AvatarSequence'), { ssr: false });
 import HeroCTA from './HeroCTA';
@@ -12,8 +12,6 @@ interface HeroContentProps {
     greeting: string;
     title: string;
     subtitle: string;
-    ctaPrimary: string;
-    ctaSecondary: string;
   };
   tags: string[];
   stats: { value: string; label: string }[];
@@ -42,6 +40,8 @@ const fadeIn = {
 
 export default function HeroContent({ t, tags, stats }: HeroContentProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const manifestoRef = useRef<HTMLDivElement>(null);
+  const manifestoInView = useInView(manifestoRef, { once: true, margin: '-20% 0px -20% 0px' });
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -49,20 +49,20 @@ export default function HeroContent({ t, tags, stats }: HeroContentProps) {
   });
 
   /* Scroll-linked transforms */
-  const avatarOpacity  = useTransform(scrollYProgress, [0, 0.35], [1, 0]);
-  const avatarScale    = useTransform(scrollYProgress, [0, 0.35], [1, 0.88]);
-  const contentY       = useTransform(scrollYProgress, [0, 0.4],  [0, -90]);
-  const bgOpacity      = useTransform(scrollYProgress, [0, 0.4],  [1, 0]);
-  const manifestoY     = useTransform(scrollYProgress, [0.3, 0.7],[80, 0]);
-  const manifestoOp    = useTransform(scrollYProgress, [0.3, 0.6],[0, 1]);
+  const avatarOpacity  = useTransform(scrollYProgress, [0, 0.82, 1], [1, 1, 0]);
+  const avatarScale    = useTransform(scrollYProgress, [0, 1], [1, 0.96]);
+  const contentY       = useTransform(scrollYProgress, [0, 1], [0, -36]);
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.82, 1], [1, 1, 0]);
+  const bgOpacity      = useTransform(scrollYProgress, [0, 1],  [1, 0.85]);
 
   return (
-    <div ref={containerRef} className="relative w-full" style={{ height: 'clamp(200vh, 260vh, 260vh)' }}>
+    <div className="relative isolate w-full">
+      <div ref={containerRef} className="relative z-10 w-full" style={{ minHeight: '100svh' }}>
 
       {/* ══════════════════════════════════════
           STICKY HERO VIEWPORT
       ══════════════════════════════════════ */}
-      <div className="sticky top-0 flex h-screen w-full flex-col items-center justify-center overflow-hidden pt-[90px] sm:pt-20 lg:pt-28">
+      <div className="relative flex min-h-[100svh] w-full flex-col items-center justify-center overflow-hidden pt-[90px] sm:pt-20 lg:pt-28">
 
         {/* ── Atmospheric red glow layers ── */}
         <motion.div style={{ opacity: bgOpacity }} className="absolute inset-0 z-0 pointer-events-none">
@@ -70,21 +70,21 @@ export default function HeroContent({ t, tags, stats }: HeroContentProps) {
           <div
             className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[900px] h-[420px]"
             style={{
-              background: 'radial-gradient(ellipse 80% 60% at 50% 110%, rgba(200,20,30,0.38) 0%, transparent 68%)',
+              background: 'radial-gradient(ellipse 80% 60% at 50% 110%, rgba(var(--brand-rgb),0.38) 0%, transparent 68%)',
             }}
           />
           {/* Left ambient */}
           <div
             className="absolute bottom-0 left-0 w-[55%] h-[70%]"
             style={{
-              background: 'radial-gradient(ellipse 60% 70% at 0% 100%, rgba(180,15,25,0.2) 0%, transparent 60%)',
+              background: 'radial-gradient(ellipse 60% 70% at 0% 100%, rgba(var(--brand-rgb-3),0.2) 0%, transparent 60%)',
             }}
           />
           {/* Right ambient */}
           <div
             className="absolute bottom-0 right-0 w-[55%] h-[70%]"
             style={{
-              background: 'radial-gradient(ellipse 60% 70% at 100% 100%, rgba(180,15,25,0.15) 0%, transparent 60%)',
+              background: 'radial-gradient(ellipse 60% 70% at 100% 100%, rgba(var(--brand-rgb-3),0.15) 0%, transparent 60%)',
             }}
           />
           {/* Subtle top vignette */}
@@ -108,7 +108,7 @@ export default function HeroContent({ t, tags, stats }: HeroContentProps) {
 
         {/* ── Floating content overlay ── */}
         <motion.div
-          style={{ y: contentY }}
+          style={{ y: contentY, opacity: contentOpacity }}
           className="absolute inset-0 z-20 pointer-events-none flex flex-col justify-between p-4 sm:p-8 md:p-14 lg:p-20 pt-[85px] sm:pt-8"
         >
           {/* ── TOP: headline block ── */}
@@ -125,7 +125,7 @@ export default function HeroContent({ t, tags, stats }: HeroContentProps) {
               <motion.div variants={fadeRise} className="flex items-center gap-3 mb-1">
                 <span
                   className="inline-block w-1.5 h-1.5 rounded-full bg-red-500"
-                  style={{ boxShadow: '0 0 6px rgba(220,40,50,0.9), 0 0 14px rgba(200,20,30,0.5)' }}
+                  style={{ boxShadow: '0 0 6px rgba(var(--brand-rgb-2),0.9), 0 0 14px rgba(var(--brand-rgb),0.5)' }}
                 />
                 <span className="text-red-500/75 text-[10px] font-mono tracking-[0.4em] uppercase font-semibold">
                   {t.available}
@@ -142,7 +142,7 @@ export default function HeroContent({ t, tags, stats }: HeroContentProps) {
                   fontStyle: 'italic',
                   color: '#f5f4f0',
                   textShadow:
-                    '0 0 80px rgba(200,20,30,0.18), 0 2px 0 rgba(0,0,0,0.5)',
+                    '0 0 80px rgba(var(--brand-rgb),0.18), 0 2px 0 rgba(0,0,0,0.5)',
                   letterSpacing: '-0.04em',
                 }}
               >
@@ -164,8 +164,8 @@ export default function HeroContent({ t, tags, stats }: HeroContentProps) {
                     key={tag}
                     className="text-[9px] font-mono tracking-[0.2em] uppercase px-3 py-1 rounded-full pointer-events-auto"
                     style={{
-                      background: 'rgba(255,255,255,0.03)',
-                      border: '1px solid rgba(255,255,255,0.07)',
+                      background: 'rgba(var(--hl-rgb),0.03)',
+                      border: '1px solid rgba(var(--hl-rgb),0.07)',
                       color: 'rgba(245,244,240,0.45)',
                       backdropFilter: 'blur(8px)',
                     }}
@@ -177,7 +177,7 @@ export default function HeroContent({ t, tags, stats }: HeroContentProps) {
 
               {/* CTAs */}
               <motion.div variants={fadeRise} className="pointer-events-auto pt-4">
-                <HeroCTA ctaPrimary={t.ctaPrimary} ctaSecondary={t.ctaSecondary} />
+                <HeroCTA />
               </motion.div>
             </div>
 
@@ -189,26 +189,30 @@ export default function HeroContent({ t, tags, stats }: HeroContentProps) {
               <span>{t.greeting}</span>
               <span
                 className="w-8 h-px"
-                style={{ background: 'rgba(200,20,30,0.4)' }}
+                style={{ background: 'rgba(var(--brand-rgb),0.4)' }}
               />
               <span>Frame_Rate : 60fps</span>
             </motion.div>
           </motion.div>
         </motion.div>
       </div>
+      </div>
 
       {/* ══════════════════════════════════════
           MANIFESTO / PROMPT SECTION
           (scroll-triggered)
       ══════════════════════════════════════ */}
-      <div className="relative z-30 w-full flex flex-col items-center justify-center overflow-hidden py-32">
+      <div
+        className="relative z-20 mt-5 flex min-h-[100svh] w-full flex-col items-center justify-center overflow-hidden bg-cover bg-center bg-no-repeat pb-14 pt-24 sm:mt-7 sm:pb-16 sm:pt-28 md:mt-8 md:pb-20 md:pt-32"
+        style={{ backgroundImage: "url('/images/projects/Background-Image.png')" }}
+      >
 
         {/* Dark gradient transition from hero */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              'linear-gradient(to bottom, rgba(0,0,0,0.95) 0%, rgba(3,4,8,0.98) 40%, rgba(3,4,8,1) 100%)',
+              'linear-gradient(to bottom, var(--veil-1) 0%, var(--veil-2) 42%, var(--veil-3) 100%)',
           }}
         />
 
@@ -217,51 +221,56 @@ export default function HeroContent({ t, tags, stats }: HeroContentProps) {
           className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-[50%] pointer-events-none"
           style={{
             background:
-              'radial-gradient(ellipse 90% 70% at 50% 100%, rgba(180,10,20,0.32) 0%, transparent 65%)',
+              'radial-gradient(ellipse 90% 70% at 50% 100%, rgba(var(--brand-rgb-3),var(--veil-glow-a)) 0%, transparent 65%)',
           }}
         />
 
         {/* Vertical red line separator */}
         <motion.div
-          style={{ opacity: manifestoOp }}
+          initial={{ opacity: 0 }}
+          animate={manifestoInView ? { opacity: 1 } : { opacity: 0 }}
+          transition={{ duration: 0.7, ease: 'easeOut' }}
           className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-24 pointer-events-none"
         >
           <div
             className="w-px h-full"
             style={{
-              background: 'linear-gradient(to bottom, transparent, rgba(200,20,30,0.55), rgba(200,20,30,0.2))',
+              background: 'linear-gradient(to bottom, transparent, rgba(var(--brand-rgb),0.55), rgba(var(--brand-rgb),0.2))',
             }}
           />
         </motion.div>
 
         {/* Manifesto card */}
         <motion.div
-          style={{ y: manifestoY, opacity: manifestoOp }}
-          className="relative z-10 flex flex-col items-center px-6 max-w-4xl w-full"
+          ref={manifestoRef}
+          initial={{ opacity: 0, y: 56 }}
+          animate={manifestoInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 56 }}
+          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+          className="relative z-10 flex w-full max-w-4xl flex-col items-center justify-center px-5 sm:px-6"
         >
           {/* Section label */}
-          <div className="flex items-center gap-4 mb-12">
+          <div className="flex items-center gap-4 mb-8 sm:mb-10">
             <span
               className="h-px w-10"
-              style={{ background: 'rgba(200,20,30,0.4)' }}
+              style={{ background: 'rgba(var(--brand-rgb),0.4)' }}
             />
             <span className="text-[10px] font-mono tracking-[0.35em] uppercase text-red-600/65">
               Manifesto
             </span>
             <span
               className="h-px w-10"
-              style={{ background: 'rgba(200,20,30,0.4)' }}
+              style={{ background: 'rgba(var(--brand-rgb),0.4)' }}
             />
           </div>
 
           {/* The glowing card */}
           <div
-            className="relative w-full rounded-sm px-5 py-8 sm:px-10 sm:py-14 md:px-16 md:py-16 text-center overflow-hidden"
+            className="relative w-full rounded-sm px-5 py-7 text-center overflow-hidden sm:px-9 sm:py-10 md:px-14 md:py-12"
             style={{
-              background: 'rgba(255,255,255,0.014)',
-              border: '1px solid rgba(200,20,30,0.18)',
+              background: 'rgba(var(--hl-rgb),0.014)',
+              border: '1px solid rgba(var(--brand-rgb),0.18)',
               boxShadow:
-                '0 0 0 1px rgba(200,20,30,0.08), 0 0 60px rgba(180,10,20,0.22), 0 0 160px rgba(180,10,20,0.1), inset 0 0 60px rgba(180,10,20,0.04)',
+                '0 0 0 1px rgba(var(--brand-rgb),0.08), 0 0 60px rgba(var(--brand-rgb-3),0.22), 0 0 160px rgba(var(--brand-rgb-3),0.1), inset 0 0 60px rgba(var(--brand-rgb-3),0.04)',
               backdropFilter: 'blur(16px)',
               WebkitBackdropFilter: 'blur(16px)',
             }}
@@ -278,8 +287,8 @@ export default function HeroContent({ t, tags, stats }: HeroContentProps) {
                   style={{
                     background:
                       i < 2
-                        ? `linear-gradient(${i === 0 ? '135deg' : '225deg'}, rgba(200,20,30,0.5), transparent 60%)`
-                        : `linear-gradient(${i === 2 ? '45deg' : '315deg'}, rgba(200,20,30,0.5), transparent 60%)`,
+                        ? `linear-gradient(${i === 0 ? '135deg' : '225deg'}, rgba(var(--brand-rgb),0.5), transparent 60%)`
+                        : `linear-gradient(${i === 2 ? '45deg' : '315deg'}, rgba(var(--brand-rgb),0.5), transparent 60%)`,
                   }}
                 />
               )
@@ -290,14 +299,14 @@ export default function HeroContent({ t, tags, stats }: HeroContentProps) {
               className="absolute top-0 left-8 right-8 h-px"
               style={{
                 background:
-                  'linear-gradient(90deg, transparent, rgba(200,20,30,0.5), rgba(255,255,255,0.12), rgba(200,20,30,0.5), transparent)',
+                  'linear-gradient(90deg, transparent, rgba(var(--brand-rgb),0.5), rgba(var(--hl-rgb),0.12), rgba(var(--brand-rgb),0.5), transparent)',
               }}
             />
             <span
               className="absolute bottom-0 left-8 right-8 h-px"
               style={{
                 background:
-                  'linear-gradient(90deg, transparent, rgba(200,20,30,0.3), rgba(200,20,30,0.3), transparent)',
+                  'linear-gradient(90deg, transparent, rgba(var(--brand-rgb),0.3), rgba(var(--brand-rgb),0.3), transparent)',
               }}
             />
 
@@ -308,7 +317,7 @@ export default function HeroContent({ t, tags, stats }: HeroContentProps) {
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: 'clamp(5rem, 10vw, 8rem)',
                 fontWeight: 300,
-                color: 'rgba(200,20,30,0.14)',
+                color: 'rgba(var(--brand-rgb),0.14)',
                 lineHeight: '0.6',
               }}
             >
@@ -319,10 +328,10 @@ export default function HeroContent({ t, tags, stats }: HeroContentProps) {
             <p
               style={{
                 fontFamily: "'Cormorant Garamond', 'Instrument Serif', serif",
-                fontSize: 'clamp(1.35rem, 2.8vw, 2rem)',
+                fontSize: 'clamp(1.18rem, 2.45vw, 1.85rem)',
                 fontWeight: 300,
                 fontStyle: 'italic',
-                lineHeight: 1.7,
+                lineHeight: 1.55,
                 letterSpacing: '0.01em',
                 color: 'rgba(245,244,240,0.88)',
               }}
@@ -338,7 +347,7 @@ export default function HeroContent({ t, tags, stats }: HeroContentProps) {
                   className="absolute bottom-0.5 left-0 right-0 h-px"
                   style={{
                     background:
-                      'linear-gradient(90deg, rgba(200,20,30,0.8), rgba(200,20,30,0.25))',
+                      'linear-gradient(90deg, rgba(var(--brand-rgb),0.8), rgba(var(--brand-rgb),0.25))',
                   }}
                 />
               </span>
@@ -352,7 +361,7 @@ export default function HeroContent({ t, tags, stats }: HeroContentProps) {
                   className="absolute bottom-0.5 left-0 right-0 h-px"
                   style={{
                     background:
-                      'linear-gradient(90deg, rgba(200,20,30,0.8), rgba(200,20,30,0.25))',
+                      'linear-gradient(90deg, rgba(var(--brand-rgb),0.8), rgba(var(--brand-rgb),0.25))',
                   }}
                 />
               </span>
@@ -366,7 +375,7 @@ export default function HeroContent({ t, tags, stats }: HeroContentProps) {
                   className="absolute bottom-0.5 left-0 right-0 h-px"
                   style={{
                     background:
-                      'linear-gradient(90deg, rgba(200,20,30,0.8), rgba(200,20,30,0.25))',
+                      'linear-gradient(90deg, rgba(var(--brand-rgb),0.8), rgba(var(--brand-rgb),0.25))',
                   }}
                 />
               </span>
@@ -379,7 +388,7 @@ export default function HeroContent({ t, tags, stats }: HeroContentProps) {
                   fontStyle: 'normal',
                   fontWeight: 400,
                   textShadow:
-                    '0 0 24px rgba(220,40,50,0.5), 0 0 60px rgba(200,20,30,0.28)',
+                    '0 0 24px rgba(var(--brand-rgb-2),0.5), 0 0 60px rgba(var(--brand-rgb),0.28)',
                 }}
               >
                 digital spaces
@@ -391,7 +400,7 @@ export default function HeroContent({ t, tags, stats }: HeroContentProps) {
                   fontStyle: 'normal',
                   fontWeight: 400,
                   textShadow:
-                    '0 0 24px rgba(220,40,50,0.5), 0 0 60px rgba(200,20,30,0.28)',
+                    '0 0 24px rgba(var(--brand-rgb-2),0.5), 0 0 60px rgba(var(--brand-rgb),0.28)',
                 }}
               >
                 sharp focus
@@ -403,7 +412,7 @@ export default function HeroContent({ t, tags, stats }: HeroContentProps) {
                   fontStyle: 'normal',
                   fontWeight: 400,
                   textShadow:
-                    '0 0 24px rgba(220,40,50,0.5), 0 0 60px rgba(200,20,30,0.28)',
+                    '0 0 24px rgba(var(--brand-rgb-2),0.5), 0 0 60px rgba(var(--brand-rgb),0.28)',
                 }}
               >
                 inspired work
@@ -412,17 +421,17 @@ export default function HeroContent({ t, tags, stats }: HeroContentProps) {
             </p>
 
             {/* Attribution line */}
-            <div className="flex items-center justify-center gap-4 mt-10">
+            <div className="flex items-center justify-center gap-4 mt-8">
               <span
                 className="h-px w-8"
-                style={{ background: 'rgba(200,20,30,0.5)' }}
+                style={{ background: 'rgba(var(--brand-rgb),0.5)' }}
               />
               <span className="text-[10px] font-mono tracking-[0.28em] uppercase text-red-600/55">
                 Zubair Hussain — Xovato
               </span>
               <span
                 className="h-px w-8"
-                style={{ background: 'rgba(200,20,30,0.5)' }}
+                style={{ background: 'rgba(var(--brand-rgb),0.5)' }}
               />
             </div>
           </div>

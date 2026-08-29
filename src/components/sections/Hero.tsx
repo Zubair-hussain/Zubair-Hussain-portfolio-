@@ -9,8 +9,6 @@ export default async function Hero() {
     greeting: t('greeting'),
     title: t('title'),
     subtitle: t('subtitle'),
-    ctaPrimary: t('ctaPrimary'),
-    ctaSecondary: t('ctaSecondary'),
   };
 
   const tags = ['Full-Stack', 'MERN', 'AI', 'Next.js', 'React Native'];

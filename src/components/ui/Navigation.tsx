@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef, memo } from 'react';
 import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
-import { Globe, Sun, Moon, Palette, ArrowUpRight } from 'lucide-react';
+import { Globe, Sun, Moon, ArrowUpRight } from 'lucide-react';
 import { useTheme } from './ThemeProvider';
 import HireMeModal from './HireMeModal';
 
@@ -83,11 +83,13 @@ const Navigation = memo(function Navigation() {
   }, [mobileOpen]);
 
   useEffect(() => {
+    const urlLocale = new URLSearchParams(window.location.search).get('lang');
     const saved = document.cookie
       .split('; ')
       .find(r => r.startsWith('locale='))
       ?.split('=')[1];
-    if (saved) setLocale(saved);
+    if (urlLocale) setLocale(urlLocale);
+    else if (saved) setLocale(saved);
 
     const onScroll = () => setScrolled(window.scrollY > 60);
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -98,11 +100,17 @@ const Navigation = memo(function Navigation() {
     document.cookie = `locale=${next};path=/;max-age=31536000`;
     setLocale(next);
     setLocaleOpen(false);
-    window.location.reload();
+    const url = new URL(window.location.href);
+    if (next === 'en') {
+      url.searchParams.delete('lang');
+    } else {
+      url.searchParams.set('lang', next);
+    }
+    window.location.assign(`${url.pathname}${url.search}${url.hash}`);
   }, []);
 
   const isDark    = theme === 'dark';
-  const ThemeIcon = isDark ? Sun : theme === 'light' ? Palette : Moon;
+  const ThemeIcon = isDark ? Sun : Moon;
 
   /* stagger variants */
   const linkVariants = {
@@ -125,8 +133,9 @@ const Navigation = memo(function Navigation() {
         className="fixed top-0 left-0 right-0 z-[9999]"
         style={{
           background: scrolled
-            ? 'rgba(3,4,8,0.88)'
+            ? (isDark ? 'rgba(3,4,8,0.88)' : 'rgba(var(--hl-rgb),0.82)')
             : 'transparent',
+          borderBottom: scrolled && !isDark ? '1px solid hsl(220 14% 90%)' : undefined,
           backdropFilter:       scrolled ? 'blur(24px) saturate(1.6)' : 'none',
           WebkitBackdropFilter: scrolled ? 'blur(24px) saturate(1.6)' : 'none',
           transition: 'background 0.6s ease, backdrop-filter 0.6s ease',
@@ -139,7 +148,7 @@ const Navigation = memo(function Navigation() {
           transition={{ duration: 0.5 }}
           style={{
             background:
-              'linear-gradient(90deg, transparent 0%, rgba(200,20,30,0.55) 20%, rgba(200,20,30,0.8) 50%, rgba(200,20,30,0.55) 80%, transparent 100%)',
+              'linear-gradient(90deg, transparent 0%, rgba(var(--brand-rgb),0.55) 20%, rgba(var(--brand-rgb),0.8) 50%, rgba(var(--brand-rgb),0.55) 80%, transparent 100%)',
           }}
         />
 
@@ -167,12 +176,12 @@ const Navigation = memo(function Navigation() {
             >
               ZH
               {/* red period */}
-              <span style={{ color: '#c8141e' }}>.</span>
+              <span style={{ color: 'var(--brand-solid)' }}>.</span>
             </span>
             {/* slide-in underline on hover */}
             <span
               className="absolute -bottom-1 left-0 h-px w-0 group-hover:w-full transition-all duration-500"
-              style={{ background: 'linear-gradient(90deg, rgba(200,20,30,0.8), transparent)' }}
+              style={{ background: 'linear-gradient(90deg, rgba(var(--brand-rgb),0.8), transparent)' }}
             />
           </motion.button>
 
@@ -184,8 +193,8 @@ const Navigation = memo(function Navigation() {
               style={{
                 left:  springL,
                 width: springW,
-                background: 'linear-gradient(90deg, rgba(200,20,30,0.9), rgba(220,40,50,0.5))',
-                boxShadow: '0 0 8px rgba(200,20,30,0.5)',
+                background: 'linear-gradient(90deg, rgba(var(--brand-rgb),0.9), rgba(var(--brand-rgb-2),0.5))',
+                boxShadow: '0 0 8px rgba(var(--brand-rgb),0.5)',
               }}
             />
 
@@ -218,9 +227,9 @@ const Navigation = memo(function Navigation() {
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all duration-300"
                 style={{
                   color:  'rgba(245,244,240,0.45)',
-                  border: '1px solid rgba(255,255,255,0.07)',
+                  border: '1px solid rgba(var(--hl-rgb),0.07)',
                 }}
-                whileHover={{ color: 'rgba(245,244,240,0.85)', borderColor: 'rgba(200,20,30,0.35)' } as any}
+                whileHover={{ color: 'rgba(245,244,240,0.85)', borderColor: 'rgba(var(--brand-rgb),0.35)' } as any}
               >
                 <Globe size={13} strokeWidth={1.5} />
                 <span className="text-[10px] font-mono tracking-[0.18em] uppercase">{locale}</span>
@@ -235,16 +244,18 @@ const Navigation = memo(function Navigation() {
                     transition={{ duration: 0.22, ease: [0.16,1,0.3,1] }}
                     className="absolute top-full right-0 mt-3 w-40 overflow-hidden rounded-sm"
                     style={{
-                      background:    'rgba(8,10,14,0.96)',
-                      border:        '1px solid rgba(200,20,30,0.18)',
+                      background:    isDark ? 'rgba(8,10,14,0.96)' : 'rgba(var(--hl-rgb),0.98)',
+                      border:        isDark ? '1px solid rgba(var(--brand-rgb),0.18)' : '1px solid hsl(220 14% 88%)',
                       backdropFilter:'blur(20px)',
-                      boxShadow:     '0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(200,20,30,0.08)',
+                      boxShadow:     isDark
+                        ? '0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(var(--brand-rgb),0.08)'
+                        : '0 20px 50px -20px rgba(20,22,30,0.28)',
                     }}
                   >
                     {/* top accent line */}
                     <div
                       className="h-px w-full"
-                      style={{ background: 'linear-gradient(90deg, transparent, rgba(200,20,30,0.6), transparent)' }}
+                      style={{ background: 'linear-gradient(90deg, transparent, rgba(var(--brand-rgb),0.6), transparent)' }}
                     />
                     {locales.map(l => (
                       <button
@@ -252,7 +263,7 @@ const Navigation = memo(function Navigation() {
                         onClick={() => changeLocale(l.id)}
                         className="w-full text-left px-4 py-2.5 text-[10px] font-mono tracking-[0.18em] uppercase transition-colors duration-150 hover:bg-white/[0.04]"
                         style={{
-                          color: locale === l.id ? 'rgba(200,20,30,0.9)' : 'rgba(245,244,240,0.38)',
+                          color: locale === l.id ? 'rgba(var(--brand-rgb),0.9)' : 'rgba(245,244,240,0.38)',
                         }}
                       >
                         {l.label}
@@ -281,9 +292,9 @@ const Navigation = memo(function Navigation() {
               aria-label="Hire me"
               className="hidden sm:flex items-center gap-2 px-5 py-2 rounded-full overflow-hidden relative group"
               style={{
-                background: 'linear-gradient(135deg, rgba(200,20,30,0.16), rgba(160,10,20,0.08))',
-                border:     '1px solid rgba(200,20,30,0.32)',
-                boxShadow:  '0 0 0 1px rgba(200,20,30,0.08), inset 0 1px 0 rgba(255,255,255,0.06)',
+                background: 'linear-gradient(135deg, rgba(var(--brand-rgb),0.16), rgba(var(--brand-rgb-4),0.08))',
+                border:     '1px solid rgba(var(--brand-rgb),0.32)',
+                boxShadow:  '0 0 0 1px rgba(var(--brand-rgb),0.08), inset 0 1px 0 rgba(var(--hl-rgb),0.06)',
                 color:      '#f5f4f0',
               }}
               whileHover={{ scale: 1.03 }}
@@ -292,11 +303,11 @@ const Navigation = memo(function Navigation() {
               {/* shimmer */}
               <span
                 className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                style={{ background: 'linear-gradient(135deg, rgba(200,20,30,0.24), rgba(160,10,20,0.14))' }}
+                style={{ background: 'linear-gradient(135deg, rgba(var(--brand-rgb),0.24), rgba(var(--brand-rgb-4),0.14))' }}
               />
               <span
                 className="absolute top-0 left-4 right-4 h-px"
-                style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)' }}
+                style={{ background: 'linear-gradient(90deg, transparent, rgba(var(--hl-rgb),0.18), transparent)' }}
               />
               <span
                 className="relative z-10 text-[10px] font-mono tracking-[0.22em] uppercase"
@@ -310,7 +321,7 @@ const Navigation = memo(function Navigation() {
               {/* outer glow */}
               <span
                 className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                style={{ boxShadow: '0 0 22px rgba(200,20,30,0.4)' }}
+                style={{ boxShadow: '0 0 22px rgba(var(--brand-rgb),0.4)' }}
               />
             </motion.button>
 
@@ -326,7 +337,7 @@ const Navigation = memo(function Navigation() {
               />
               <span
                 className="block h-px w-4 transition-all duration-300 group-hover:w-8"
-                style={{ background: 'rgba(200,20,30,0.8)' }}
+                style={{ background: 'rgba(var(--brand-rgb),0.8)' }}
               />
             </button>
           </div>
@@ -345,7 +356,7 @@ const Navigation = memo(function Navigation() {
             exit={{    opacity: 0 }}
             transition={{ duration: 0.4 }}
             className="fixed inset-0 z-[9998] md:hidden flex flex-col sm:flex-row"
-            style={{ background: 'rgba(3,4,8,0.97)' }}
+            style={{ background: isDark ? 'rgba(3,4,8,0.97)' : 'rgba(250,249,247,0.98)' }}
           >
             {/* ── Top/Left panel — red atmospheric glow + logo ── */}
             <motion.div
@@ -353,13 +364,13 @@ const Navigation = memo(function Navigation() {
               animate={{ x: 0,   opacity: 1 }}
               exit={{    x: -40, opacity: 0 }}
               transition={{ duration: 0.6, ease: [0.16,1,0.3,1] }}
-              className="relative flex flex-row sm:flex-col justify-between items-center sm:items-start p-6 sm:p-10 w-full sm:w-2/5 border-b border-[rgba(200,20,30,0.12)] sm:border-b-0 sm:border-r shrink-0"
+              className="relative flex flex-row sm:flex-col justify-between items-center sm:items-start p-6 sm:p-10 w-full sm:w-2/5 border-b border-[rgba(var(--brand-rgb),0.12)] sm:border-b-0 sm:border-r shrink-0"
             >
               {/* Red glow from bottom */}
               <div
                 className="absolute bottom-0 left-0 right-0 h-2/3 pointer-events-none"
                 style={{
-                  background: 'radial-gradient(ellipse 80% 70% at 20% 100%, rgba(180,10,20,0.3) 0%, transparent 65%)',
+                  background: 'radial-gradient(ellipse 80% 70% at 20% 100%, rgba(var(--brand-rgb-3),0.3) 0%, transparent 65%)',
                 }}
               />
 
@@ -373,7 +384,7 @@ const Navigation = memo(function Navigation() {
                   color:         '#f5f4f0',
                 }}
               >
-                ZH<span style={{ color: '#c8141e' }}>.</span>
+                ZH<span style={{ color: 'var(--brand-solid)' }}>.</span>
               </span>
 
               {/* Bottom meta */}
@@ -421,7 +432,7 @@ const Navigation = memo(function Navigation() {
                     {/* index number */}
                     <span
                       className="text-[9px] font-mono tracking-widest mt-1 w-4 flex-shrink-0 transition-colors duration-300 group-hover:text-red-500"
-                      style={{ color: 'rgba(200,20,30,0.4)' }}
+                      style={{ color: 'rgba(var(--brand-rgb),0.4)' }}
                     >
                       0{i + 1}
                     </span>
@@ -455,14 +466,14 @@ const Navigation = memo(function Navigation() {
                 transition={{ duration: 0.6, ease: [0.16,1,0.3,1], delay: 0.55 }}
                 className="mt-12 self-start flex items-center gap-2.5 px-7 py-3.5 rounded-full relative overflow-hidden group"
                 style={{
-                  background: 'linear-gradient(135deg, rgba(200,20,30,0.18), rgba(160,10,20,0.08))',
-                  border:     '1px solid rgba(200,20,30,0.32)',
+                  background: 'linear-gradient(135deg, rgba(var(--brand-rgb),0.18), rgba(var(--brand-rgb-4),0.08))',
+                  border:     '1px solid rgba(var(--brand-rgb),0.32)',
                   color:      '#f5f4f0',
                 }}
               >
                 <span
                   className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                  style={{ background: 'linear-gradient(135deg, rgba(200,20,30,0.28), rgba(160,10,20,0.16))' }}
+                  style={{ background: 'linear-gradient(135deg, rgba(var(--brand-rgb),0.28), rgba(var(--brand-rgb-4),0.16))' }}
                 />
                 <span className="relative z-10 text-[10px] font-mono tracking-[0.24em] uppercase">
                   {t('hire')}
@@ -484,7 +495,7 @@ const Navigation = memo(function Navigation() {
                     className="text-[9px] font-mono tracking-[0.2em] uppercase transition-colors duration-200"
                     style={{
                       color: locale === l.id
-                        ? 'rgba(200,20,30,0.8)'
+                        ? 'rgba(var(--brand-rgb),0.8)'
                         : 'rgba(245,244,240,0.2)',
                     }}
                   >

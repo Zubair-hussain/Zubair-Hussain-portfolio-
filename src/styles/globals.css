@@ -23,6 +23,23 @@
   --border: 45 30% 12%;           /* Subtle gold-tinted border */
   --ring: 43 74% 49%;
 
+  /* Brand accent channels used by inline styles across components.
+     Default (dark) = the original cyber-red. Light theme overrides these
+     to indigo so the whole UI recolors from one place. */
+  --brand-rgb: 200, 20, 30;       /* main */
+  --brand-rgb-2: 220, 40, 50;     /* bright highlight */
+  --brand-rgb-3: 180, 10, 20;     /* deep */
+  --brand-rgb-4: 160, 10, 20;     /* deepest */
+  --brand-rgb-5: 239, 68, 68;     /* red-500 glow */
+  --brand-solid: #c8141e;         /* solid brand hex */
+  --hl-rgb: 255, 255, 255;        /* bevel/highlight channel (white on dark) */
+
+  /* Manifesto image veil — dark curtain over the bg image (dark theme). */
+  --veil-1: rgba(0, 0, 0, 0.78);
+  --veil-2: rgba(3, 4, 8, 0.72);
+  --veil-3: rgba(3, 4, 8, 0.84);
+  --veil-glow-a: 0.32;            /* floor-glow strength */
+
   /* spacing */
   --section-padding: clamp(5rem, 10vw, 10rem);
 
@@ -32,21 +49,56 @@
   --font-mono: 'JetBrains Mono', monospace;
 }
 
-/* Forced dark gold theme across the board for consistency */
-[data-theme="light"], [data-theme="accent"] {
-  --background: 0 0% 0%;
-  --foreground: 45 30% 92%;
-  --card: 0 0% 3%;
-  --card-foreground: 45 30% 92%;
+html[data-theme="light"] {
+  /* Editorial light theme — warm paper, ink type, indigo-violet accent.
+     Indigo reads modern/technical, pairs with warm neutrals, and is far
+     more premium on white than a saturated red. */
+  --background: 40 26% 97.5%;      /* Clean warm paper */
+  --foreground: 230 24% 12%;       /* Ink, faint indigo undertone */
+  --card: 0 0% 100%;               /* Pure white cards */
+  --card-foreground: 230 24% 12%;
+  --primary: 247 64% 56%;          /* Indigo-violet — AA on white for text/buttons */
+  --primary-foreground: 0 0% 100%;
+  --secondary: 40 20% 93%;
+  --secondary-foreground: 230 18% 22%;
+  --muted: 40 16% 92%;
+  --muted-foreground: 230 9% 42%;
+  --accent: 32 92% 52%;            /* Warm amber — sparingly, complements indigo */
+  --accent-foreground: 0 0% 100%;
+  --border: 233 16% 88%;           /* Hairline cool-neutral borders */
+  --ring: 247 64% 56%;
+
+  /* Recolor every inline brand accent to indigo in light mode. */
+  --brand-rgb: 99, 84, 214;        /* main indigo */
+  --brand-rgb-2: 128, 116, 232;    /* bright indigo */
+  --brand-rgb-3: 82, 70, 196;      /* deep indigo */
+  --brand-rgb-4: 72, 60, 182;      /* deepest indigo */
+  --brand-rgb-5: 124, 112, 228;    /* soft indigo glow */
+  --brand-solid: #635cd6;          /* solid indigo hex */
+  --hl-rgb: 20, 22, 34;            /* on light, bevels become a subtle dark edge */
+
+  /* On light, the veil nearly vanishes so the background image shows through;
+     a whisper of white keeps the dark quote text legible. */
+  --veil-1: rgba(255, 255, 255, 0.14);
+  --veil-2: rgba(255, 255, 255, 0.04);
+  --veil-3: rgba(250, 249, 247, 0.30);
+  --veil-glow-a: 0.08;
+}
+
+html[data-theme="accent"] {
+  --background: 222 29% 7%;
+  --foreground: 42 32% 94%;
+  --card: 220 22% 10%;
+  --card-foreground: 42 32% 94%;
   --primary: 43 74% 49%;
-  --primary-foreground: 0 0% 0%;
-  --secondary: 45 10% 6%;
-  --secondary-foreground: 45 40% 75%;
-  --muted: 45 10% 6%;
-  --muted-foreground: 45 20% 55%;
+  --primary-foreground: 222 29% 7%;
+  --secondary: 218 22% 14%;
+  --secondary-foreground: 42 32% 84%;
+  --muted: 218 22% 14%;
+  --muted-foreground: 42 16% 64%;
   --accent: 43 74% 49%;
-  --accent-foreground: 0 0% 0%;
-  --border: 45 30% 12%;
+  --accent-foreground: 222 29% 7%;
+  --border: 43 28% 28%;
   --ring: 43 74% 49%;
 }
 
@@ -72,7 +124,209 @@ body {
   font-size: clamp(15px, 1vw + 0.5rem, 17px);
   line-height: 1.7;
   overflow-x: hidden;
+  transition: background-color 0.35s ease, color 0.35s ease;
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   LIGHT THEME COMPAT LAYER
+   The app is authored dark-first (hardcoded bg-black / text-white / bg-white/x
+   / dark hex panels). These rules translate those into a coherent light theme.
+   Principle: a light overlay on dark  ==  a subtle dark overlay on light.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* --- Solid dark surfaces → page/card backgrounds ------------------------- */
+html[data-theme="light"] .bg-black,
+html[data-theme="light"] .bg-\[\#050505\],
+html[data-theme="light"] .bg-\[\#050000\],
+html[data-theme="light"] .bg-\[\#0a0a0a\],
+html[data-theme="light"] .bg-\[\#0a0a0b\],
+html[data-theme="light"] .bg-\[\#0a0a0f\],
+html[data-theme="light"] .bg-\[\#0d0d0d\],
+html[data-theme="light"] .bg-\[\#111\],
+html[data-theme="light"] .bg-\[\#1a1a1a\] {
+  background-color: hsl(var(--card)) !important;
+}
+
+/* Sections that were pure page-black should stay on the ivory page color. */
+html[data-theme="light"] section.bg-black,
+html[data-theme="light"] main.bg-black,
+html[data-theme="light"] div.bg-black {
+  background-color: hsl(var(--background)) !important;
+}
+
+/* --- Translucent white panels (bg-white/x) → subtle ink panels ----------- */
+html[data-theme="light"] .bg-white\/\[0\.02\] { background-color: hsl(var(--foreground) / 0.035) !important; }
+html[data-theme="light"] .bg-white\/\[0\.03\] { background-color: hsl(var(--foreground) / 0.045) !important; }
+html[data-theme="light"] .bg-white\/\[0\.04\] { background-color: hsl(var(--foreground) / 0.05) !important; }
+html[data-theme="light"] .bg-white\/5  { background-color: hsl(var(--foreground) / 0.05) !important; }
+html[data-theme="light"] .bg-white\/10 { background-color: hsl(var(--foreground) / 0.08) !important; }
+html[data-theme="light"] .bg-white\/20 { background-color: hsl(var(--foreground) / 0.12) !important; }
+
+/* Hover states that brighten on dark should darken slightly on light. */
+html[data-theme="light"] .hover\:bg-white\/5:hover  { background-color: hsl(var(--foreground) / 0.06) !important; }
+html[data-theme="light"] .hover\:bg-white\/10:hover { background-color: hsl(var(--foreground) / 0.09) !important; }
+
+/* --- Dark scrims / frosted bars (bg-black/x) ----------------------------- */
+html[data-theme="light"] .bg-black\/80 { background-color: hsl(var(--card) / 0.85) !important; }
+html[data-theme="light"] .bg-black\/40 { background-color: hsl(var(--foreground) / 0.32) !important; }
+html[data-theme="light"] .bg-black\/20 { background-color: hsl(var(--foreground) / 0.14) !important; }
+
+/* --- Text -------------------------------------------------------------- */
+html[data-theme="light"] .text-white,
+html[data-theme="light"] .text-red-50 {
+  color: hsl(var(--foreground)) !important;
+}
+
+html[data-theme="light"] .text-white\/90 { color: hsl(var(--foreground) / 0.9) !important; }
+html[data-theme="light"] .text-white\/80 { color: hsl(var(--foreground) / 0.8) !important; }
+html[data-theme="light"] .text-white\/70 { color: hsl(var(--foreground) / 0.72) !important; }
+html[data-theme="light"] .text-white\/60 { color: hsl(var(--foreground) / 0.62) !important; }
+html[data-theme="light"] .text-white\/50 { color: hsl(var(--foreground) / 0.54) !important; }
+html[data-theme="light"] .text-white\/40 { color: hsl(var(--foreground) / 0.5) !important; }
+html[data-theme="light"] .text-white\/35 { color: hsl(var(--foreground) / 0.52) !important; }
+html[data-theme="light"] .text-white\/30 { color: hsl(var(--foreground) / 0.45) !important; }
+html[data-theme="light"] .text-white\/25 { color: hsl(var(--foreground) / 0.4) !important; }
+html[data-theme="light"] .text-white\/20 { color: hsl(var(--foreground) / 0.36) !important; }
+html[data-theme="light"] .text-white\/18 { color: hsl(var(--foreground) / 0.34) !important; }
+
+/* Inline near-white text (#f5f4f0). Framer rewrites the hex into rgb() at
+   runtime, so match every form the value can take. */
+html[data-theme="light"] [style*="#f5f4f0"],
+html[data-theme="light"] [style*="#F5F4F0"],
+html[data-theme="light"] [style*="rgb(245,244,240"],
+html[data-theme="light"] [style*="rgb(245, 244, 240"],
+html[data-theme="light"] [style*="rgba(245,244,240"],
+html[data-theme="light"] [style*="rgba(245, 244, 240"] {
+  color: hsl(var(--foreground)) !important;
+  text-shadow: none !important;
+}
+
+/* Inline dark backgrounds (both spaced and unspaced rgb/rgba forms). */
+html[data-theme="light"] [style*="rgba(8,10,14"],
+html[data-theme="light"] [style*="rgba(8, 10, 14"],
+html[data-theme="light"] [style*="rgba(3,4,8"],
+html[data-theme="light"] [style*="rgba(3, 4, 8"],
+html[data-theme="light"] [style*="#050505"],
+html[data-theme="light"] [style*="#0a0a0a"],
+html[data-theme="light"] [style*="#0a0a0f"] {
+  /* Use background-color only — the `background` shorthand would wipe any
+     background-image set on the same element. */
+  background-color: hsl(var(--card) / 0.96) !important;
+}
+
+/* --- Borders ----------------------------------------------------------- */
+html[data-theme="light"] .border-white\/5,
+html[data-theme="light"] .border-white\/10,
+html[data-theme="light"] .border-white\/20,
+html[data-theme="light"] .border-red-500\/10,
+html[data-theme="light"] .border-red-500\/15,
+html[data-theme="light"] .border-red-500\/20,
+html[data-theme="light"] .border-red-500\/30 {
+  border-color: hsl(var(--border)) !important;
+}
+html[data-theme="light"] .hover\:border-red-500\/40:hover,
+html[data-theme="light"] .hover\:border-white\/20:hover {
+  border-color: hsl(var(--primary) / 0.45) !important;
+}
+
+/* --- Gradients: neutralize dark stops ---------------------------------- */
+html[data-theme="light"] .from-black,
+html[data-theme="light"] .from-\[\#0a0a0a\],
+html[data-theme="light"] .from-\[\#1a1a1a\],
+html[data-theme="light"] .from-\[\#1a0505\] {
+  --tw-gradient-from: hsl(var(--background)) var(--tw-gradient-from-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+html[data-theme="light"] .to-black,
+html[data-theme="light"] .to-\[\#0a0a0a\],
+html[data-theme="light"] .to-\[\#050505\],
+html[data-theme="light"] .to-\[\#050000\] {
+  --tw-gradient-to: hsl(var(--background)) var(--tw-gradient-to-position) !important;
+}
+html[data-theme="light"] .via-transparent,
+html[data-theme="light"] .via-black {
+  --tw-gradient-stops: var(--tw-gradient-from), hsl(var(--background) / 0.55) var(--tw-gradient-via-position), var(--tw-gradient-to) !important;
+}
+
+/* --- Gradient-clipped headings (from-white → to-white/x) --------------- */
+/* On dark these are white→faded text; on light that's invisible. Repaint
+   them with the ink foreground so the big section titles read clearly. */
+html[data-theme="light"] .bg-clip-text.from-white,
+html[data-theme="light"] .bg-clip-text.from-white\/5,
+html[data-theme="light"] .bg-clip-text.from-white\/\[0\.02\] {
+  --tw-gradient-from: hsl(var(--foreground)) var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: hsl(var(--foreground) / 0.5) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+/* --- Shadows: heavy black glows → soft, believable elevation ----------- */
+/* Arbitrary shadow classes literally contain "rgba(0,0,0" in their name. */
+html[data-theme="light"] [class*="rgba(0,0,0"] {
+  box-shadow: 0 12px 32px -12px hsl(var(--foreground) / 0.18),
+              0 4px 12px -8px hsl(var(--foreground) / 0.12) !important;
+}
+
+/* Red accent glows read as harsh in light — tone them right down. */
+html[data-theme="light"] .glow { box-shadow: 0 8px 30px -10px hsl(var(--primary) / 0.28) !important; }
+html[data-theme="light"] .glow-text { text-shadow: none !important; }
+
+/* Glass surfaces on light: crisp frosted white. */
+html[data-theme="light"] .glass {
+  background-color: hsl(var(--card) / 0.72) !important;
+  border-color: hsl(var(--border)) !important;
+}
+
+/* Decorative noise is invisible/dirty on light — hide it. */
+html[data-theme="light"] .noise-overlay::after { opacity: 0 !important; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ACCENT RECOLOR — red → indigo, LIGHT THEME ONLY
+   The app hardcodes Tailwind red utilities everywhere. In light mode we
+   repaint them with the indigo brand token so the palette is cohesive and
+   no longer "depends on red". Dark theme keeps its red.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Text — all red text becomes indigo (red-50 is light-on-accent, handled after). */
+html[data-theme="light"] [class*="text-red-"] { color: hsl(var(--primary)) !important; }
+html[data-theme="light"] .text-red-50 { color: hsl(var(--primary-foreground)) !important; }
+
+/* Solid accent surfaces + hovers. */
+html[data-theme="light"] .bg-red-600,
+html[data-theme="light"] .bg-red-500,
+html[data-theme="light"] .hover\:bg-red-600:hover { background-color: hsl(var(--primary)) !important; }
+html[data-theme="light"] .hover\:bg-red-500:hover { background-color: hsl(247 64% 50%) !important; }
+
+/* Translucent accent tints — keep the intended alpha. */
+html[data-theme="light"] .bg-red-600\/5,
+html[data-theme="light"] .bg-red-600\/\[0\.05\],
+html[data-theme="light"] .bg-red-900\/5 { background-color: hsl(var(--primary) / 0.05) !important; }
+html[data-theme="light"] .bg-red-600\/10,
+html[data-theme="light"] .bg-red-500\/10,
+html[data-theme="light"] .bg-red-950\/10 { background-color: hsl(var(--primary) / 0.10) !important; }
+html[data-theme="light"] .bg-red-600\/15 { background-color: hsl(var(--primary) / 0.14) !important; }
+html[data-theme="light"] .bg-red-600\/20,
+html[data-theme="light"] .bg-red-500\/20 { background-color: hsl(var(--primary) / 0.18) !important; }
+html[data-theme="light"] .bg-red-500\/30 { background-color: hsl(var(--primary) / 0.28) !important; }
+html[data-theme="light"] .bg-red-500\/50,
+html[data-theme="light"] .bg-red-600\/50 { background-color: hsl(var(--primary) / 0.5) !important; }
+
+/* Accent borders — single tasteful indigo hairline for every red border. */
+html[data-theme="light"] [class*="border-red-"] { border-color: hsl(var(--primary) / 0.35) !important; }
+html[data-theme="light"] .hover\:border-red-500\/40:hover,
+html[data-theme="light"] .hover\:border-red-500\/50:hover,
+html[data-theme="light"] .hover\:border-red-500\/60:hover { border-color: hsl(var(--primary) / 0.55) !important; }
+
+/* Accent rings / outlines. */
+html[data-theme="light"] [class*="ring-red-"] { --tw-ring-color: hsl(var(--primary) / 0.5) !important; }
+
+/* Gradients that used red stops. */
+html[data-theme="light"] .from-red-600 { --tw-gradient-from: hsl(var(--primary)) var(--tw-gradient-from-position) !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important; }
+html[data-theme="light"] .from-red-600\/10 { --tw-gradient-from: hsl(var(--primary) / 0.10) var(--tw-gradient-from-position) !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important; }
+html[data-theme="light"] .from-red-600\/15 { --tw-gradient-from: hsl(var(--primary) / 0.15) var(--tw-gradient-from-position) !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important; }
+html[data-theme="light"] .via-red-500\/10 { --tw-gradient-stops: var(--tw-gradient-from), hsl(var(--primary) / 0.10) var(--tw-gradient-via-position), var(--tw-gradient-to) !important; }
+html[data-theme="light"] .to-red-900 { --tw-gradient-to: hsl(var(--primary)) var(--tw-gradient-to-position) !important; }
+html[data-theme="light"] .to-red-500\/40 { --tw-gradient-to: hsl(var(--primary) / 0.4) var(--tw-gradient-to-position) !important; }
+html[data-theme="light"] .to-red-500\/30 { --tw-gradient-to: hsl(var(--primary) / 0.3) var(--tw-gradient-to-position) !important; }
 
 /* ─── SELECTION ─────────────────────────────────────────────────────────────── */
 ::selection {

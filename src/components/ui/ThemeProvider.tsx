@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState, useCallback } from 'react';
 
-type Theme = 'dark' | 'light' | 'accent';
+type Theme = 'dark' | 'light';
 
 interface ThemeContextValue {
   theme: Theme;
@@ -22,7 +22,8 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
   const [theme, setThemeState] = useState<Theme>('dark');
 
   useEffect(() => {
-    const saved = (localStorage.getItem('theme') as Theme) || 'dark';
+    const savedTheme = localStorage.getItem('theme');
+    const saved: Theme = savedTheme === 'light' ? 'light' : 'dark';
     setThemeState(saved);
     document.documentElement.setAttribute('data-theme', saved);
   }, []);
@@ -34,7 +35,7 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
   }, []);
 
   const cycleTheme = useCallback(() => {
-    const order: Theme[] = ['dark', 'light', 'accent'];
+    const order: Theme[] = ['dark', 'light'];
     const next = order[(order.indexOf(theme) + 1) % order.length];
     setTheme(next);
   }, [theme, setTheme]);

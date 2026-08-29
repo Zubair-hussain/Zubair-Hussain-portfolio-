@@ -40,7 +40,7 @@ const premiumHover = {
   hover: {
     scale: 1.05,
     y: -4,
-    boxShadow: '0 0 40px rgba(239, 68, 68, 0.3), 0 0 80px rgba(225, 29, 72, 0.2)',
+    boxShadow: '0 0 40px rgba(var(--brand-rgb-5), 0.3), 0 0 80px rgba(225, 29, 72, 0.2)',
     transition: { duration: 0.4, ease: 'easeOut' },
   },
 };
@@ -75,17 +75,18 @@ export default function About() {
             className="lg:col-span-5 relative w-full max-w-[480px] mx-auto lg:mx-0 group"
           >
             <div className="relative overflow-visible transition-all duration-700">
-              <div className="w-full aspect-[3/4] bg-gradient-to-br from-[#1a0505] to-[#050000] border border-red-500/10 rounded-2xl flex items-center justify-center overflow-hidden group-hover:border-red-500/30 group-hover:shadow-[0_0_40px_rgba(200,20,30,0.1)] transition-all duration-700 relative">
+              <div className="w-full aspect-[3/4] bg-gradient-to-br from-[#1a0505] to-[#050000] border border-red-500/10 rounded-2xl flex items-center justify-center overflow-hidden group-hover:border-red-500/30 group-hover:shadow-[0_0_40px_rgba(var(--brand-rgb),0.1)] transition-all duration-700 relative">
                 <span className="text-6xl sm:text-8xl font-black text-red-500/5 font-display italic tracking-tighter group-hover:scale-110 transition-transform duration-700">ZH.</span>
-                
-                {/* Fallback image if file is added later */}
-                <img 
-                  src="/icons/icon-144x144.png" 
+
+                <Image
+                  src="/images/projects/zubair-about.jpg"
                   alt="Zubair Hussain"
-                  className="absolute inset-0 w-full h-full object-contain p-10 opacity-0 transition-opacity duration-1000 grayscale-[0.2] group-hover:grayscale-0 group-hover:brightness-110"
-                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                  onLoad={(e) => { (e.target as HTMLImageElement).style.opacity = '1'; }}
+                  fill
+                  sizes="(min-width: 1024px) 480px, (min-width: 640px) 70vw, 92vw"
+                  className="object-cover object-center transition-all duration-700 grayscale-[0.2] group-hover:scale-[1.03] group-hover:grayscale-0 group-hover:brightness-110"
+                  priority={false}
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-black/10 pointer-events-none" />
               </div>
             </div>
           </motion.div>

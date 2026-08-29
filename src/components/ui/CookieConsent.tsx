@@ -5,6 +5,40 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import { Cookie } from 'lucide-react';
 
+type GoogleConsentValue = 'granted' | 'denied';
+
+declare global {
+  interface Window {
+    dataLayer?: unknown[];
+    gtag?: (
+      command: 'consent',
+      action: 'default' | 'update',
+      params: Record<string, GoogleConsentValue | number>
+    ) => void;
+  }
+}
+
+function updateGoogleConsent(value: GoogleConsentValue) {
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = window.gtag || function gtagFallback() {
+    window.dataLayer?.push(arguments);
+  };
+
+  window.gtag('consent', 'update', {
+    ad_storage: value,
+    analytics_storage: value,
+    ad_user_data: value,
+    ad_personalization: value,
+    functionality_storage: 'granted',
+    security_storage: 'granted',
+  });
+
+  window.dataLayer.push({
+    event: 'cookie_consent_update',
+    cookie_consent: value,
+  });
+}
+
 export default function CookieConsent() {
   const t = useTranslations('cookie');
   const [visible, setVisible] = useState(false);
@@ -19,11 +53,15 @@ export default function CookieConsent() {
 
   const accept = () => {
     localStorage.setItem('cookie-consent', 'accepted');
+    document.cookie = 'cookie-consent=accepted; Path=/; Max-Age=31536000; SameSite=Lax';
+    updateGoogleConsent('granted');
     setVisible(false);
   };
 
   const decline = () => {
     localStorage.setItem('cookie-consent', 'declined');
+    document.cookie = 'cookie-consent=declined; Path=/; Max-Age=31536000; SameSite=Lax';
+    updateGoogleConsent('denied');
     setVisible(false);
   };
 

@@ -39,7 +39,7 @@ export function Globe() {
       <mesh ref={meshRef}>
         <sphereGeometry args={[2.5, 64, 64]} />
         <MeshDistortMaterial
-          color="#c8141e"
+          color="var(--brand-solid)"
           speed={0.5}
           distort={0.2}
           radius={1}
@@ -53,14 +53,14 @@ export function Globe() {
       {/* Wireframe overlay for the "Tech" look */}
       <mesh>
         <sphereGeometry args={[2.51, 32, 32]} />
-        <meshBasicMaterial color="#ef4444" wireframe transparent opacity={0.15} />
+        <meshBasicMaterial color="var(--brand-solid)" wireframe transparent opacity={0.15} />
       </mesh>
 
       {/* Atmospheric Glow */}
       <mesh>
         <sphereGeometry args={[2.8, 64, 64]} />
         <meshBasicMaterial 
-          color="#c8141e" 
+          color="var(--brand-solid)" 
           transparent 
           opacity={0.05} 
           side={THREE.BackSide}
@@ -71,7 +71,7 @@ export function Globe() {
       {stars.map((pos, i) => (
         <mesh key={i} position={pos as [number, number, number]}>
           <sphereGeometry args={[0.02, 8, 8]} />
-          <meshBasicMaterial color={i % 2 === 0 ? "#fff" : "#ef4444"} transparent opacity={0.4} />
+          <meshBasicMaterial color={i % 2 === 0 ? "#fff" : "var(--brand-solid)"} transparent opacity={0.4} />
         </mesh>
       ))}
 

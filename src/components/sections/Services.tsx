@@ -3,121 +3,84 @@
 import { useRef, memo } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { useTranslations } from 'next-intl';
-import { Globe, Smartphone, Brain, Palette, ShoppingCart, BarChart3 } from 'lucide-react';
+import { ArrowUpRight, BadgeDollarSign, CalendarClock, Check, Handshake } from 'lucide-react';
+import { PROFILE } from '@/lib/zubair-profile';
 
-const services = [
-  {
-    icon: Globe,
-    title: 'Full Stack Web Development',
-    description: 'End-to-end web applications with Next.js, Node.js, and modern databases. From landing pages to complex SaaS platforms.',
-    price: 'From $800',
-    features: ['Next.js 15 + React 19', 'REST & GraphQL APIs', 'Auth & Payments', 'CI/CD Deployment'],
-    color: '#C9A84C',
-  },
-  {
-    icon: Smartphone,
-    title: 'Mobile App Development',
-    description: 'Cross-platform iOS & Android apps with React Native. Native performance with code reuse.',
-    price: 'From $1,200',
-    features: ['React Native', 'Expo / Bare workflow', 'Push Notifications', 'App Store Deployment'],
-    color: '#4ECDC4',
-  },
-  {
-    icon: Brain,
-    title: 'AI Integration & Automation',
-    description: 'Embed AI into your product using OpenAI, Anthropic, LangChain, and n8n workflow automation.',
-    price: 'From $600',
-    features: ['ChatGPT / Claude APIs', 'LangChain Agents', 'n8n Workflows', 'Voice AI (Vapi/Retell)'],
-    color: '#A8E6CF',
-    featured: true,
-  },
-  {
-    icon: Palette,
-    title: 'UI/UX Design & Frontend',
-    description: 'Pixel-perfect interfaces with Figma designs, Framer Motion animations, and Tailwind CSS.',
-    price: 'From $400',
-    features: ['Figma Design', 'Framer Motion', 'Responsive Design', 'Accessibility (WCAG)'],
-    color: '#FF6B9D',
-  },
-  {
-    icon: ShoppingCart,
-    title: 'E-Commerce Solutions',
-    description: 'High-converting online stores with WooCommerce, Shopify, or custom MERN stack solutions.',
-    price: 'From $700',
-    features: ['WooCommerce/Shopify', 'Payment Gateways', 'Inventory Management', 'SEO Optimization'],
-    color: '#FFE66D',
-  },
-  {
-    icon: BarChart3,
-    title: 'SEO & Performance',
-    description: 'Lighthouse 100 scores, Core Web Vitals optimization, and organic search growth strategies.',
-    price: 'From $300',
-    features: ['Lighthouse 100/100', 'Core Web Vitals', 'Technical SEO', 'Speed Optimization'],
-    color: '#C9A84C',
-  },
-];
+const platformIcons = {
+  fiverr: BadgeDollarSign,
+  upwork: Handshake,
+  direct: CalendarClock,
+} as const;
+
+type FreelanceProfile = (typeof PROFILE.freelanceProfiles)[number];
 
 const ServiceCard = memo(function ServiceCard({
-  service, index, inView,
+  profile,
+  index,
+  inView,
 }: {
-  service: typeof services[0]; index: number; inView: boolean;
+  profile: FreelanceProfile;
+  index: number;
+  inView: boolean;
 }) {
-  const Icon = service.icon;
+  const Icon = platformIcons[profile.id as keyof typeof platformIcons] ?? Handshake;
+  const isExternal = profile.href.startsWith('http');
 
   return (
-    <motion.div
+    <motion.a
+      href={profile.href}
+      target={isExternal ? '_blank' : undefined}
+      rel={isExternal ? 'noopener noreferrer' : undefined}
       initial={{ opacity: 0, y: 30 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ delay: index * 0.1, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-      className={`relative flex flex-col gap-6 py-10 border-b border-white/5 transition-colors hover:border-red-500/20 group ${service.featured ? 'lg:scale-105 z-10' : ''}`}
+      className="group relative flex min-h-[360px] flex-col overflow-hidden rounded-sm border border-white/10 bg-white/[0.025] p-7 transition-all duration-500 hover:-translate-y-1 hover:border-red-500/35 hover:bg-white/[0.04] sm:p-8"
+      aria-label={`${profile.cta}: ${profile.label}`}
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-red-500/50 to-transparent opacity-60" />
+      <div className="absolute inset-0 bg-gradient-to-br from-red-500/[0.08] via-transparent to-white/[0.03] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
-      <div
-        className="w-14 h-14 rounded-full flex items-center justify-center transition-transform group-hover:scale-110"
-        style={{ background: `${service.color}10`, border: `1px solid ${service.color}20` }}
-      >
-        <Icon size={24} style={{ color: service.color }} aria-hidden="true" />
+      <div className="relative z-10 mb-8 flex items-start justify-between gap-4">
+        <div className="flex h-14 w-14 items-center justify-center rounded-full border border-red-500/25 bg-red-500/10 text-red-300 transition-transform duration-500 group-hover:scale-105">
+          <Icon size={23} aria-hidden="true" />
+        </div>
+        <ArrowUpRight
+          size={18}
+          className="text-white/25 transition-all duration-500 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-red-300"
+          aria-hidden="true"
+        />
       </div>
 
-      <div>
-        <h3 className="text-2xl font-black tracking-tight mb-3 text-white group-hover:text-red-400 transition-colors uppercase italic">
-          {service.title}
+      <div className="relative z-10">
+        <p className="mb-3 text-[10px] font-mono uppercase tracking-[0.28em] text-red-400/70">
+          {profile.eyebrow}
+        </p>
+        <h3 className="mb-4 text-2xl font-black uppercase italic tracking-tight text-white transition-colors duration-300 group-hover:text-red-200">
+          {profile.label}
         </h3>
-        <p className="text-white/50 text-base leading-relaxed max-w-sm">{service.description}</p>
+        <p className="max-w-sm text-sm leading-relaxed text-white/50 sm:text-base">
+          {profile.description}
+        </p>
       </div>
 
-      <ul className="flex flex-col gap-2.5 my-4" aria-label={`${service.title} features`}>
-        {service.features.map((f) => (
-          <li key={f} className="flex items-center gap-3 text-xs font-mono tracking-widest uppercase text-white/40">
-            <span className="w-1.5 h-px bg-red-500/50" aria-hidden="true" />
-            {f}
+      <ul className="relative z-10 my-8 flex flex-col gap-3" aria-label={`${profile.label} highlights`}>
+        {profile.highlights.map((highlight) => (
+          <li key={highlight} className="flex items-center gap-3 text-[10px] font-mono uppercase tracking-[0.22em] text-white/40">
+            <Check size={13} className="shrink-0 text-red-400/70" aria-hidden="true" />
+            {highlight}
           </li>
         ))}
       </ul>
 
-      <div className="pt-6 flex items-center justify-between mt-auto">
-        <span className="text-3xl font-black tracking-tighter text-white/90">{service.price}</span>
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            window.dispatchEvent(
-              new CustomEvent('openHireMeModal', {
-                detail: {
-                  title: service.title,
-                  price: service.price,
-                  category: service.title.toLowerCase().includes('mobile') ? 'mobile' : 
-                            service.title.toLowerCase().includes('ai') ? 'ai' : 'web'
-                }
-              })
-            );
-          }}
-          className="px-6 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-[10px] font-mono tracking-widest uppercase transition-all"
-        >
-          {service.featured ? 'Start Now' : 'Get Quote'} →
-        </button>
+      <div className="relative z-10 mt-auto flex items-center justify-between border-t border-white/10 pt-6">
+        <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-white/35">
+          Platform terms
+        </span>
+        <span className="inline-flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.24em] text-red-300">
+          {profile.cta}
+        </span>
       </div>
-    </motion.div>
+    </motion.a>
   );
 });
 
@@ -130,30 +93,39 @@ export default function Services() {
     <section
       id="services"
       ref={ref}
-      className="py-24 md:py-32 lg:py-48 relative overflow-hidden bg-black"
+      className="relative overflow-hidden bg-black py-24 md:py-32 lg:py-40"
       aria-labelledby="services-heading"
     >
-      <div className="container-custom">
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top_right,rgba(var(--brand-rgb),0.14),transparent_42%),radial-gradient(ellipse_at_bottom_left,rgba(var(--brand-rgb-3),0.12),transparent_38%)]" />
+
+      <div className="container-custom relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7 }}
-          className="mb-24"
+          className="mb-16 max-w-4xl md:mb-20"
         >
-          <div className="flex items-center gap-4 mb-4">
+          <div className="mb-4 flex items-center gap-4">
             <span className="h-px w-12 bg-red-500/50" />
-            <p className="text-sm font-mono tracking-[0.4em] uppercase text-red-500/80 font-medium">
+            <p className="text-sm font-mono font-medium uppercase tracking-[0.4em] text-red-500/80">
               {t('label')}
             </p>
           </div>
-          <h2 id="services-heading" className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tighter bg-gradient-to-br from-white to-red-500/30 bg-clip-text text-transparent uppercase italic leading-none">
+          <h2
+            id="services-heading"
+            className="text-5xl font-black uppercase italic leading-none tracking-tighter text-white sm:text-6xl md:text-7xl lg:text-8xl"
+          >
             {t('heading')}
           </h2>
+          <p className="mt-6 max-w-2xl text-sm leading-relaxed text-white/45 sm:text-base">
+            Hire through the platform that fits your workflow: Fiverr for published packages, Upwork for custom
+            contracts, or a direct call for scope and quote clarity.
+          </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10 md:gap-x-12 md:gap-y-16">
-          {services.map((service, i) => (
-            <ServiceCard key={service.title} service={service} index={i} inView={inView} />
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {PROFILE.freelanceProfiles.map((profile, i) => (
+            <ServiceCard key={profile.id} profile={profile} index={i} inView={inView} />
           ))}
         </div>
       </div>

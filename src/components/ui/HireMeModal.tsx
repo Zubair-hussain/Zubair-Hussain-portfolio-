@@ -186,7 +186,7 @@ export default function HireMeModal({ isOpen, onClose, preselectedService }: Hir
                   <button 
                     type="button"
                     onClick={handleNext}
-                    className="w-full py-5 bg-red-600 hover:bg-red-500 rounded-2xl text-white font-mono text-[10px] uppercase tracking-[0.4em] font-bold shadow-[0_10px_30px_rgba(200,20,30,0.3)] transition-all"
+                    className="w-full py-5 bg-red-600 hover:bg-red-500 rounded-2xl text-white font-mono text-[10px] uppercase tracking-[0.4em] font-bold shadow-[0_10px_30px_rgba(var(--brand-rgb),0.3)] transition-all"
                   >
                     Proceed to Project
                   </button>
@@ -308,13 +308,13 @@ export default function HireMeModal({ isOpen, onClose, preselectedService }: Hir
                         <Turnstile 
                           siteKey="1x00000000000000000000AA" // Default Cloudflare test key (always passes). Replace with your actual Site Key!
                           onSuccess={(token) => setFormData({...formData, turnstileToken: token})}
-                          theme="dark"
+                          options={{ theme: 'dark' }}
                         />
                       </div>
                       <button 
                         type="submit"
                         disabled={loading || !formData.turnstileToken}
-                        className="w-full py-5 bg-red-600 hover:bg-red-500 rounded-2xl text-white font-mono text-[10px] uppercase tracking-[0.4em] font-bold shadow-[0_10px_30px_rgba(200,20,30,0.3)] transition-all flex items-center justify-center gap-3 disabled:opacity-50"
+                        className="w-full py-5 bg-red-600 hover:bg-red-500 rounded-2xl text-white font-mono text-[10px] uppercase tracking-[0.4em] font-bold shadow-[0_10px_30px_rgba(var(--brand-rgb),0.3)] transition-all flex items-center justify-center gap-3 disabled:opacity-50"
                       >
                         <Send size={14} />
                         Send Mission

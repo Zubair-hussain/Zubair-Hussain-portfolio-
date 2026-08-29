@@ -65,9 +65,9 @@ const SkillOrbit = memo(function SkillOrbit({
       <motion.div 
         animate={{ 
           boxShadow: [
-            "0 0 20px rgba(220,20,30,0.2)",
-            "0 0 50px rgba(220,20,30,0.5)",
-            "0 0 20px rgba(220,20,30,0.2)"
+            "0 0 20px rgba(var(--brand-rgb),0.2)",
+            "0 0 50px rgba(var(--brand-rgb),0.5)",
+            "0 0 20px rgba(var(--brand-rgb),0.2)"
           ]
         }}
         transition={{ 
@@ -108,7 +108,7 @@ const SkillOrbit = memo(function SkillOrbit({
                 className="group relative flex flex-col items-center pointer-events-auto"
               >
                 <div 
-                  className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-black border ${skill.highlight ? 'border-red-500/60 shadow-[0_0_15px_rgba(220,20,30,0.3)]' : 'border-white/10'} flex items-center justify-center hover:border-red-500 hover:bg-red-500/10 transition-all duration-300 transform hover:scale-125 cursor-default`}
+                  className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-black border ${skill.highlight ? 'border-red-500/60 shadow-[0_0_15px_rgba(var(--brand-rgb),0.3)]' : 'border-white/10'} flex items-center justify-center hover:border-red-500 hover:bg-red-500/10 transition-all duration-300 transform hover:scale-125 cursor-default`}
                 >
                   <skill.icon size={24} className={`${skill.highlight ? 'text-red-400' : 'text-white/50'} group-hover:text-red-400`} />
                 </div>
@@ -167,22 +167,59 @@ export default function Skills() {
           </h2>
           
           {/* Category Selector */}
-          <div className="flex flex-wrap justify-center gap-2 sm:gap-4 mt-8 sm:mt-12 mb-12 sm:mb-20">
-            {skillCategories.map((cat, i) => (
-              <button
-                key={cat.label}
-                onClick={() => setActiveTab(i)}
-                className={`relative px-4 py-2 sm:px-8 sm:py-3 font-mono text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.3em] transition-all duration-500 overflow-hidden ${activeTab === i ? 'text-white' : 'text-white/30 hover:text-white/60'}`}
-              >
-                <span className="relative z-10">{cat.label}</span>
-                {activeTab === i && (
-                  <motion.div 
-                    layoutId="activeTabGlow"
-                    className="absolute inset-0 bg-red-500/10 border border-red-500/30 rounded-sm"
+          <div
+            className="flex flex-wrap justify-center gap-2 sm:gap-4 mt-8 sm:mt-12 mb-12 sm:mb-20"
+            role="tablist"
+            aria-label="Skill categories"
+          >
+            {skillCategories.map((cat, i) => {
+              const Icon = cat.icon;
+              const active = activeTab === i;
+
+              return (
+                <button
+                  key={cat.label}
+                  onClick={() => setActiveTab(i)}
+                  role="tab"
+                  aria-selected={active}
+                  className="group relative flex min-h-[44px] items-center justify-center gap-2 overflow-hidden rounded-full px-4 py-2 font-mono text-[10px] uppercase leading-none tracking-[0.16em] transition-all duration-500 sm:min-h-[48px] sm:px-7 sm:text-xs sm:tracking-[0.22em]"
+                  style={{
+                    background: active
+                      ? 'linear-gradient(135deg, rgba(var(--brand-rgb),0.18) 0%, rgba(var(--brand-rgb-3),0.08) 100%)'
+                      : 'rgba(var(--hl-rgb),0.025)',
+                    border: active
+                      ? '1px solid rgba(var(--brand-rgb-2),0.35)'
+                      : '1px solid rgba(var(--hl-rgb),0.1)',
+                    boxShadow: active
+                      ? '0 0 0 1px rgba(var(--brand-rgb-2),0.1), 0 8px 32px rgba(var(--brand-rgb),0.18), inset 0 1px 0 rgba(var(--hl-rgb),0.08)'
+                      : '0 0 0 1px rgba(var(--hl-rgb),0.04), inset 0 1px 0 rgba(var(--hl-rgb),0.06)',
+                    color: active ? '#f5f4f0' : 'rgba(245,244,240,0.62)',
+                    backdropFilter: 'blur(16px)',
+                    WebkitBackdropFilter: 'blur(16px)',
+                  }}
+                >
+                  <span
+                    className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                    style={{
+                      background:
+                        'linear-gradient(135deg, rgba(var(--brand-rgb-2),0.14) 0%, rgba(var(--brand-rgb-3),0.08) 100%)',
+                    }}
                   />
-                )}
-              </button>
-            ))}
+                  {active && (
+                    <motion.span
+                      layoutId="activeTabGlow"
+                      className="absolute inset-0 rounded-full"
+                      style={{ boxShadow: '0 0 24px rgba(var(--brand-rgb),0.28)' }}
+                    />
+                  )}
+                  <Icon
+                    size={14}
+                    className={`relative z-10 transition-colors duration-300 ${active ? 'text-red-400' : 'text-red-500/70 group-hover:text-red-400'}`}
+                  />
+                  <span className="relative z-10 whitespace-nowrap">{cat.label}</span>
+                </button>
+              );
+            })}
           </div>
         </motion.div>
 
