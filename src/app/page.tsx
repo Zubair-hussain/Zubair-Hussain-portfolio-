@@ -4,13 +4,8 @@ import { getTranslations } from 'next-intl/server';
 import Navigation from '@/components/ui/Navigation';
 import Hero from '@/components/sections/Hero';
 import Footer from '@/components/ui/Footer';
-import ScrollProgress from '@/components/ui/ScrollProgress';
-import CustomCursor from '@/components/ui/CustomCursor';
-import AIChatbox from '@/components/ui/AIChatbox';
-import BackToTop from '@/components/ui/BackToTop';
-import CookieConsent from '@/components/ui/CookieConsent';
-import LenisProvider from '@/components/ui/LenisProvider';
 import ThemeProvider from '@/components/ui/ThemeProvider';
+import DeferredClientTools from '@/components/ui/DeferredClientTools';
 
 // Lazy loaded sections for performance
 const About = lazy(() => import('@/components/sections/About'));
@@ -34,60 +29,52 @@ export default async function HomePage() {
 
   return (
     <ThemeProvider>
-      <LenisProvider>
-        <CustomCursor />
-        <ScrollProgress />
-        <Navigation />
+      <Navigation />
 
-        <main id="main-content">
-          {/* Hero: above fold, priority loaded */}
-          <Hero />
+      <main id="main-content">
+        {/* Hero: above fold, priority loaded */}
+        <Hero />
 
-          {/* Lazy sections below fold */}
-          <Suspense fallback={<SectionFallback />}>
-            <About />
-          </Suspense>
+        {/* Lazy sections below fold */}
+        <Suspense fallback={<SectionFallback />}>
+          <About />
+        </Suspense>
 
-          <Suspense fallback={<SectionFallback />}>
-            <Skills />
-          </Suspense>
+        <Suspense fallback={<SectionFallback />}>
+          <Skills />
+        </Suspense>
 
-          <Suspense fallback={<SectionFallback />}>
-            <Achievements />
-          </Suspense>
+        <Suspense fallback={<SectionFallback />}>
+          <Achievements />
+        </Suspense>
 
-          <Suspense fallback={<SectionFallback />}>
-            <Projects />
-          </Suspense>
+        <Suspense fallback={<SectionFallback />}>
+          <Projects />
+        </Suspense>
 
-          <Suspense fallback={<SectionFallback />}>
-            <Testimonials />
-          </Suspense>
+        <Suspense fallback={<SectionFallback />}>
+          <Testimonials />
+        </Suspense>
 
-          <Suspense fallback={<SectionFallback />}>
-            <ClientLogos />
-          </Suspense>
+        <Suspense fallback={<SectionFallback />}>
+          <ClientLogos />
+        </Suspense>
 
-          <Suspense fallback={<SectionFallback />}>
-            <Services />
-          </Suspense>
+        <Suspense fallback={<SectionFallback />}>
+          <Services />
+        </Suspense>
 
-          <Suspense fallback={<SectionFallback />}>
-            <FAQ />
-          </Suspense>
+        <Suspense fallback={<SectionFallback />}>
+          <FAQ />
+        </Suspense>
 
-          <Suspense fallback={<SectionFallback />}>
-            <Articles />
-          </Suspense>
-        </main>
+        <Suspense fallback={<SectionFallback />}>
+          <Articles />
+        </Suspense>
+      </main>
 
-        <Footer />
-
-        {/* Floating elements */}
-        <AIChatbox />
-        <BackToTop />
-        <CookieConsent />
-      </LenisProvider>
+      <Footer />
+      <DeferredClientTools />
     </ThemeProvider>
   );
 }
