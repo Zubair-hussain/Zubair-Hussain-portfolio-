@@ -253,8 +253,8 @@ function ruleAnswer(message: string, repos: Repo[], posts: Post[]): string {
 
 async function tryWorkersAI(system: string, message: string): Promise<string | null> {
   try {
-    const { getRequestContext } = await import('@cloudflare/next-on-pages');
-    const env = getRequestContext().env as { AI?: { run: (m: string, o: any) => Promise<any> } };
+    const { getCloudflareContext } = await import('@opennextjs/cloudflare');
+    const env = (await getCloudflareContext({ async: true })).env as { AI?: { run: (m: string, o: any) => Promise<any> } };
     if (!env?.AI) return null;
 
     const out = await env.AI.run(AI_MODEL, {
