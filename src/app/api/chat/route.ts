@@ -19,7 +19,6 @@
 import { NextResponse } from 'next/server';
 import { PROFILE } from '@/lib/zubair-profile';
 
-export const runtime = 'edge';
 
 const CACHE_TTL = 60 * 60; // 1 hour
 const AI_MODEL = '@cf/meta/llama-3.1-8b-instruct';

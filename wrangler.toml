@@ -1,18 +1,13 @@
 name = "zubair--portfolio"
-compatibility_date = "2024-11-01"
-compatibility_flags = ["nodejs_compat"]
+main = ".open-next/worker.js"
+compatibility_date = "2024-12-30"
+compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
+
+# Static assets emitted by the OpenNext build.
+[assets]
+directory = ".open-next/assets"
+binding = "ASSETS"
 
 # Cloudflare Workers AI — powers "Zubair AI".
-# This binding makes the AI serverless and free-tier friendly. If it is ever
-# unavailable, the bot automatically falls back to a fast rule-based engine
-# (see src/app/api/chat/route.ts), so the chat never goes down.
 [ai]
 binding = "AI"
-
-# Build/deploy for this Pages app are configured via the Cloudflare
-# dashboard (or the package.json "pages:deploy" script):
-#   Build command:  npm run pages:build
-#   Deploy command: npx wrangler pages deploy .vercel/output/static \
-#                     --project-name=zubair--portfolio --branch=_prod
-# next-on-pages emits .vercel/output/static, which is deployed with
-# `wrangler pages deploy` (NOT `wrangler deploy`, which is for Workers).

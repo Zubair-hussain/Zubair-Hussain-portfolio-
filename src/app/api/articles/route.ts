@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { PROFILE } from '@/lib/zubair-profile';
 
-export const runtime = 'edge';
 
 const MAX_POSTS = 12;
 

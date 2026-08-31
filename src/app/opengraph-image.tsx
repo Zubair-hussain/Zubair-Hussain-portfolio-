@@ -1,7 +1,6 @@
 import { ImageResponse } from 'next/og';
 import { PROFILE } from '@/lib/zubair-profile';
 
-export const runtime = 'edge';
 export const alt = 'Zubair Hussain — Full Stack Developer';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';

@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import { buildScheduleRedirectUrl, createScheduleJwt } from '@/lib/schedule-security';
 import { PROFILE } from '@/lib/zubair-profile';
 
-export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 
 function getRequiredSecret() {

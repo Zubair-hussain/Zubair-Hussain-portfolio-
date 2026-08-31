@@ -5,7 +5,6 @@
  */
 import { NextResponse } from 'next/server';
 
-export const runtime = 'edge';
 
 const AI_MODEL = '@cf/meta/llama-3.1-8b-instruct';
 

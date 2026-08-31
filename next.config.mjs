@@ -38,7 +38,6 @@ export const securityHeaders = [
 ];
 
 const nextConfig = {
-  output: 'standalone',
   experimental: {
     optimizePackageImports: [
       'lucide-react',
@@ -96,3 +95,7 @@ const nextConfig = {
 };
 
 export default withNextIntl(nextConfig);
+
+// Enables the Cloudflare bindings (env.AI, etc.) during `next dev`.
+import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare';
+initOpenNextCloudflareForDev();

@@ -1,4 +1,3 @@
-export const runtime = 'edge';
 import { Suspense, lazy } from 'react';
 import { getTranslations } from 'next-intl/server';
 import Navigation from '@/components/ui/Navigation';
