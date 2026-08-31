@@ -1,13 +1,15 @@
 import nextVitals from 'eslint-config-next/core-web-vitals';
 import nextTypescript from 'eslint-config-next/typescript';
+import reactHooks from 'eslint-plugin-react-hooks';
 
 const eslintConfig = [
   {
-    ignores: ['.next/**', 'out/**', 'dist/**', 'next-env.d.ts'],
+    ignores: ['.next/**', 'out/**', 'dist/**', '.vercel/**', '.open-next/**', '.wrangler/**', 'next-env.d.ts'],
   },
   ...nextVitals,
   ...nextTypescript,
   {
+    plugins: { 'react-hooks': reactHooks },
     rules: {
       '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
       '@typescript-eslint/no-explicit-any': 'warn',

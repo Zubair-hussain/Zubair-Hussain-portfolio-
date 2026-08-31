@@ -23,9 +23,9 @@ export async function POST(request: Request) {
   const location = String(body?.location || '').slice(0, 120);
 
   try {
-    const { getRequestContext } = await import('@cloudflare/next-on-pages');
+    const { getCloudflareContext } = await import('@opennextjs/cloudflare');
     type AIBinding = { run: (model: string, options: Record<string, unknown>) => Promise<{ response?: string }> };
-    const env = getRequestContext().env as { AI?: AIBinding };
+    const env = (await getCloudflareContext({ async: true })).env as { AI?: AIBinding };
     if (env?.AI) {
       const out = await env.AI.run(AI_MODEL, {
         messages: [
