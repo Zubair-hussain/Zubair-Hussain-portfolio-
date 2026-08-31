@@ -1,0 +1,47 @@
+name: Release Deploy
+
+# When a version tag (v0.1, v1.2, …) is pushed — typically created automatically
+# by the "Release Tag" workflow — build the app and deploy it to Cloudflare Workers
+# via OpenNext. This is the workflow that actually ships a release to production.
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+  # Allow deploying a chosen tag by hand from the Actions tab.
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Tag or ref to deploy (e.g. v0.3)'
+        required: true
+
+concurrency:
+  group: release-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.ref || github.ref }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build and deploy to Cloudflare Workers
+        run: npm run deploy
+        env:
+          NEXT_TELEMETRY_DISABLED: '1'
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
