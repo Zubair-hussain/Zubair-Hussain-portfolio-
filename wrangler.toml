@@ -9,6 +9,10 @@ compatibility_flags = ["nodejs_compat"]
 [ai]
 binding = "AI"
 
-[pages_build_config]
-build_command = "npx @cloudflare/next-on-pages@1"
-destination_dir = ".vercel/output/static"
+# Build/deploy for this Pages app are configured via the Cloudflare
+# dashboard (or the package.json "pages:deploy" script):
+#   Build command:  npm run pages:build
+#   Deploy command: npx wrangler pages deploy .vercel/output/static \
+#                     --project-name=zubair--portfolio --branch=_prod
+# next-on-pages emits .vercel/output/static, which is deployed with
+# `wrangler pages deploy` (NOT `wrangler deploy`, which is for Workers).
