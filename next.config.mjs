@@ -61,6 +61,18 @@ const nextConfig = {
   compress: true,
   poweredByHeader: false,
   reactStrictMode: true,
+  redirects: async () => [
+    {
+      source: '/blog/gta-6-map-leak-explained',
+      destination: '/blog/gta-6-map-leak-vice-city-leonida-explained',
+      permanent: true,
+    },
+    {
+      source: '/blog/cursor-origin-vs-github',
+      destination: '/blog/cursor-origin-vs-github-git-hosting-2026',
+      permanent: true,
+    },
+  ],
   headers: async () => [
     {
       source: '/(.*)',
