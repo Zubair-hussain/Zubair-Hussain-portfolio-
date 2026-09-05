@@ -11,11 +11,11 @@ This is the personal portfolio of Zubair (Syed Zubair Hussain Shah). It includes
 - Media: video editing, motion / short-form content
 
 ## Profiles & Links
-- GitHub: https://github.com/Zubair-hussain
+- GitHub: https://github.com/Zubair-Hussain
 - LinkedIn: https://www.linkedin.com/in/syed-zubair-hussain-shah-491294376
 - Blog: https://zubair-xovato.blogspot.com/
 - Fiverr: https://www.fiverr.com/zubair_8223/develop-a-fast-responsive-nextjs-website-for-your-business
-- Upwork: https://www.upwork.com/freelancers/zubairdeveloper
+- Upwork: https://www.upwork.com/services/product/development-it-syed-zubair-2030587661487129538?ref=project_share
 - Figma: https://www.figma.com/make/bHNbUpphvzQi6x8qaG12gV/Zubair-Portfolio-design
 - Intro video: https://youtu.be/W3Zmlo3D49Y
 
