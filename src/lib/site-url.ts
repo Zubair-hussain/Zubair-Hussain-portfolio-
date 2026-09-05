@@ -24,7 +24,11 @@ export function getSiteUrl(): string {
   if (!/^https?:\/\//i.test(candidate)) candidate = `https://${candidate}`;
 
   try {
-    return new URL(candidate).origin;
+    const parsed = new URL(candidate);
+    if (parsed.hostname !== 'localhost' && parsed.hostname !== '127.0.0.1') {
+      parsed.protocol = 'https:';
+    }
+    return parsed.origin;
   } catch {
     return 'http://localhost:3000';
   }
