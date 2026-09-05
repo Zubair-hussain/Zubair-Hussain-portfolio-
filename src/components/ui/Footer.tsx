@@ -2,10 +2,11 @@
 
 import { useTranslations } from 'next-intl';
 import { Github, Linkedin, Twitter } from 'lucide-react';
+import { PROFILE } from '@/lib/zubair-profile';
 
 const socials = [
-  { icon: Github,   href: 'https://github.com/zubairdeveloper',   label: 'GitHub' },
-  { icon: Linkedin, href: 'https://linkedin.com/in/zubairdeveloper', label: 'LinkedIn' },
+  { icon: Github,   href: PROFILE.socials.github,   label: 'GitHub' },
+  { icon: Linkedin, href: PROFILE.socials.linkedin, label: 'LinkedIn' },
   { icon: Twitter,  href: 'https://twitter.com/zubairdeveloper',   label: 'Twitter' },
 ];
 
