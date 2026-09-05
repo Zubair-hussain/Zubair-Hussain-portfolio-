@@ -136,6 +136,10 @@ Failures open or update a GitHub issue so repository watchers are notified. Ligh
 
 See **[Automated security and production audits](./docs/automated-security-audits.md)** for setup, scheduling, checks, and notification behavior.
 
+For Cloudflare Workers Builds, use `npm run cf-build` as the build command and
+`npm run cf-deploy` as the deploy command. A plain `next build` does not create
+the `.open-next/worker.js` Worker entry point required by Wrangler.
+
 ---
 
 ## 🧑‍💻 Contributing & Commits
