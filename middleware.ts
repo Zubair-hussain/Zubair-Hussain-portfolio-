@@ -3,6 +3,13 @@ import { NextRequest, NextResponse } from 'next/server';
 const validLocales = new Set(['en', 'ur', 'es', 'hi', 'ru', 'de']);
 
 export function middleware(request: NextRequest) {
+  const forwardedProto = request.headers.get('x-forwarded-proto');
+  if (forwardedProto === 'http') {
+    const secureUrl = request.nextUrl.clone();
+    secureUrl.protocol = 'https:';
+    return NextResponse.redirect(secureUrl, 308);
+  }
+
   const lang = request.nextUrl.searchParams.get('lang');
   const cookieLocale = request.cookies.get('locale')?.value;
   const locale = lang && validLocales.has(lang)
