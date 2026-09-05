@@ -18,6 +18,8 @@
 
 import { NextResponse } from 'next/server';
 import { PROFILE } from '@/lib/zubair-profile';
+import { getSiteUrl } from '@/lib/site-url';
+import { getAllPostSummaries } from '@/lib/blog';
 
 
 const CACHE_TTL = 60 * 60; // 1 hour
@@ -33,6 +35,18 @@ interface Repo {
   topics: string[];
 }
 
+interface GitHubRepoResponse {
+  name: string;
+  description?: string | null;
+  html_url: string;
+  language?: string | null;
+  stargazers_count?: number;
+  updated_at?: string;
+  topics?: string[];
+  fork?: boolean;
+  archived?: boolean;
+}
+
 interface Post {
   title: string;
   url: string;
@@ -41,11 +55,6 @@ interface Post {
 }
 
 /* --------------------------------- utils --------------------------------- */
-
-const stripHtml = (s: string) =>
-  (s || '').replace(/<[^>]*>/g, ' ').replace(/&[^;]+;/g, ' ').replace(/\s+/g, ' ').trim();
-
-const clamp = (s: string, n: number) => (s.length > n ? s.slice(0, n - 1).trimEnd() + '…' : s);
 
 /** Fetch through the Cloudflare edge cache so repeated messages stay cheap. */
 async function cachedJson<T>(url: string, init?: RequestInit): Promise<T | null> {
@@ -83,7 +92,7 @@ async function cachedJson<T>(url: string, init?: RequestInit): Promise<T | null>
 
 async function getRepos(): Promise<Repo[]> {
   const url = `https://api.github.com/users/${PROFILE.sources.githubUsername}/repos?per_page=100&sort=updated`;
-  const raw = await cachedJson<any[]>(url, {
+  const raw = await cachedJson<GitHubRepoResponse[]>(url, {
     headers: { Accept: 'application/vnd.github+json', 'User-Agent': 'zubair-ai' },
   });
   if (!raw) return [];
@@ -94,26 +103,27 @@ async function getRepos(): Promise<Repo[]> {
       name: r.name,
       description: r.description || '',
       url: r.html_url,
-      language: r.language,
+      language: r.language || null,
       stars: r.stargazers_count || 0,
-      updated: r.updated_at,
+      updated: r.updated_at || '',
       topics: Array.isArray(r.topics) ? r.topics : [],
     }));
 }
 
+// Keep the bot aware of the whole blog, but only feed a bounded, most-recent
+// slice into the prompt so a large blog can't blow the token budget.
+const BOT_POST_LIMIT = 20;
+
 async function getPosts(): Promise<Post[]> {
-  const url = `${PROFILE.sources.blogFeed}&max-results=12`;
-  const data = await cachedJson<any>(url);
-  const entries: any[] = data?.feed?.entry || [];
-  return entries.map((e) => {
-    const link = (e.link || []).find((l: any) => l.rel === 'alternate');
-    return {
-      title: stripHtml(e.title?.$t || 'Untitled'),
-      url: link?.href || PROFILE.socials.blog,
-      published: e.published?.$t || '',
-      summary: clamp(stripHtml(e.content?.$t || e.summary?.$t || ''), 180),
-    };
-  });
+  const site = getSiteUrl();
+  const posts = await getAllPostSummaries();
+  // Point the bot at the on-site article pages (they render here, no redirect).
+  return posts.slice(0, BOT_POST_LIMIT).map((p) => ({
+    title: p.title,
+    url: `${site}${p.url}`,
+    published: p.isoDate,
+    summary: p.excerpt,
+  }));
 }
 
 /* --------------------------- prompt construction ------------------------- */
@@ -253,8 +263,11 @@ function ruleAnswer(message: string, repos: Repo[], posts: Post[]): string {
 
 async function tryWorkersAI(system: string, message: string): Promise<string | null> {
   try {
-    const { getRequestContext } = await import('@cloudflare/next-on-pages');
-    const env = getRequestContext().env as { AI?: { run: (m: string, o: any) => Promise<any> } };
+    const { getCloudflareContext } = await import('@opennextjs/cloudflare');
+    type AIResponse = { response?: string };
+    type AIBinding = { run: (model: string, options: Record<string, unknown>) => Promise<AIResponse> };
+    const context = await getCloudflareContext({ async: true });
+    const env = context.env as unknown as { AI?: AIBinding };
     if (!env?.AI) return null;
 
     const out = await env.AI.run(AI_MODEL, {
