@@ -50,31 +50,29 @@
 }
 
 html[data-theme="light"] {
-  /* Editorial light theme — warm paper, ink type, indigo-violet accent.
-     Indigo reads modern/technical, pairs with warm neutrals, and is far
-     more premium on white than a saturated red. */
-  --background: 40 26% 97.5%;      /* Clean warm paper */
+  /* Editorial light theme — warm paper, ink type, restrained crimson. */
+  --background: 40 35% 97%;        /* Warm editorial paper */
   --foreground: 230 24% 12%;       /* Ink, faint indigo undertone */
-  --card: 0 0% 100%;               /* Pure white cards */
+  --card: 42 45% 99%;              /* Soft white rather than clinical white */
   --card-foreground: 230 24% 12%;
-  --primary: 247 64% 56%;          /* Indigo-violet — AA on white for text/buttons */
+  --primary: 351 70% 40%;          /* Deep crimson with strong white contrast */
   --primary-foreground: 0 0% 100%;
-  --secondary: 40 20% 93%;
+  --secondary: 39 25% 92%;
   --secondary-foreground: 230 18% 22%;
-  --muted: 40 16% 92%;
+  --muted: 39 22% 93%;
   --muted-foreground: 230 9% 42%;
-  --accent: 32 92% 52%;            /* Warm amber — sparingly, complements indigo */
+  --accent: 33 76% 48%;            /* Restrained brass highlight */
   --accent-foreground: 0 0% 100%;
-  --border: 233 16% 88%;           /* Hairline cool-neutral borders */
-  --ring: 247 64% 56%;
+  --border: 35 18% 84%;            /* Warm hairline borders */
+  --ring: 351 70% 40%;
 
-  /* Recolor every inline brand accent to indigo in light mode. */
-  --brand-rgb: 99, 84, 214;        /* main indigo */
-  --brand-rgb-2: 128, 116, 232;    /* bright indigo */
-  --brand-rgb-3: 82, 70, 196;      /* deep indigo */
-  --brand-rgb-4: 72, 60, 182;      /* deepest indigo */
-  --brand-rgb-5: 124, 112, 228;    /* soft indigo glow */
-  --brand-solid: #635cd6;          /* solid indigo hex */
+  /* Brand channels are slightly deeper in light mode for accessible contrast. */
+  --brand-rgb: 174, 29, 55;        /* crimson */
+  --brand-rgb-2: 202, 45, 70;      /* bright crimson */
+  --brand-rgb-3: 137, 20, 42;      /* deep crimson */
+  --brand-rgb-4: 112, 16, 34;      /* deepest crimson */
+  --brand-rgb-5: 202, 45, 70;      /* restrained glow */
+  --brand-solid: #ae1d37;
   --hl-rgb: 20, 22, 34;            /* on light, bevels become a subtle dark edge */
 
   /* On light, the veil nearly vanishes so the background image shows through;
@@ -127,6 +125,14 @@ body {
   transition: background-color 0.35s ease, color 0.35s ease;
 }
 
+html[data-theme="light"] body {
+  background-color: hsl(var(--background));
+  background-image:
+    radial-gradient(circle at 8% 2%, hsl(var(--primary) / 0.09), transparent 30rem),
+    radial-gradient(circle at 92% 18%, hsl(var(--accent) / 0.08), transparent 26rem);
+  background-attachment: fixed;
+}
+
 /* ══════════════════════════════════════════════════════════════════════════
    LIGHT THEME COMPAT LAYER
    The app is authored dark-first (hardcoded bg-black / text-white / bg-white/x
@@ -149,9 +155,16 @@ html[data-theme="light"] .bg-\[\#1a1a1a\] {
 
 /* Sections that were pure page-black should stay on the ivory page color. */
 html[data-theme="light"] section.bg-black,
-html[data-theme="light"] main.bg-black,
-html[data-theme="light"] div.bg-black {
+html[data-theme="light"] main.bg-black {
   background-color: hsl(var(--background)) !important;
+}
+
+html[data-theme="light"] main#main-content > section {
+  border-top-color: hsl(var(--border) / 0.68) !important;
+}
+
+html[data-theme="light"] main#main-content > section:nth-of-type(even) {
+  background-color: hsl(38 30% 95.5%) !important;
 }
 
 /* --- Translucent white panels (bg-white/x) → subtle ink panels ----------- */
@@ -167,9 +180,9 @@ html[data-theme="light"] .hover\:bg-white\/5:hover  { background-color: hsl(var(
 html[data-theme="light"] .hover\:bg-white\/10:hover { background-color: hsl(var(--foreground) / 0.09) !important; }
 
 /* --- Dark scrims / frosted bars (bg-black/x) ----------------------------- */
-html[data-theme="light"] .bg-black\/80 { background-color: hsl(var(--card) / 0.85) !important; }
-html[data-theme="light"] .bg-black\/40 { background-color: hsl(var(--foreground) / 0.32) !important; }
-html[data-theme="light"] .bg-black\/20 { background-color: hsl(var(--foreground) / 0.14) !important; }
+html[data-theme="light"] .bg-black\/80 { background-color: hsl(var(--card) / 0.94) !important; }
+html[data-theme="light"] .bg-black\/40 { background-color: hsl(var(--card) / 0.82) !important; }
+html[data-theme="light"] .bg-black\/20 { background-color: hsl(var(--card) / 0.68) !important; }
 
 /* --- Text -------------------------------------------------------------- */
 html[data-theme="light"] .text-white,
@@ -272,21 +285,53 @@ html[data-theme="light"] .glow-text { text-shadow: none !important; }
 
 /* Glass surfaces on light: crisp frosted white. */
 html[data-theme="light"] .glass {
-  background-color: hsl(var(--card) / 0.72) !important;
+  background-color: hsl(var(--card) / 0.82) !important;
   border-color: hsl(var(--border)) !important;
+  box-shadow: 0 22px 55px -32px hsl(var(--foreground) / 0.28),
+              inset 0 1px 0 hsl(0 0% 100% / 0.75) !important;
+}
+
+/* Preserve intentional dark hardware and game surfaces in light mode. */
+html[data-theme="light"] [data-preserve-dark] {
+  color: #f5f4f0 !important;
+}
+
+html[data-theme="light"] [data-preserve-dark][style*="#0a0a0a"],
+html[data-theme="light"] [data-preserve-dark][style*="#0d0d0d"] {
+  background-color: #0a0a0d !important;
+}
+
+html[data-theme="light"] [data-theme-surface="dark"],
+html[data-theme="light"] [data-theme-surface="dark"] .bg-black,
+html[data-theme="light"] [data-theme-surface="dark"] .bg-\[\#050505\] {
+  background-color: #030303 !important;
+  color: #f5f4f0 !important;
+}
+
+html[data-theme="light"] [data-theme-surface="dark"] .text-white { color: #f5f4f0 !important; }
+html[data-theme="light"] [data-theme-surface="dark"] .text-white\/90 { color: rgb(245 244 240 / 0.9) !important; }
+html[data-theme="light"] [data-theme-surface="dark"] .text-white\/70 { color: rgb(245 244 240 / 0.7) !important; }
+html[data-theme="light"] [data-theme-surface="dark"] .text-white\/50 { color: rgb(245 244 240 / 0.5) !important; }
+html[data-theme="light"] [data-theme-surface="dark"] .text-white\/45 { color: rgb(245 244 240 / 0.45) !important; }
+html[data-theme="light"] [data-theme-surface="dark"] .text-white\/35 { color: rgb(245 244 240 / 0.35) !important; }
+html[data-theme="light"] [data-theme-surface="dark"] .text-white\/25 { color: rgb(245 244 240 / 0.25) !important; }
+
+html[data-theme="light"] [data-theme-surface="dark"] .bg-black\/80,
+html[data-theme="light"] [data-theme-surface="dark"] .bg-black\/40,
+html[data-theme="light"] [data-theme-surface="dark"] .bg-black\/20 {
+  background-color: rgb(0 0 0 / 0.78) !important;
 }
 
 /* Decorative noise is invisible/dirty on light — hide it. */
 html[data-theme="light"] .noise-overlay::after { opacity: 0 !important; }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   ACCENT RECOLOR — red → indigo, LIGHT THEME ONLY
+   ACCENT NORMALIZATION — LIGHT THEME ONLY
    The app hardcodes Tailwind red utilities everywhere. In light mode we
-   repaint them with the indigo brand token so the palette is cohesive and
-   no longer "depends on red". Dark theme keeps its red.
+   repaint them with one restrained crimson token so the palette stays cohesive.
    ══════════════════════════════════════════════════════════════════════════ */
 
-/* Text — all red text becomes indigo (red-50 is light-on-accent, handled after). */
+/* Text — normalize the various red utilities to one brand shade. */
 html[data-theme="light"] [class*="text-red-"] { color: hsl(var(--primary)) !important; }
 html[data-theme="light"] .text-red-50 { color: hsl(var(--primary-foreground)) !important; }
 
@@ -294,7 +339,16 @@ html[data-theme="light"] .text-red-50 { color: hsl(var(--primary-foreground)) !i
 html[data-theme="light"] .bg-red-600,
 html[data-theme="light"] .bg-red-500,
 html[data-theme="light"] .hover\:bg-red-600:hover { background-color: hsl(var(--primary)) !important; }
-html[data-theme="light"] .hover\:bg-red-500:hover { background-color: hsl(247 64% 50%) !important; }
+html[data-theme="light"] .hover\:bg-red-500:hover { background-color: hsl(351 72% 34%) !important; }
+
+/* Solid brand buttons keep high-contrast labels after the global text
+   translation used by the dark-first components. */
+html[data-theme="light"] .bg-red-600.text-white,
+html[data-theme="light"] .bg-red-500.text-white,
+html[data-theme="light"] button.bg-red-600,
+html[data-theme="light"] a.bg-red-600 {
+  color: hsl(var(--primary-foreground)) !important;
+}
 
 /* Translucent accent tints — keep the intended alpha. */
 html[data-theme="light"] .bg-red-600\/5,
@@ -310,7 +364,7 @@ html[data-theme="light"] .bg-red-500\/30 { background-color: hsl(var(--primary) 
 html[data-theme="light"] .bg-red-500\/50,
 html[data-theme="light"] .bg-red-600\/50 { background-color: hsl(var(--primary) / 0.5) !important; }
 
-/* Accent borders — single tasteful indigo hairline for every red border. */
+/* Accent borders — one tasteful crimson hairline for every red border. */
 html[data-theme="light"] [class*="border-red-"] { border-color: hsl(var(--primary) / 0.35) !important; }
 html[data-theme="light"] .hover\:border-red-500\/40:hover,
 html[data-theme="light"] .hover\:border-red-500\/50:hover,
@@ -625,3 +679,64 @@ h3 { font-size: clamp(1.5rem, 3vw, 2.5rem); }
   }
   .marquee-track { animation: none; }
 }
+
+/* ─── BLOG READER (native Blogger content) ───────────────────────────────────── */
+.blog-content {
+  color: hsl(var(--foreground) / 0.9);
+  font-size: 1.05rem;
+  line-height: 1.85;
+}
+.blog-content > *:first-child { margin-top: 0; }
+.blog-content p { margin: 0 0 1.35rem; }
+.blog-content h1,
+.blog-content h2,
+.blog-content h3,
+.blog-content h4 {
+  font-family: var(--font-display), serif;
+  font-weight: 400;
+  line-height: 1.25;
+  margin: 2.4rem 0 1rem;
+  color: hsl(var(--foreground));
+}
+.blog-content h2 { font-size: 1.75rem; }
+.blog-content h3 { font-size: 1.4rem; }
+.blog-content a {
+  color: hsl(var(--primary));
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.blog-content img,
+.blog-content iframe {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+  margin: 1.75rem auto;
+  display: block;
+}
+.blog-content ul,
+.blog-content ol { margin: 0 0 1.35rem 1.4rem; }
+.blog-content li { margin: 0.4rem 0; }
+.blog-content blockquote {
+  margin: 1.75rem 0;
+  padding: 0.5rem 1.25rem;
+  border-left: 3px solid hsl(var(--primary) / 0.6);
+  color: hsl(var(--muted-foreground));
+  font-style: italic;
+}
+.blog-content pre {
+  background: hsl(var(--muted) / 0.4);
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.9rem;
+  margin: 0 0 1.5rem;
+}
+.blog-content code {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.9em;
+}
+.blog-content table { width: 100%; border-collapse: collapse; margin: 0 0 1.5rem; }
+.blog-content th,
+.blog-content td { border: 1px solid hsl(var(--border)); padding: 0.5rem 0.75rem; text-align: left; }
