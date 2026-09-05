@@ -5,6 +5,7 @@ import Hero from '@/components/sections/Hero';
 import Footer from '@/components/ui/Footer';
 import ThemeProvider from '@/components/ui/ThemeProvider';
 import DeferredClientTools from '@/components/ui/DeferredClientTools';
+import { getAllPostSummaries } from '@/lib/blog';
 
 // Lazy loaded sections for performance
 const About = lazy(() => import('@/components/sections/About'));
@@ -25,6 +26,16 @@ const SectionFallback = () => (
 
 export default async function HomePage() {
   await getTranslations('nav');
+  const articlePosts = (await getAllPostSummaries()).map((post) => ({
+    id: post.slug,
+    title: post.title,
+    excerpt: post.excerpt,
+    tags: post.tags,
+    readTime: post.readTime,
+    date: post.date,
+    url: post.url,
+    trending: post.trending,
+  }));
 
   return (
     <ThemeProvider>
@@ -68,7 +79,7 @@ export default async function HomePage() {
         </Suspense>
 
         <Suspense fallback={<SectionFallback />}>
-          <Articles />
+          <Articles initialArticles={articlePosts} />
         </Suspense>
       </main>
 

@@ -3,6 +3,31 @@ import { describe, expect, it } from 'vitest';
 import { PROFILE } from '../src/lib/zubair-profile';
 
 describe('profile links and intro video metadata', () => {
+  it('uses the canonical GitHub account for profile links and live project fetching', () => {
+    expect(PROFILE.socials.github).toBe('https://github.com/Zubair-Hussain');
+    expect(PROFILE.sources.githubUsername).toBe('Zubair-Hussain');
+    expect(PROFILE.links).toContainEqual({
+      label: 'GitHub',
+      href: 'https://github.com/Zubair-Hussain',
+      tag: 'code',
+    });
+  });
+
+  it('uses the public Upwork service URL for hiring links', () => {
+    const upworkServiceUrl =
+      'https://www.upwork.com/services/product/development-it-syed-zubair-2030587661487129538?ref=project_share';
+
+    expect(PROFILE.socials.upwork).toBe(upworkServiceUrl);
+    expect(PROFILE.freelanceProfiles).toContainEqual(
+      expect.objectContaining({ id: 'upwork', href: upworkServiceUrl })
+    );
+    expect(PROFILE.links).toContainEqual({
+      label: 'Upwork Service',
+      href: upworkServiceUrl,
+      tag: 'freelance',
+    });
+  });
+
   it('uses the secure schedule route for public booking actions', () => {
     expect(PROFILE.actions.schedule.publicPath).toBe('/api/schedule');
     expect(PROFILE.actions.schedule.privateUrl).toBe('https://calendly.com/detroonshah/30min');

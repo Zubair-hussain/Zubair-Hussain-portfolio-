@@ -5,13 +5,13 @@ import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import { Star, Send, Sparkles, ShieldCheck, X, Eye, EyeOff, Lock } from 'lucide-react';
 import dynamic from 'next/dynamic';
-import { db } from '@/lib/firebase';
-import { collection, addDoc, query, where, onSnapshot, orderBy, Timestamp } from 'firebase/firestore';
+// Firebase is loaded lazily (see src/lib/firebase-lazy.ts) so its ~590KB bundle
+// stays out of the initial page load; only the types are imported statically.
+import type { Timestamp } from 'firebase/firestore';
+import type { User } from 'firebase/auth';
+import { loadFirebase } from '@/lib/firebase-lazy';
 import { validateEmail, hasProfanity } from '@/lib/ai';
 import { notifyAdmin } from '@/lib/email';
-import { auth, googleProvider } from '@/lib/firebase';
-import { onAuthStateChanged, signInWithEmailAndPassword, signOut, User } from 'firebase/auth';
-import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
 
 // Consolidated Dynamic 3D Scene to prevent HTML/R3F namespace conflicts
 const GlobeScene = dynamic(() => import('@/components/3d/Globe').then(mod => {
@@ -53,13 +53,14 @@ function AdminLoginModal({ onClose }: { onClose: () => void }) {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    if (!auth) { setError('Auth is not configured.'); return; }
     setLoading(true);
     try {
-      const result = await signInWithEmailAndPassword(auth, email, password);
+      const { auth, authMod } = await loadFirebase();
+      if (!auth) { setError('Auth is not configured.'); return; }
+      const result = await authMod.signInWithEmailAndPassword(auth, email, password);
       // Only allow if email matches the admin env var
       if (result.user.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
-        await signOut(auth);
+        await authMod.signOut(auth);
         setError('Access denied.');
         return;
       }
@@ -202,30 +203,49 @@ export default function Testimonials() {
   // Ctrl + Shift + A → open admin login (only if not already logged in)
   useAdminShortcut(() => { if (!isAdmin) setShowAdminModal(true); });
 
-  // Auth listener
+  // Auth listener — only once the section is in view, so Firebase isn't fetched
+  // on initial page load.
   useEffect(() => {
-    if (!auth) return;
-    return onAuthStateChanged(auth, (u) => setUser(u));
-  }, []);
+    if (!inView) return;
+    let active = true;
+    let unsub: (() => void) | undefined;
+    loadFirebase().then(({ auth, authMod }) => {
+      if (!active || !auth) return;
+      unsub = authMod.onAuthStateChanged(auth, (u) => setUser(u));
+    });
+    return () => {
+      active = false;
+      unsub?.();
+    };
+  }, [inView]);
 
-  // Fetch approved reviews (and pending if admin)
+  // Fetch approved reviews (and pending if admin) — also gated on `inView`.
   useEffect(() => {
-    if (!db) return;
-    const q = isAdmin
-      ? query(collection(db, 'testimonials'), orderBy('createdAt', 'desc'))
-      : query(collection(db, 'testimonials'), where('approved', '==', true), orderBy('createdAt', 'desc'));
-    
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const docs = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as Review[];
-      
-      if (docs.length > 0) setReviews(docs);
+    if (!inView) return;
+    let active = true;
+    let unsub: (() => void) | undefined;
+    loadFirebase().then(({ db, firestore }) => {
+      if (!active || !db) return;
+      const { collection, query, where, onSnapshot, orderBy } = firestore;
+      const q = isAdmin
+        ? query(collection(db, 'testimonials'), orderBy('createdAt', 'desc'))
+        : query(collection(db, 'testimonials'), where('approved', '==', true), orderBy('createdAt', 'desc'));
+
+      unsub = onSnapshot(q, (snapshot) => {
+        const docs = snapshot.docs.map((docSnap) => ({
+          id: docSnap.id,
+          ...docSnap.data(),
+        })) as Review[];
+
+        if (docs.length > 0) setReviews(docs);
+      });
     });
 
-    return () => unsubscribe();
-  }, [isAdmin]);
+    return () => {
+      active = false;
+      unsub?.();
+    };
+  }, [inView, isAdmin]);
 
   useEffect(() => {
     if (current >= reviews.length && reviews.length > 0) {
@@ -248,7 +268,6 @@ export default function Testimonials() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!db) return;
     const newErrors: Record<string, string> = {};
 
     if (!formData.name) newErrors.name = 'Name is required';
@@ -264,6 +283,9 @@ export default function Testimonials() {
 
     setLoading(true);
     try {
+      const { db, firestore } = await loadFirebase();
+      if (!db) { setErrors({ submit: 'Feedback service is unavailable.' }); return; }
+
       const docData = {
         name: formData.name,
         role: formData.role || 'Client',
@@ -273,10 +295,10 @@ export default function Testimonials() {
         avatar: formData.name.substring(0, 2).toUpperCase(),
         country: '🌐',
         approved: false,
-        createdAt: Timestamp.now()
+        createdAt: firestore.Timestamp.now()
       };
-      
-      await addDoc(collection(db, 'testimonials'), docData);
+
+      await firestore.addDoc(firestore.collection(db, 'testimonials'), docData);
       await notifyAdmin('comment', docData);
       
       setSubmitted(true);
@@ -299,9 +321,10 @@ export default function Testimonials() {
         )}
       </AnimatePresence>
 
-      {/* 3D GLOBE BACKGROUND */}
+      {/* 3D GLOBE BACKGROUND — mounted only when the section is reached so the
+          heavy three.js bundle stays out of the initial page load. */}
       <div className="absolute inset-0 z-0 opacity-40 md:opacity-60 xl:opacity-80">
-        <GlobeScene />
+        {inView && <GlobeScene />}
       </div>
 
       <div className="container-custom relative z-10">
@@ -380,8 +403,9 @@ export default function Testimonials() {
                                {!reviews[current]?.approved && (
                                  <button
                                    onClick={async () => {
+                                     const { db, firestore } = await loadFirebase();
                                      if (!db) return;
-                                     await updateDoc(doc(db, 'testimonials', reviews[current].id), { approved: true });
+                                     await firestore.updateDoc(firestore.doc(db, 'testimonials', reviews[current].id), { approved: true });
                                    }}
                                    className="px-4 py-2 bg-green-600/20 border border-green-600/40 rounded-xl text-green-500 text-[10px] font-mono uppercase tracking-widest hover:bg-green-600/30 transition-all"
                                  >
@@ -390,8 +414,9 @@ export default function Testimonials() {
                                )}
                                <button
                                  onClick={async () => {
+                                   const { db, firestore } = await loadFirebase();
                                    if (!db) return;
-                                   await deleteDoc(doc(db, 'testimonials', reviews[current].id));
+                                   await firestore.deleteDoc(firestore.doc(db, 'testimonials', reviews[current].id));
                                  }}
                                  className="p-3 bg-red-600/10 hover:bg-red-600/20 rounded-xl text-red-500 transition-all border border-transparent hover:border-red-500/30"
                                >
@@ -425,8 +450,11 @@ export default function Testimonials() {
             {isAdmin && (
               <div className="mt-8 p-4 bg-red-600/10 border border-red-600/20 rounded-2xl flex items-center justify-between">
                 <span className="text-[10px] font-mono text-red-500 uppercase tracking-widest">Admin Control Panel</span>
-                <button 
-                  onClick={() => auth && signOut(auth)}
+                <button
+                  onClick={async () => {
+                    const { auth, authMod } = await loadFirebase();
+                    if (auth) await authMod.signOut(auth);
+                  }}
                   className="text-[10px] font-mono text-white/40 hover:text-white uppercase tracking-widest underline"
                 >
                   Exit Session

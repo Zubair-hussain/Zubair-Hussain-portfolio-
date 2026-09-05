@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Calendar, PlayCircle, X } from 'lucide-react';
 import { PROFILE } from '@/lib/zubair-profile';
+import { useTheme } from '@/components/ui/ThemeProvider';
 
 const buttonVariants = {
   hidden: { opacity: 0, y: 24, filter: 'blur(6px)' },
@@ -16,7 +17,7 @@ const buttonVariants = {
   },
 };
 
-const heroActionStyle = {
+const darkHeroActionStyle = {
   background:
     'linear-gradient(135deg, rgba(var(--brand-rgb),0.18) 0%, rgba(var(--brand-rgb-3),0.08) 100%)',
   backdropFilter: 'blur(20px)',
@@ -37,7 +38,29 @@ const externalHeroActions = [
 ];
 
 export default function HeroCTA() {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const [scheduleOpen, setScheduleOpen] = useState(false);
+  const scheduleActionStyle = isLight
+    ? {
+        background: '#181a27',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        border: '1px solid #181a27',
+        boxShadow: '0 14px 34px -18px rgba(24,26,39,0.68)',
+        color: '#ffffff',
+      }
+    : darkHeroActionStyle;
+  const introActionStyle = isLight
+    ? {
+        background: 'rgba(255,255,255,0.88)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        border: '1px solid rgba(24,26,39,0.18)',
+        boxShadow: '0 14px 34px -22px rgba(24,26,39,0.42), inset 0 1px 0 #ffffff',
+        color: '#181a27',
+      }
+    : darkHeroActionStyle;
   const scheduleDialog = (
     <AnimatePresence>
       {scheduleOpen && (
@@ -130,7 +153,7 @@ export default function HeroCTA() {
           whileTap={{ scale: 0.97 }}
           aria-label={PROFILE.actions.schedule.label}
           className="group relative flex min-h-[52px] w-full xs:w-auto items-center justify-center gap-2.5 overflow-hidden rounded-full px-7 py-3.5 transition-all duration-500 sm:px-8"
-          style={heroActionStyle}
+          style={scheduleActionStyle}
         >
           <span
             className="absolute inset-0 opacity-0 transition-opacity duration-700 group-hover:opacity-100"
@@ -172,7 +195,7 @@ export default function HeroCTA() {
             whileTap={{ scale: 0.97 }}
             aria-label={ariaLabel}
             className="group relative flex min-h-[52px] w-full xs:w-auto items-center justify-center gap-2.5 overflow-hidden rounded-full px-7 py-3.5 transition-all duration-500 sm:px-8"
-            style={heroActionStyle}
+            style={introActionStyle}
           >
             <span
               className="absolute inset-0 opacity-0 transition-opacity duration-700 group-hover:opacity-100"

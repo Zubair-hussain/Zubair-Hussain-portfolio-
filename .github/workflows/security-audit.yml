@@ -1,0 +1,169 @@
+name: Security and Production Audit
+
+on:
+  deployment_status:
+  workflow_run:
+    workflows: [Build]
+    types: [completed]
+    branches: [main, _prod]
+  schedule:
+    # Every Thursday at 08:15 Pakistan time (03:15 UTC).
+    - cron: '15 3 * * 4'
+  workflow_dispatch:
+    inputs:
+      site_url:
+        description: Production URL to audit (optional)
+        required: false
+        type: string
+
+concurrency:
+  group: production-security-audit
+  cancel-in-progress: false
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+  security-events: write
+
+jobs:
+  security:
+    name: Dependency and CodeQL security scan
+    if: >-
+      (github.event_name != 'deployment_status' || github.event.deployment_status.state == 'success') &&
+      (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out deployed revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.deployment.sha || github.event.workflow_run.head_sha || github.sha }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Audit production dependencies
+        id: dependency-audit
+        continue-on-error: true
+        run: npm audit --omit=dev --audit-level=high
+
+      - name: Type check
+        id: type-check
+        continue-on-error: true
+        run: npm run type-check
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: javascript-typescript
+          queries: security-extended
+
+      - name: Analyze source
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: /language:javascript-typescript
+
+      - name: Fail when dependency or type checks found issues
+        if: always() && (steps.dependency-audit.outcome == 'failure' || steps.type-check.outcome == 'failure')
+        run: exit 1
+
+  production-audit:
+    name: Links, SEO headers, and Lighthouse
+    needs: security
+    if: >-
+      always() &&
+      (github.event_name != 'deployment_status' || github.event.deployment_status.state == 'success') &&
+      (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success')
+    runs-on: ubuntu-latest
+    env:
+      AUDIT_URL: ${{ inputs.site_url || vars.PRODUCTION_URL || github.event.deployment_status.environment_url || 'https://zubair-hussain-portfolio.detroonshah.workers.dev' }}
+    steps:
+      - name: Check out deployed revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.deployment.sha || github.event.workflow_run.head_sha || github.sha }}
+
+      - name: Wait for Cloudflare propagation
+        if: github.event_name == 'workflow_run'
+        run: sleep 90
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Verify production URLs and SEO files
+        shell: bash
+        run: |
+          set -euo pipefail
+          SITE="${AUDIT_URL%/}"
+          echo "Auditing $SITE"
+
+          curl --fail --silent --show-error --location --retry 3 "$SITE/" > /tmp/home.html
+          curl --fail --silent --show-error --location --retry 3 "$SITE/robots.txt" > /tmp/robots.txt
+          curl --fail --silent --show-error --location --retry 3 "$SITE/sitemap.xml" > /tmp/sitemap.xml
+
+          grep -qi 'User-Agent:' /tmp/robots.txt
+          grep -qi 'Sitemap:' /tmp/robots.txt
+          grep -qi '<link rel="canonical"' /tmp/home.html
+          grep -qi '<meta name="description"' /tmp/home.html
+
+          node .github/scripts/audit-production.mjs "$SITE" /tmp/sitemap.xml /tmp/home.html
+
+      - name: Install Lighthouse CI
+        run: npm install --global @lhci/cli@0.15.1
+
+      - name: Run Lighthouse audit
+        run: lhci autorun --config=./lighthouserc.cjs
+        env:
+          AUDIT_URL: ${{ env.AUDIT_URL }}
+
+      - name: Upload Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-production-${{ github.run_id }}
+          path: .lighthouseci/
+          if-no-files-found: warn
+          retention-days: 30
+
+  notify:
+    name: Notify on failure
+    needs: [security, production-audit]
+    if: >-
+      always() &&
+      (needs.security.result == 'failure' || needs.production-audit.result == 'failure')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Open or update GitHub issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          REPOSITORY_OWNER: ${{ github.repository_owner }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          SECURITY_RESULT: ${{ needs.security.result }}
+          AUDIT_RESULT: ${{ needs.production-audit.result }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          TITLE="Automated security or production audit failed"
+          BODY="Security result: ${SECURITY_RESULT}
+          Production audit result: ${AUDIT_RESULT}
+          Workflow run: ${RUN_URL}
+
+          Review the logs and Lighthouse artifact, fix the failure, then close this issue."
+          EXISTING=$(gh issue list --repo "$REPOSITORY" --state open --search "$TITLE in:title" --json number --jq '.[0].number // empty')
+          if [ -n "$EXISTING" ]; then
+            gh issue comment "$EXISTING" --repo "$REPOSITORY" --body "$BODY"
+            gh issue edit "$EXISTING" --repo "$REPOSITORY" --add-assignee "$REPOSITORY_OWNER" || true
+          else
+            gh issue create --repo "$REPOSITORY" --title "$TITLE" --body "$BODY" --assignee "$REPOSITORY_OWNER" --label security || \
+              gh issue create --repo "$REPOSITORY" --title "$TITLE" --body "$BODY" --assignee "$REPOSITORY_OWNER" || \
+              gh issue create --repo "$REPOSITORY" --title "$TITLE" --body "$BODY"
+          fi

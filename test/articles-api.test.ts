@@ -53,11 +53,15 @@ describe('articles api', () => {
     expect(data.posts).toHaveLength(2);
     expect(data.posts[0]).toMatchObject({
       title: 'GTA 6 Map Leak Explained',
-      url: 'https://zubair-xovato.blogspot.com/2026/08/gta-6-map-leak-explained.html',
+      slug: 'gta-6-map-leak-explained',
+      // Posts now render on-site instead of redirecting to Blogger.
+      url: '/blog/gta-6-map-leak-explained',
+      sourceUrl: 'https://zubair-xovato.blogspot.com/2026/08/gta-6-map-leak-explained.html',
       tags: ['Most Recent', 'Trending', 'Gaming'],
       trending: true,
     });
     expect(data.posts[1].tags).toEqual(['Blog']);
+    expect(data.posts[1].url).toBe('/blog/cursor-origin-vs-github');
   });
 
   it('returns an empty post list if Blogger is unavailable', async () => {

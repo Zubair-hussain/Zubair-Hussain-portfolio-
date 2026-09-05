@@ -64,12 +64,12 @@ Cloudflare and Vercel.`,
   },
 
   socials: {
-    github: 'https://github.com/Zubair-hussain',
+    github: 'https://github.com/Zubair-Hussain',
     linkedin:
       'https://www.linkedin.com/in/syed-zubair-hussain-shah-491294376',
     blog: 'https://zubair-xovato.blogspot.com/',
     fiverr: 'https://www.fiverr.com/zubair_8223/develop-a-fast-responsive-nextjs-website-for-your-business',
-    upwork: 'https://www.upwork.com/freelancers/zubairdeveloper',
+    upwork: 'https://www.upwork.com/services/product/development-it-syed-zubair-2030587661487129538?ref=project_share',
     figma:
       'https://www.figma.com/make/bHNbUpphvzQi6x8qaG12gV/Zubair-Portfolio-design',
   },
@@ -89,13 +89,13 @@ Cloudflare and Vercel.`,
     },
     {
       id: 'upwork',
-      label: 'Upwork Profile',
-      eyebrow: 'Custom freelance contracts',
+      label: 'Upwork Service',
+      eyebrow: 'Published Upwork service',
       description:
-        'Invite Zubair for tailored freelance work, hourly support, fixed milestones, or longer product builds through Upwork.',
-      href: 'https://www.upwork.com/freelancers/zubairdeveloper',
-      cta: 'Hire on Upwork',
-      highlights: ['Custom scope', 'Milestones', 'Hourly or fixed contracts'],
+        'View Zubair\'s published development service, discuss the scope, and hire securely through Upwork.',
+      href: 'https://www.upwork.com/services/product/development-it-syed-zubair-2030587661487129538?ref=project_share',
+      cta: 'View Upwork Service',
+      highlights: ['Published service', 'Scope discussion', 'Secure contract'],
     },
     {
       id: 'direct',
@@ -113,13 +113,17 @@ Cloudflare and Vercel.`,
     { label: 'Schedule a Call', href: '/api/schedule', tag: 'booking' },
     { label: 'My Intro', href: 'https://youtu.be/W3Zmlo3D49Y', tag: 'video' },
     { label: 'Email', href: 'mailto:thezubairh@gmail.com', tag: 'contact' },
-    { label: 'GitHub', href: 'https://github.com/Zubair-hussain', tag: 'code' },
+    { label: 'GitHub', href: 'https://github.com/Zubair-Hussain', tag: 'code' },
     {
       label: 'Fiverr Gigs',
       href: 'https://www.fiverr.com/zubair_8223/develop-a-fast-responsive-nextjs-website-for-your-business',
       tag: 'freelance',
     },
-    { label: 'Upwork Profile', href: 'https://www.upwork.com/freelancers/zubairdeveloper', tag: 'freelance' },
+    {
+      label: 'Upwork Service',
+      href: 'https://www.upwork.com/services/product/development-it-syed-zubair-2030587661487129538?ref=project_share',
+      tag: 'freelance',
+    },
     {
       label: 'LinkedIn',
       href: 'https://www.linkedin.com/in/syed-zubair-hussain-shah-491294376',
@@ -135,7 +139,7 @@ Cloudflare and Vercel.`,
 
   // Live-data source identifiers (used by the API to auto-fetch).
   sources: {
-    githubUsername: 'Zubair-hussain',
+    githubUsername: 'Zubair-Hussain',
     // Blogger JSON feed base — posts are pulled from here automatically.
     blogFeed: 'https://zubair-xovato.blogspot.com/feeds/posts/default?alt=json',
   },

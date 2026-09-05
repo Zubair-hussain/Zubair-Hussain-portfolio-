@@ -35,16 +35,6 @@ const jetbrainsMono = JetBrains_Mono({
 const cloudflareAnalyticsToken = process.env.NEXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN;
 const googleAnalyticsId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 const googleTagManagerId = process.env.NEXT_PUBLIC_GTM_ID;
-const languageAlternates = {
-  en: '/',
-  ur: '/?lang=ur',
-  es: '/?lang=es',
-  hi: '/?lang=hi',
-  ru: '/?lang=ru',
-  de: '/?lang=de',
-  'x-default': '/',
-};
-
 const openGraphLocales: Record<string, string> = {
   en: 'en_US',
   ur: 'ur_PK',
@@ -58,7 +48,7 @@ const openGraphLocales: Record<string, string> = {
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
   const siteUrl = getSiteUrl();
-  const canonical = locale === 'en' ? '/' : `/?lang=${locale}`;
+  const canonical = '/';
 
   return {
     metadataBase: new URL(siteUrl),
@@ -67,10 +57,9 @@ export async function generateMetadata(): Promise<Metadata> {
       template: '%s | Zubair Hussain',
     },
     description:
-      'Full Stack Developer (MERN, Next.js, React Native, AI) based in Hyderabad, Pakistan. Co-founder of Xovato. Building high-performance web and mobile applications.',
+      'Full-stack developer in Hyderabad, Pakistan building fast Next.js, React Native and AI products. Co-founder of Xovato, available for freelance work.',
     alternates: {
       canonical,
-      languages: languageAlternates,
     },
     keywords: [
       'Full Stack Developer',
@@ -212,6 +201,8 @@ export default async function RootLayout({
           }}
         />
         {isRTL && (
+          // Loaded only for Urdu; next/font does not expose every Nastaliq weight.
+          // eslint-disable-next-line @next/next/no-page-custom-font
           <link
             rel="stylesheet"
             href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;500;600&display=swap"
