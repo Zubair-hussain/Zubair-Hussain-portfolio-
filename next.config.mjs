@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 import createNextIntlPlugin from 'next-intl/plugin';
+import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare';
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
@@ -108,6 +109,8 @@ const nextConfig = {
 
 export default withNextIntl(nextConfig);
 
-// Enables the Cloudflare bindings (env.AI, etc.) during `next dev`.
-import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare';
-initOpenNextCloudflareForDev();
+// Wire Cloudflare bindings (env.AI, etc.) only into `next dev`. Production
+// builds run non-interactively and must not require local Wrangler credentials.
+if (process.env.NODE_ENV !== 'production') {
+  initOpenNextCloudflareForDev();
+}
