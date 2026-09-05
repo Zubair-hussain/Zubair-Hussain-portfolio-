@@ -50,7 +50,7 @@ const projects: Project[] = [
     tags: ['Next.js', 'Design', 'Tailwind', 'Performance'],
     image: '/images/projects/tensis.svg',
     liveUrl: 'https://tensis-agency.vercel.app/',
-    githubUrl: 'https://github.com/Zubair-hussain/Tensis-Agency',
+    githubUrl: 'https://github.com/Zubair-Hussain/Tensis-Agency',
   },
   {
     id: 'backend-ai',
@@ -61,7 +61,7 @@ const projects: Project[] = [
     views: 1500,
     tags: ['Python', 'LLM', 'FastAPI', 'Vercel'],
     image: '/images/projects/ai-engine.svg',
-    githubUrl: 'https://github.com/Zubair-hussain/Backend-Ai--Model-',
+    githubUrl: 'https://github.com/Zubair-Hussain/Backend-Ai--Model-',
   },
   {
     id: 'privacy-vault',
@@ -76,9 +76,9 @@ const projects: Project[] = [
     liveUrl:
       'https://privacy-vault-take-back-co-git-b9a4fd-zubair-hussain-s-projects.vercel.app/',
     githubUrl:
-      'https://github.com/Zubair-hussain/-PrivacyVault-Take-Back-Control-of-Your-Digital-Life',
+      'https://github.com/Zubair-Hussain/-PrivacyVault-Take-Back-Control-of-Your-Digital-Life',
     docsUrl:
-      'https://github.com/Zubair-hussain/-PrivacyVault-Take-Back-Control-of-Your-Digital-Life#readme',
+      'https://github.com/Zubair-Hussain/-PrivacyVault-Take-Back-Control-of-Your-Digital-Life#readme',
   },
   {
     id: 'xovato-ecommerce',
@@ -90,7 +90,7 @@ const projects: Project[] = [
     tags: ['React', 'Node.js', 'Stripe', 'Framer Motion'],
     image: '/images/projects/xovato-ecom.svg',
     liveUrl: 'https://xovato-e-commerce.vercel.app',
-    githubUrl: 'https://github.com/Zubair-hussain/Xovato-E-Commerce',
+    githubUrl: 'https://github.com/Zubair-Hussain/Xovato-E-Commerce',
   },
   {
     id: 'event-sync-mobile',
@@ -101,7 +101,7 @@ const projects: Project[] = [
     views: 500,
     tags: ['React Native', 'Firebase', 'Mobile'],
     image: '/images/projects/mobile-app.svg',
-    githubUrl: 'https://github.com/Zubair-hussain/event-app',
+    githubUrl: 'https://github.com/Zubair-Hussain/event-app',
   },
   {
     id: 'organic-products',
@@ -459,7 +459,7 @@ export default function Projects() {
             className="mt-12 flex justify-center"
           >
             <a
-              href="https://github.com/Zubair-hussain?tab=repositories"
+              href="https://github.com/Zubair-Hussain?tab=repositories"
               target="_blank"
               rel="noopener noreferrer"
               className="group inline-flex items-center gap-2 rounded-full border border-[hsl(var(--border))] px-6 py-3 text-xs font-mono uppercase tracking-widest text-[hsl(var(--muted-foreground))] transition-all hover:border-[hsl(var(--primary)/0.5)] hover:text-[hsl(var(--primary))]"
