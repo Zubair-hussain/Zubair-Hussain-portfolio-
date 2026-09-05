@@ -12,6 +12,7 @@ const navLinks = [
   { key: 'skills',   href: '#skills'   },
   { key: 'projects', href: '#projects' },
   { key: 'services', href: '#services' },
+  { key: 'articles', href: '#articles' },
 ] as const;
 
 const locales = [
@@ -25,7 +26,12 @@ const locales = [
 
 function scrollTo(href: string) {
   const el = document.getElementById(href.replace('#', ''));
-  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } else {
+    // On a subpage (e.g. /blog/[slug]) the section isn't here — go home to it.
+    window.location.assign(`/${href}`);
+  }
 }
 
 /* ── Sliding underline hook ── */
@@ -109,8 +115,11 @@ const Navigation = memo(function Navigation() {
     window.location.assign(`${url.pathname}${url.search}${url.hash}`);
   }, []);
 
-  const isDark    = theme === 'dark';
-  const ThemeIcon = isDark ? Sun : Moon;
+  const isLight = theme === 'light';
+  const ThemeIcon = isLight ? Moon : Sun;
+  const navText = isLight ? 'rgba(28,31,50,0.64)' : 'rgba(245,244,240,0.52)';
+  const navTextMuted = isLight ? 'rgba(28,31,50,0.5)' : 'rgba(245,244,240,0.38)';
+  const navTextStrong = isLight ? '#1c1f32' : '#f5f4f0';
 
   /* stagger variants */
   const linkVariants = {
@@ -133,9 +142,9 @@ const Navigation = memo(function Navigation() {
         className="fixed top-0 left-0 right-0 z-[9999]"
         style={{
           background: scrolled
-            ? (isDark ? 'rgba(3,4,8,0.88)' : 'rgba(var(--hl-rgb),0.82)')
+            ? (isLight ? 'rgba(252,250,246,0.9)' : 'rgba(3,4,8,0.88)')
             : 'transparent',
-          borderBottom: scrolled && !isDark ? '1px solid hsl(220 14% 90%)' : undefined,
+          borderBottom: scrolled && isLight ? '1px solid rgba(38,41,64,0.12)' : undefined,
           backdropFilter:       scrolled ? 'blur(24px) saturate(1.6)' : 'none',
           WebkitBackdropFilter: scrolled ? 'blur(24px) saturate(1.6)' : 'none',
           transition: 'background 0.6s ease, backdrop-filter 0.6s ease',
@@ -171,7 +180,7 @@ const Navigation = memo(function Navigation() {
                 fontStyle:  'italic',
                 fontWeight: 400,
                 letterSpacing: '-0.03em',
-                color: '#f5f4f0',
+                color: navTextStrong,
               }}
             >
               ZH
@@ -208,8 +217,8 @@ const Navigation = memo(function Navigation() {
                 onClick={() => scrollTo(href)}
                 onMouseEnter={e => onEnter(e.currentTarget as HTMLButtonElement)}
                 className="relative text-[11px] font-mono tracking-[0.22em] uppercase pb-0.5 transition-colors duration-200"
-                style={{ color: 'rgba(245,244,240,0.52)' }}
-                whileHover={{ color: 'rgba(245,244,240,0.95)' } as any}
+                style={{ color: navText }}
+                whileHover={{ color: navTextStrong } as any}
               >
                 {t(key)}
               </motion.button>
@@ -226,10 +235,10 @@ const Navigation = memo(function Navigation() {
                 aria-label="Change language"
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all duration-300"
                 style={{
-                  color:  'rgba(245,244,240,0.45)',
-                  border: '1px solid rgba(var(--hl-rgb),0.07)',
+                  color: navTextMuted,
+                  border: isLight ? '1px solid rgba(38,41,64,0.14)' : '1px solid rgba(var(--hl-rgb),0.07)',
                 }}
-                whileHover={{ color: 'rgba(245,244,240,0.85)', borderColor: 'rgba(var(--brand-rgb),0.35)' } as any}
+                whileHover={{ color: navTextStrong, borderColor: 'rgba(var(--brand-rgb),0.35)' } as any}
               >
                 <Globe size={13} strokeWidth={1.5} />
                 <span className="text-[10px] font-mono tracking-[0.18em] uppercase">{locale}</span>
@@ -244,12 +253,12 @@ const Navigation = memo(function Navigation() {
                     transition={{ duration: 0.22, ease: [0.16,1,0.3,1] }}
                     className="absolute top-full right-0 mt-3 w-40 overflow-hidden rounded-sm"
                     style={{
-                      background:    isDark ? 'rgba(8,10,14,0.96)' : 'rgba(var(--hl-rgb),0.98)',
-                      border:        isDark ? '1px solid rgba(var(--brand-rgb),0.18)' : '1px solid hsl(220 14% 88%)',
+                      background:    isLight ? 'rgba(255,255,255,0.96)' : 'rgba(8,10,14,0.96)',
+                      border:        isLight ? '1px solid rgba(38,41,64,0.13)' : '1px solid rgba(var(--brand-rgb),0.18)',
                       backdropFilter:'blur(20px)',
-                      boxShadow:     isDark
-                        ? '0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(var(--brand-rgb),0.08)'
-                        : '0 20px 50px -20px rgba(20,22,30,0.28)',
+                      boxShadow:     isLight
+                        ? '0 20px 50px -20px rgba(20,22,30,0.28)'
+                        : '0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(var(--brand-rgb),0.08)',
                     }}
                   >
                     {/* top accent line */}
@@ -263,7 +272,7 @@ const Navigation = memo(function Navigation() {
                         onClick={() => changeLocale(l.id)}
                         className="w-full text-left px-4 py-2.5 text-[10px] font-mono tracking-[0.18em] uppercase transition-colors duration-150 hover:bg-white/[0.04]"
                         style={{
-                          color: locale === l.id ? 'rgba(var(--brand-rgb),0.9)' : 'rgba(245,244,240,0.38)',
+                          color: locale === l.id ? 'rgba(var(--brand-rgb),0.95)' : navTextMuted,
                         }}
                       >
                         {l.label}
@@ -279,8 +288,8 @@ const Navigation = memo(function Navigation() {
               onClick={cycleTheme}
               aria-label="Toggle theme"
               className="p-2 rounded-full transition-colors duration-200"
-              style={{ color: 'rgba(245,244,240,0.38)' }}
-              whileHover={{ color: 'rgba(245,244,240,0.85)' } as any}
+              style={{ color: navTextMuted }}
+              whileHover={{ color: navTextStrong } as any}
               whileTap={{ scale: 0.88 }}
             >
               <ThemeIcon size={15} strokeWidth={1.5} />
@@ -295,7 +304,7 @@ const Navigation = memo(function Navigation() {
                 background: 'linear-gradient(135deg, rgba(var(--brand-rgb),0.16), rgba(var(--brand-rgb-4),0.08))',
                 border:     '1px solid rgba(var(--brand-rgb),0.32)',
                 boxShadow:  '0 0 0 1px rgba(var(--brand-rgb),0.08), inset 0 1px 0 rgba(var(--hl-rgb),0.06)',
-                color:      '#f5f4f0',
+                color:      navTextStrong,
               }}
               whileHover={{ scale: 1.03 }}
               whileTap={{   scale: 0.97 }}
@@ -333,7 +342,7 @@ const Navigation = memo(function Navigation() {
             >
               <span
                 className="block h-px w-6 transition-all duration-300 group-hover:w-8"
-                style={{ background: 'rgba(245,244,240,0.7)' }}
+                style={{ background: isLight ? 'rgba(28,31,50,0.72)' : 'rgba(245,244,240,0.7)' }}
               />
               <span
                 className="block h-px w-4 transition-all duration-300 group-hover:w-8"
@@ -356,7 +365,7 @@ const Navigation = memo(function Navigation() {
             exit={{    opacity: 0 }}
             transition={{ duration: 0.4 }}
             className="fixed inset-0 z-[9998] md:hidden flex flex-col sm:flex-row"
-            style={{ background: isDark ? 'rgba(3,4,8,0.97)' : 'rgba(250,249,247,0.98)' }}
+            style={{ background: isLight ? 'rgba(250,248,244,0.98)' : 'rgba(3,4,8,0.97)' }}
           >
             {/* ── Top/Left panel — red atmospheric glow + logo ── */}
             <motion.div
@@ -381,7 +390,7 @@ const Navigation = memo(function Navigation() {
                   fontSize:      '2.4rem',
                   fontStyle:     'italic',
                   letterSpacing: '-0.04em',
-                  color:         '#f5f4f0',
+                  color:         navTextStrong,
                 }}
               >
                 ZH<span style={{ color: 'var(--brand-solid)' }}>.</span>
@@ -409,11 +418,11 @@ const Navigation = memo(function Navigation() {
               >
                 <span
                   className="block h-px w-6 rotate-45 translate-y-[4.5px]"
-                  style={{ background: 'rgba(245,244,240,0.6)' }}
+                  style={{ background: isLight ? 'rgba(28,31,50,0.62)' : 'rgba(245,244,240,0.6)' }}
                 />
                 <span
                   className="block h-px w-6 -rotate-45"
-                  style={{ background: 'rgba(245,244,240,0.6)' }}
+                  style={{ background: isLight ? 'rgba(28,31,50,0.62)' : 'rgba(245,244,240,0.6)' }}
                 />
               </button>
 
@@ -446,7 +455,7 @@ const Navigation = memo(function Navigation() {
                         fontStyle:     'italic',
                         fontWeight:    400,
                         letterSpacing: '-0.03em',
-                        color:         'rgba(245,244,240,0.32)',
+                        color:         isLight ? 'rgba(28,31,50,0.48)' : 'rgba(245,244,240,0.32)',
                       }}
                     >
                       <span className="group-hover:text-white/90 transition-colors duration-300">
@@ -468,7 +477,7 @@ const Navigation = memo(function Navigation() {
                 style={{
                   background: 'linear-gradient(135deg, rgba(var(--brand-rgb),0.18), rgba(var(--brand-rgb-4),0.08))',
                   border:     '1px solid rgba(var(--brand-rgb),0.32)',
-                  color:      '#f5f4f0',
+                  color:      navTextStrong,
                 }}
               >
                 <span
@@ -496,7 +505,7 @@ const Navigation = memo(function Navigation() {
                     style={{
                       color: locale === l.id
                         ? 'rgba(var(--brand-rgb),0.8)'
-                        : 'rgba(245,244,240,0.2)',
+                        : (isLight ? 'rgba(28,31,50,0.42)' : 'rgba(245,244,240,0.2)'),
                     }}
                   >
                     {l.id}
