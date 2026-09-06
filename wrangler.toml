@@ -1,7 +1,11 @@
-name = "zubair--portfolio"
+name = "zubair-hussain-portfolio"
 main = ".open-next/worker.js"
 compatibility_date = "2024-12-30"
 compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
+
+# Production variables and secrets are managed in the Cloudflare dashboard.
+# Preserve them when Workers Builds deploys this configuration.
+keep_vars = true
 
 # Static assets emitted by the OpenNext build.
 [assets]
