@@ -121,8 +121,9 @@ The application hits multiple performance ceilings through strategic build steps
 
 ## Blogger and SEO
 
-- Blogger summaries are server-rendered on the homepage and `/blog`, giving every article a crawlable internal link.
-- Full article bodies are loaded only on `/blog/[slug]`, sanitized, and published with canonical metadata and structured data.
+- Blogger posts are server-rendered on the homepage and `/blog`, giving every new and old article a crawlable internal link.
+- Authored Blogger descriptions and keywords are reused for the local page's meta, Open Graph, Twitter, and BlogPosting data.
+- Full article bodies are sanitized into one clean primary-language article; Blogger-only scripts, controls, authoring notes, and duplicate translation panes are removed.
 - `sitemap.xml` refreshes every 30 minutes and automatically includes new Blogger posts.
 - The official Blogger API is used when `BLOGGER_API_KEY` is configured; public Blogger feeds remain automatic fallbacks.
 
@@ -139,6 +140,12 @@ See **[Automated security and production audits](./docs/automated-security-audit
 For Cloudflare Workers Builds, use `npm run cf-build` as the build command and
 `npm run cf-deploy` as the deploy command. A plain `next build` does not create
 the `.open-next/worker.js` Worker entry point required by Wrangler.
+
+Add `NEXT_PUBLIC_FIREBASE_*` under **Settings > Variables & Secrets** for the
+Worker runtime. The Testimonials client retrieves this intentionally public
+Firebase Web SDK configuration from `/api/firebase-config`, so the values do
+not also need to be duplicated under Build Variables and Secrets. Wrangler is
+configured with `keep_vars = true` to preserve dashboard-managed variables.
 
 ---
 
