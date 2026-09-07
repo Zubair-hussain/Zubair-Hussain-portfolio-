@@ -22,9 +22,13 @@ export interface BlogPost {
   title: string;
   /** Short, plain-text teaser for cards + meta descriptions. */
   excerpt: string;
+  /** SEO description authored in Blogger, with a clean content fallback. */
+  seoDescription: string;
   /** Sanitized post body HTML, safe to render with dangerouslySetInnerHTML. */
   contentHtml: string;
   tags: string[];
+  /** Blogger labels plus any authored meta-keywords, used by page metadata. */
+  seoKeywords: string[];
   readTime: string;
   /** Human-friendly date, e.g. "Aug 28, 2026". */
   date: string;
@@ -40,6 +44,8 @@ export interface BlogPost {
   image: string | null;
   /** Detected content language (BCP-47), e.g. "en", "ur", "hi". */
   lang: string;
+  /** Safe links to translations published/configured on Blogger. */
+  translations: Array<{ lang: string; url: string }>;
   trending: boolean;
 }
 
@@ -118,6 +124,8 @@ function decodeEntities(value: string) {
 function stripHtml(value: string) {
   return decodeEntities(
     value
+      .replace(/<!--[\s\S]*?-->/g, ' ')
+      .replace(/<head\b[\s\S]*?<\/head>/gi, ' ')
       .replace(/<script[\s\S]*?<\/script>/gi, ' ')
       .replace(/<style[\s\S]*?<\/style>/gi, ' ')
       .replace(/<[^>]*>/g, ' ')
@@ -137,12 +145,116 @@ function extractArticleContent(value: string) {
   if (body) content = body[1];
 
   const article = content.match(/<article\b[^>]*>([\s\S]*?)<\/article>/i);
-  if (article) return article[1].trim();
+  if (article) content = article[1].trim();
 
-  const main = content.match(/<main\b[^>]*>([\s\S]*?)<\/main>/i);
-  if (main) return main[1].trim();
+  if (!article) {
+    const main = content.match(/<main\b[^>]*>([\s\S]*?)<\/main>/i);
+    if (main) content = main[1].trim();
+  }
+
+  // Older posts contain authoring notes or markdown before their real scoped
+  // article wrapper. Start at that wrapper so those notes never render.
+  const knownWrapper = content.match(
+    /<(?:article|main|div)\b[^>]*class\s*=\s*["'][^"']*(?:zx-post|zh-post|pv-post)[^"']*["'][^>]*>/i
+  );
+  if (knownWrapper?.index && knownWrapper.index > 0) content = content.slice(knownWrapper.index);
 
   return content;
+}
+
+function hasClass(attrs: string, className: string) {
+  const classes = attrs.match(/\bclass\s*=\s*["']([^"']*)["']/i)?.[1] || '';
+  return classes.split(/\s+/).includes(className);
+}
+
+/** Remove one HTML element, including nested elements of the same tag. */
+function removeElement(html: string, start: number, tag: string): string {
+  const openingEnd = html.indexOf('>', start);
+  if (openingEnd < 0 || html.slice(start, openingEnd + 1).endsWith('/>')) {
+    return html.slice(0, start) + html.slice(Math.max(openingEnd + 1, start));
+  }
+
+  const token = new RegExp(`<\\/?${tag}\\b[^>]*>`, 'gi');
+  token.lastIndex = openingEnd + 1;
+  let depth = 1;
+  let match: RegExpExecArray | null;
+  while ((match = token.exec(html))) {
+    if (match[0].startsWith('</')) depth -= 1;
+    else if (!match[0].endsWith('/>')) depth += 1;
+    if (depth === 0) return html.slice(0, start) + html.slice(token.lastIndex);
+  }
+
+  return html.slice(0, start);
+}
+
+/** Keep the English article while removing Blogger-only JS translation UI. */
+function removeTranslationArtifacts(value: string): string {
+  let html = value;
+  const opening = /<([a-z][\w:-]*)\b([^>]*)>/gi;
+  let match: RegExpExecArray | null;
+
+  while ((match = opening.exec(html))) {
+    const [whole, tag, attrs] = match;
+    const id = attrs.match(/\bid\s*=\s*["']([^"']*)["']/i)?.[1]?.toLowerCase();
+    const htmlFor = attrs.match(/\bfor\s*=\s*["']([^"']*)["']/i)?.[1]?.toLowerCase();
+    const isNonEnglishPane = hasClass(attrs, 'pane') && !hasClass(attrs, 'on');
+    const remove =
+      hasClass(attrs, 'langbar') ||
+      hasClass(attrs, 'pv-bar') ||
+      isNonEnglishPane ||
+      (tag.toLowerCase() === 'select' && (id === 'lang' || id === 'pvlang')) ||
+      (tag.toLowerCase() === 'label' && (htmlFor === 'lang' || htmlFor === 'pvlang')) ||
+      (tag.toLowerCase() === 'button' && /\bdata-l\s*=/.test(attrs));
+
+    if (!remove || /^(?:meta|link|img|br|hr|input)$/i.test(tag) || whole.endsWith('/>')) continue;
+    html = removeElement(html, match.index, tag);
+    opening.lastIndex = match.index;
+  }
+
+  return html;
+}
+
+function attributes(tag: string): Record<string, string> {
+  const result: Record<string, string> = {};
+  const attribute = /([\w:-]+)\s*=\s*(["'])([\s\S]*?)\2/g;
+  let match: RegExpExecArray | null;
+  while ((match = attribute.exec(tag))) result[match[1].toLowerCase()] = decodeEntities(match[3]);
+  return result;
+}
+
+function metaContent(html: string, key: string): string {
+  for (const match of html.matchAll(/<meta\b[^>]*>/gi)) {
+    const attrs = attributes(match[0]);
+    if ((attrs.name || attrs.property || '').toLowerCase() === key.toLowerCase()) {
+      return (attrs.content || '').trim();
+    }
+  }
+  return '';
+}
+
+function commentSearchDescription(html: string): string {
+  const match = html.match(
+    /BLOGGER SEARCH DESCRIPTION\s*:\s*([\s\S]*?)(?:\r?\n\s*\r?\n|\r?\n(?:IMPORTANT|CHECK|GENERATED|FINAL)\b|-->)/i
+  );
+  return match ? stripHtml(match[1]).trim() : '';
+}
+
+function authoredTranslations(html: string): Array<{ lang: string; url: string }> {
+  const translations = new Map<string, string>();
+  for (const match of html.matchAll(/<link\b[^>]*>/gi)) {
+    const attrs = attributes(match[0]);
+    const lang = attrs.hreflang?.toLowerCase();
+    if (
+      attrs.rel?.toLowerCase() === 'alternate' &&
+      lang &&
+      lang !== 'en' &&
+      lang !== 'x-default' &&
+      attrs.href
+    ) {
+      translations.set(lang, normalizeUrl(attrs.href));
+    }
+  }
+  return [...translations].map(([lang, url]) => ({ lang, url }));
 }
 
 /**
@@ -300,8 +412,9 @@ function mapEntry(entry: BloggerFeedEntry, index: number): BlogPost {
   const rawContent = entry.content?.$t || entry.summary?.$t || '';
   const title = stripHtml(entry.title?.$t || 'Untitled Article');
   const articleContent = extractArticleContent(rawContent);
-  const contentHtml = enhanceContent(sanitizeHtml(articleContent), title);
-  const plainText = stripHtml(articleContent) || title;
+  const primaryArticleContent = removeTranslationArtifacts(articleContent);
+  const contentHtml = enhanceContent(sanitizeHtml(primaryArticleContent), title);
+  const plainText = stripHtml(primaryArticleContent) || title;
   const slug = slugFromLink(sourceUrl, title, index);
 
   const categories = (entry.category || [])
@@ -318,13 +431,25 @@ function mapEntry(entry: BloggerFeedEntry, index: number): BlogPost {
 
   const publishedIso = toIso(entry.published?.$t || entry.updated?.$t || '');
   const updatedIso = toIso(entry.updated?.$t || entry.published?.$t || '');
+  const authoredDescription =
+    metaContent(rawContent, 'description') ||
+    commentSearchDescription(rawContent) ||
+    metaContent(rawContent, 'og:description');
+  const seoDescription = authoredDescription || clamp(plainText, 220);
+  const authoredKeywords = metaContent(rawContent, 'keywords')
+    .split(',')
+    .map((keyword) => keyword.trim())
+    .filter(Boolean);
+  const seoKeywords = [...new Set([...authoredKeywords, ...categories])].slice(0, 30);
 
   return {
     slug,
     title,
-    excerpt: clamp(plainText, 150),
+    excerpt: clamp(seoDescription, 160),
+    seoDescription,
     contentHtml,
     tags,
+    seoKeywords: seoKeywords.length ? seoKeywords : ['Blog'],
     readTime: estimateReadTime(plainText),
     date: formatDate(entry.published?.$t || entry.updated?.$t || ''),
     isoDate: publishedIso,
@@ -333,6 +458,7 @@ function mapEntry(entry: BloggerFeedEntry, index: number): BlogPost {
     sourceUrl,
     image: firstImage(rawContent, entry.media$thumbnail?.url),
     lang: detectLang(`${title} ${plainText}`),
+    translations: authoredTranslations(rawContent),
     trending: index === 0,
   };
 }
@@ -423,9 +549,12 @@ export async function getAllPosts(): Promise<BlogPost[]> {
   return fetchPosts(true);
 }
 
-/** Lightweight cards/SEO records (about 24x smaller than the full feed). */
+/**
+ * Cards and metadata also use full bodies. Blogger's summary feed truncates the
+ * authored <head> and can expose JSON-LD/authoring notes as the description.
+ */
 export async function getAllPostSummaries(): Promise<BlogPost[]> {
-  return fetchPosts(false);
+  return fetchPosts(true);
 }
 
 /** Fetch a single post by slug (null if not found / feed unavailable). */
