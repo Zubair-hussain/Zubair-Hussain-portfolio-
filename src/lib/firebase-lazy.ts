@@ -8,12 +8,11 @@
  */
 type FirestoreModule = typeof import('firebase/firestore');
 type AuthModule = typeof import('firebase/auth');
-type FirebaseCore = typeof import('@/lib/firebase');
 
 export interface LazyFirebase {
-  db: FirebaseCore['db'];
-  auth: FirebaseCore['auth'];
-  googleProvider: FirebaseCore['googleProvider'];
+  db: import('firebase/firestore').Firestore | null;
+  auth: import('firebase/auth').Auth | null;
+  googleProvider: import('firebase/auth').GoogleAuthProvider | null;
   firestore: FirestoreModule;
   authMod: AuthModule;
 }
@@ -26,13 +25,16 @@ export function loadFirebase(): Promise<LazyFirebase> {
       import('@/lib/firebase'),
       import('firebase/firestore'),
       import('firebase/auth'),
-    ]).then(([core, firestore, authMod]) => ({
-      db: core.db,
-      auth: core.auth,
-      googleProvider: core.googleProvider,
-      firestore,
-      authMod,
-    }));
+    ]).then(async ([core, firestore, authMod]) => {
+      const services = await core.initializeFirebase();
+      return {
+        db: services.db,
+        auth: services.auth,
+        googleProvider: services.googleProvider,
+        firestore,
+        authMod,
+      };
+    });
   }
   return cached;
 }
