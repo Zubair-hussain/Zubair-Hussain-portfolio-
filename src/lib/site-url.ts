@@ -14,11 +14,15 @@
  * variables when you attach a custom domain; everything updates on redeploy.
  */
 export function getSiteUrl(): string {
+  const fallback =
+    process.env.NODE_ENV === 'production'
+      ? 'https://zubair-hussain-portfolio.detroonshah.workers.dev'
+      : 'http://localhost:3000';
   const raw =
     process.env.NEXT_PUBLIC_SITE_URL ||
     process.env.SITE_URL ||
     process.env.CF_PAGES_URL ||
-    'http://localhost:3000';
+    fallback;
 
   let candidate = raw.trim().replace(/\/+$/, '');
   if (!/^https?:\/\//i.test(candidate)) candidate = `https://${candidate}`;
@@ -30,6 +34,6 @@ export function getSiteUrl(): string {
     }
     return parsed.origin;
   } catch {
-    return 'http://localhost:3000';
+    return fallback;
   }
 }
