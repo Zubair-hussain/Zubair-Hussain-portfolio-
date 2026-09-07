@@ -45,8 +45,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     metadataBase: new URL(siteUrl),
     title: post.title,
-    description: post.excerpt,
-    keywords: post.tags,
+    description: post.seoDescription,
+    keywords: post.seoKeywords,
     authors: [{ name: PROFILE.name, url: siteUrl }],
     alternates: {
       canonical,
@@ -55,7 +55,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       type: 'article',
       url: canonical,
       title: post.title,
-      description: post.excerpt,
+      description: post.seoDescription,
       siteName: 'Zubair Hussain Portfolio',
       locale: openGraphLocales[post.lang] ?? 'en_US',
       publishedTime: post.isoDate || undefined,
@@ -67,7 +67,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     twitter: {
       card: 'summary_large_image',
       title: post.title,
-      description: post.excerpt,
+      description: post.seoDescription,
       images,
     },
     robots: {
@@ -95,7 +95,7 @@ export default async function BlogPostPage({ params }: PageProps) {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
     headline: post.title,
-    description: post.excerpt,
+    description: post.seoDescription,
     inLanguage: post.lang,
     datePublished: post.isoDate || undefined,
     dateModified: post.isoUpdated || post.isoDate || undefined,
@@ -103,7 +103,7 @@ export default async function BlogPostPage({ params }: PageProps) {
     publisher: { '@type': 'Person', name: PROFILE.name },
     mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
     url: canonical,
-    keywords: post.tags.join(', '),
+    keywords: post.seoKeywords.join(', '),
     ...(post.image ? { image: post.image } : {}),
   };
 
@@ -206,6 +206,11 @@ export default async function BlogPostPage({ params }: PageProps) {
                     aria-hidden="true"
                   />
                 </a>
+                {post.translations.length > 0 && (
+                  <p className="text-xs leading-relaxed text-[hsl(var(--muted-foreground))]">
+                    Translations are available from the language selector in the original Blogger article.
+                  </p>
+                )}
               </div>
             </article>
 
