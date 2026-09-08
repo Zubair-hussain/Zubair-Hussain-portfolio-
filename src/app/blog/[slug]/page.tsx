@@ -41,20 +41,28 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const canonical = `${siteUrl}/blog/${post.slug}`;
   const images = post.image ? [{ url: post.image }] : [`${siteUrl}/opengraph-image`];
+  const languageAlternates = Object.fromEntries([
+    [post.lang, canonical],
+    ...post.translations.map((translation) => [
+      translation.lang,
+      translation.url.startsWith('http') ? translation.url : `${siteUrl}${translation.url}`,
+    ]),
+  ]);
 
   return {
     metadataBase: new URL(siteUrl),
-    title: post.title,
+    title: post.seoTitle || post.title,
     description: post.seoDescription,
     keywords: post.seoKeywords,
     authors: [{ name: PROFILE.name, url: siteUrl }],
     alternates: {
       canonical,
+      languages: languageAlternates,
     },
     openGraph: {
       type: 'article',
       url: canonical,
-      title: post.title,
+      title: post.seoTitle || post.title,
       description: post.seoDescription,
       siteName: 'Zubair Hussain Portfolio',
       locale: openGraphLocales[post.lang] ?? 'en_US',
@@ -66,7 +74,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     },
     twitter: {
       card: 'summary_large_image',
-      title: post.title,
+      title: post.seoTitle || post.title,
       description: post.seoDescription,
       images,
     },
@@ -207,9 +215,20 @@ export default async function BlogPostPage({ params }: PageProps) {
                   />
                 </a>
                 {post.translations.length > 0 && (
-                  <p className="text-xs leading-relaxed text-[hsl(var(--muted-foreground))]">
-                    Translations are available from the language selector in the original Blogger article.
-                  </p>
+                  <nav aria-label="Article translations" className="flex flex-wrap items-center gap-2">
+                    <span className="text-xs text-[hsl(var(--muted-foreground))]">Translations:</span>
+                    {post.translations.map((translation) => (
+                      <a
+                        key={`${translation.lang}-${translation.url}`}
+                        href={translation.url}
+                        hrefLang={translation.lang}
+                        lang={translation.lang}
+                        className="rounded-full border border-[hsl(var(--border))] px-3 py-1.5 text-xs font-mono uppercase text-[hsl(var(--primary))] transition-colors hover:border-[hsl(var(--primary)/0.7)]"
+                      >
+                        {translation.lang}
+                      </a>
+                    ))}
+                  </nav>
                 )}
               </div>
             </article>

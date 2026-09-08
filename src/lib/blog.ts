@@ -20,6 +20,8 @@ export interface BlogPost {
   /** URL-safe id derived from the Blogger permalink (e.g. gta-6-map-leak-explained). */
   slug: string;
   title: string;
+  /** Optional search/social title; falls back to the visible article title. */
+  seoTitle: string;
   /** Short, plain-text teaser for cards + meta descriptions. */
   excerpt: string;
   /** SEO description authored in Blogger, with a clean content fallback. */
@@ -73,6 +75,19 @@ interface BloggerApiPost {
   url?: string;
   labels?: string[];
   images?: Array<{ url?: string }>;
+}
+
+interface PortfolioContentBlock {
+  lang: string;
+  title: string;
+  seoTitle: string;
+  excerpt: string;
+  seoDescription: string;
+  seoKeywords: string[];
+  tags: string[];
+  slug: string;
+  image: string;
+  contentHtml: string;
 }
 
 // Blogger caps `max-results` per request, so we page through the feed with
@@ -132,6 +147,74 @@ function stripHtml(value: string) {
   )
     .replace(/\s+/g, ' ')
     .trim();
+}
+
+function commaSeparated(value: string) {
+  return value
+    .split(',')
+    .map((item) => stripHtml(item).trim())
+    .filter(Boolean);
+}
+
+function safeSlug(value: string) {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+/**
+ * Read portfolio-only article variants stored inside Blogger HTML comments.
+ * Blogger renders none of this text, while its full-content API/feed keeps the
+ * marker available for this site to consume.
+ *
+ * Repeat this format once per language:
+ *   PORTFOLIO-CONTENT:en
+ *   TITLE: Portfolio article title
+ *   SEO_DESCRIPTION: Search description
+ *   SEO_KEYWORDS: keyword one, keyword two
+ *   ---
+ *   <article><p>Complete portfolio-only body.</p></article>
+ *   END PORTFOLIO-CONTENT
+ * The whole block, including those markers, must be inside one HTML comment.
+ */
+function portfolioContentBlocks(value: string): PortfolioContentBlock[] {
+  const blocks: PortfolioContentBlock[] = [];
+  const marker = /<!--\s*PORTFOLIO-CONTENT(?:\s*:\s*([a-z0-9-]+)|\s+lang\s*=\s*["']?([a-z0-9-]+)["']?)?\s*\r?\n([\s\S]*?)\r?\n\s*END\s+PORTFOLIO-CONTENT\s*-->/gi;
+
+  for (const match of value.matchAll(marker)) {
+    const lang = (match[1] || match[2] || 'en').toLowerCase();
+    const payload = match[3];
+    const divider = payload.match(/^\s*---\s*$/m);
+    if (divider?.index === undefined) continue;
+
+    const header = payload.slice(0, divider.index);
+    const contentHtml = payload.slice(divider.index + divider[0].length).trim();
+    if (!contentHtml) continue;
+
+    const fields = new Map<string, string>();
+    for (const line of header.split(/\r?\n/)) {
+      const field = line.match(/^\s*([A-Z][A-Z0-9_-]*)\s*:\s*(.*?)\s*$/i);
+      if (field) fields.set(field[1].toUpperCase(), field[2]);
+    }
+
+    const description = fields.get('DESCRIPTION') || '';
+    blocks.push({
+      lang,
+      title: stripHtml(fields.get('TITLE') || ''),
+      seoTitle: stripHtml(fields.get('SEO_TITLE') || ''),
+      excerpt: stripHtml(fields.get('EXCERPT') || fields.get('SHORT_DESCRIPTION') || description),
+      seoDescription: stripHtml(fields.get('SEO_DESCRIPTION') || description),
+      seoKeywords: commaSeparated(fields.get('SEO_KEYWORDS') || fields.get('KEYWORDS') || ''),
+      tags: commaSeparated(fields.get('TAGS') || ''),
+      slug: safeSlug(fields.get('SLUG') || ''),
+      image: normalizeUrl(fields.get('IMAGE') || ''),
+      contentHtml,
+    });
+  }
+
+  return blocks;
 }
 
 /**
@@ -406,64 +489,102 @@ function toIso(value: string): string {
   return Number.isNaN(parsed.getTime()) ? '' : parsed.toISOString();
 }
 
-function mapEntry(entry: BloggerFeedEntry, index: number): BlogPost {
+function mapEntry(entry: BloggerFeedEntry, index: number): BlogPost[] {
   const link = (entry.link || []).find((item) => item.rel === 'alternate');
   const sourceUrl = normalizeUrl(link?.href || PROFILE.socials.blog);
   const rawContent = entry.content?.$t || entry.summary?.$t || '';
-  const title = stripHtml(entry.title?.$t || 'Untitled Article');
-  const articleContent = extractArticleContent(rawContent);
-  const primaryArticleContent = removeTranslationArtifacts(articleContent);
-  const contentHtml = enhanceContent(sanitizeHtml(primaryArticleContent), title);
-  const plainText = stripHtml(primaryArticleContent) || title;
-  const slug = slugFromLink(sourceUrl, title, index);
+  const bloggerTitle = stripHtml(entry.title?.$t || 'Untitled Article');
+  const baseSlug = slugFromLink(sourceUrl, bloggerTitle, index);
+  const portfolioBlocks = portfolioContentBlocks(rawContent);
 
   const categories = (entry.category || [])
     .map((category) => category.term)
     .filter((term): term is string => Boolean(term))
     .slice(0, 3);
 
-  const tags =
-    index === 0
-      ? ['Most Recent', 'Trending', ...(categories.length ? categories.slice(0, 1) : ['Blog'])]
-      : categories.length
-        ? categories
-        : ['Blog'];
-
   const publishedIso = toIso(entry.published?.$t || entry.updated?.$t || '');
   const updatedIso = toIso(entry.updated?.$t || entry.published?.$t || '');
-  const authoredDescription =
+  const bloggerDescription =
     metaContent(rawContent, 'description') ||
     commentSearchDescription(rawContent) ||
     metaContent(rawContent, 'og:description');
-  const seoDescription = authoredDescription || clamp(plainText, 220);
-  const authoredKeywords = metaContent(rawContent, 'keywords')
-    .split(',')
-    .map((keyword) => keyword.trim())
-    .filter(Boolean);
-  const seoKeywords = [...new Set([...authoredKeywords, ...categories])].slice(0, 30);
+  const bloggerKeywords = commaSeparated(metaContent(rawContent, 'keywords'));
 
-  return {
-    slug,
-    title,
-    excerpt: clamp(seoDescription, 160),
-    seoDescription,
-    contentHtml,
-    tags,
-    seoKeywords: seoKeywords.length ? seoKeywords : ['Blog'],
-    readTime: estimateReadTime(plainText),
-    date: formatDate(entry.published?.$t || entry.updated?.$t || ''),
-    isoDate: publishedIso,
-    isoUpdated: updatedIso || publishedIso,
-    url: `/blog/${slug}`,
-    sourceUrl,
-    image: firstImage(rawContent, entry.media$thumbnail?.url),
-    lang: detectLang(`${title} ${plainText}`),
-    translations: authoredTranslations(rawContent),
-    trending: index === 0,
-  };
+  // No marked blocks means this is an older post: preserve the original
+  // Blogger normalization path exactly as before.
+  const variants: PortfolioContentBlock[] = portfolioBlocks.length
+    ? portfolioBlocks
+    : [{
+        lang: '',
+        title: bloggerTitle,
+        seoTitle: '',
+        excerpt: '',
+        seoDescription: bloggerDescription,
+        seoKeywords: bloggerKeywords,
+        tags: [],
+        slug: baseSlug,
+        image: '',
+        contentHtml: rawContent,
+      }];
+
+  const posts = variants.map((variant, variantIndex): BlogPost => {
+    const title = variant.title || bloggerTitle;
+    const articleContent = extractArticleContent(variant.contentHtml);
+    const primaryArticleContent = removeTranslationArtifacts(articleContent);
+    const contentHtml = enhanceContent(sanitizeHtml(primaryArticleContent), title);
+    const plainText = stripHtml(primaryArticleContent) || title;
+    const lang = variant.lang || detectLang(`${title} ${plainText}`);
+    const slug = variant.slug || (variantIndex === 0 || lang === 'en' ? baseSlug : `${baseSlug}-${lang}`);
+    const contentTags = variant.tags.length ? variant.tags : categories;
+    const tags = index === 0
+      ? ['Most Recent', 'Trending', ...(contentTags.length ? contentTags.slice(0, 1) : ['Blog'])]
+      : contentTags.length
+        ? contentTags
+        : ['Blog'];
+    const seoDescription = variant.seoDescription || bloggerDescription || clamp(plainText, 220);
+    const seoKeywords = [...new Set([
+      ...(variant.seoKeywords.length ? variant.seoKeywords : bloggerKeywords),
+      ...contentTags,
+    ])].slice(0, 30);
+
+    return {
+      slug,
+      title,
+      seoTitle: variant.seoTitle || title,
+      excerpt: clamp(variant.excerpt || seoDescription, 160),
+      seoDescription,
+      contentHtml,
+      tags,
+      seoKeywords: seoKeywords.length ? seoKeywords : ['Blog'],
+      readTime: estimateReadTime(plainText),
+      date: formatDate(entry.published?.$t || entry.updated?.$t || ''),
+      isoDate: publishedIso,
+      isoUpdated: updatedIso || publishedIso,
+      url: `/blog/${slug}`,
+      sourceUrl,
+      image: variant.image
+        ? upgradeBloggerImage(variant.image)
+        : firstImage(variant.contentHtml, entry.media$thumbnail?.url),
+      lang,
+      translations: [],
+      trending: index === 0,
+    };
+  });
+
+  if (portfolioBlocks.length > 0) {
+    for (const post of posts) {
+      post.translations = posts
+        .filter((candidate) => candidate.slug !== post.slug)
+        .map((candidate) => ({ lang: candidate.lang, url: candidate.url }));
+    }
+  } else {
+    posts[0].translations = authoredTranslations(rawContent);
+  }
+
+  return posts;
 }
 
-function mapApiPost(post: BloggerApiPost, index: number): BlogPost {
+function mapApiPost(post: BloggerApiPost, index: number): BlogPost[] {
   return mapEntry(
     {
       title: { $t: post.title || 'Untitled Article' },
@@ -497,7 +618,7 @@ async function getPostsFromApi(includeContent: boolean): Promise<BlogPost[] | nu
       pageToken = data.nextPageToken;
     } while (pageToken && posts.length < HARD_CAP);
 
-    return posts.slice(0, HARD_CAP).map(mapApiPost);
+    return posts.slice(0, HARD_CAP).flatMap(mapApiPost);
   } catch {
     return null;
   }
@@ -536,7 +657,7 @@ async function fetchPosts(includeContent: boolean): Promise<BlogPost[]> {
 
   const uniqueSlugs = new Set<string>();
   return rawEntries
-    .map(mapEntry)
+    .flatMap(mapEntry)
     .filter((post) => {
       if (uniqueSlugs.has(post.slug)) return false;
       uniqueSlugs.add(post.slug);

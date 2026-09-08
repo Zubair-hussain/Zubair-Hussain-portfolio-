@@ -93,4 +93,69 @@ describe('Blogger content normalization', () => {
       { lang: 'de', url: 'https://example.blogspot.com/article-de.html' },
     ]);
   });
+
+  it('uses hidden portfolio-only blocks and creates one SEO-ready post per language', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => ({
+      ok: true,
+      json: async () => ({
+        feed: {
+          entry: [{
+            title: { $t: 'Different public Blogger title' },
+            content: {
+              $t: `<p>This visible Blogger review is intentionally different.</p>
+                <!-- PORTFOLIO-CONTENT:en
+                TITLE: Complete mobile application review
+                SEO_TITLE: Mobile Application Review and Development Guide
+                SLUG: mobile-application-review
+                EXCERPT: A short portfolio card description.
+                SEO_DESCRIPTION: A focused Google search description for the English article.
+                SEO_KEYWORDS: mobile application, React Native, app development
+                TAGS: Mobile, Development
+                IMAGE: http://blogger.googleusercontent.com/example/s72-c/mobile.jpg
+                ---
+                <article><h1>English portfolio heading</h1><p>The complete English portfolio article.</p><script>alert('no')</script></article>
+                END PORTFOLIO-CONTENT -->
+                <!-- PORTFOLIO-CONTENT:ur
+                TITLE: موبائل ایپلیکیشن کا مکمل جائزہ
+                SLUG: mobile-application-review-ur
+                EXCERPT: اردو مضمون کا مختصر تعارف۔
+                SEO_DESCRIPTION: موبائل ایپلیکیشن کے بارے میں مکمل اردو رہنمائی۔
+                SEO_KEYWORDS: موبائل ایپ, ایپ ڈیولپمنٹ
+                TAGS: موبائل, رہنمائی
+                ---
+                <article><h1>اردو عنوان</h1><p>یہ مکمل اردو مضمون ہے۔</p></article>
+                END PORTFOLIO-CONTENT -->`,
+            },
+            published: { $t: '2026-09-08T10:00:00.000Z' },
+            link: [{ rel: 'alternate', href: 'https://example.blogspot.com/different-review.html' }],
+          }],
+        },
+      }),
+    })));
+
+    const posts = await getAllPosts();
+
+    expect(posts).toHaveLength(2);
+    expect(posts[0]).toMatchObject({
+      title: 'Complete mobile application review',
+      seoTitle: 'Mobile Application Review and Development Guide',
+      slug: 'mobile-application-review',
+      excerpt: 'A short portfolio card description.',
+      seoDescription: 'A focused Google search description for the English article.',
+      seoKeywords: ['mobile application', 'React Native', 'app development', 'Mobile', 'Development'],
+      lang: 'en',
+      image: 'https://blogger.googleusercontent.com/example/s1200/mobile.jpg',
+      translations: [{ lang: 'ur', url: '/blog/mobile-application-review-ur' }],
+    });
+    expect(posts[0].contentHtml).toContain('The complete English portfolio article.');
+    expect(posts[0].contentHtml).not.toContain('visible Blogger review');
+    expect(posts[0].contentHtml).not.toContain('<script>');
+    expect(posts[1]).toMatchObject({
+      title: 'موبائل ایپلیکیشن کا مکمل جائزہ',
+      slug: 'mobile-application-review-ur',
+      lang: 'ur',
+      translations: [{ lang: 'en', url: '/blog/mobile-application-review' }],
+    });
+    expect(posts[1].contentHtml).toContain('یہ مکمل اردو مضمون ہے۔');
+  });
 });
