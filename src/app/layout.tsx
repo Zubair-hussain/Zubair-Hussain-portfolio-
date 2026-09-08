@@ -32,9 +32,10 @@ const jetbrainsMono = JetBrains_Mono({
   preload: false,
 });
 
-const cloudflareAnalyticsToken = process.env.NEXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN;
-const googleAnalyticsId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
-const googleTagManagerId = process.env.NEXT_PUBLIC_GTM_ID;
+// Hardcoded fallbacks so analytics always work on Cloudflare (env vars may not be available at build time)
+const cloudflareAnalyticsToken = process.env.NEXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN || '9029794e0891475bbc93bd66f5a36bb2';
+const googleAnalyticsId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || 'G-ZYH5HM0HG6';
+const googleTagManagerId = process.env.NEXT_PUBLIC_GTM_ID || 'GTM-MQV8P8VM';
 const openGraphLocales: Record<string, string> = {
   en: 'en_US',
   ur: 'ur_PK',
@@ -102,11 +103,8 @@ export async function generateMetadata(): Promise<Metadata> {
       shortcut: '/icons/favicon.svg',
     },
     manifest: '/manifest.json',
-    // Only emit the verification tag when the code is actually configured,
-    // so we never ship a bogus google-site-verification meta tag.
-    ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
-      ? { verification: { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION } }
-      : {}),
+    // Hardcoded so the verification tag is always present on Cloudflare
+    verification: { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || 'nGpyeodnALLFRAfui20FeVsfXIL4hWulCPwzdyaLwyU' },
   };
 }
 
