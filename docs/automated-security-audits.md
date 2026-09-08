@@ -19,7 +19,10 @@ The manual trigger accepts an optional production URL. For scheduled runs, set t
 4. The production audit checks the homepage, `robots.txt`, `sitemap.xml`, HTTPS canonicals, description length, and every sitemap URL.
 5. Lighthouse checks the homepage and `/blog` for crawlability, console errors, accessibility, best practices, SEO, and performance regressions.
 
-Lighthouse HTML and JSON reports are retained as workflow artifacts for 30 days.
+Lighthouse HTML and JSON reports are exported to `lighthouse-reports/` and
+retained as workflow artifacts for 30 days. In a completed workflow run, open
+the run summary and download `lighthouse-production-<run-id>` from the
+**Artifacts** section.
 
 ## Notifications and emailed reports
 

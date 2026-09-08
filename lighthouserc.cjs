@@ -26,7 +26,9 @@ module.exports = {
     },
     upload: {
       target: 'filesystem',
-      outputDir: '.lighthouseci',
+      // Keep exported reports outside LHCI's hidden working directory.
+      // actions/upload-artifact@v4 excludes hidden files by default.
+      outputDir: 'lighthouse-reports',
     },
   },
 };
