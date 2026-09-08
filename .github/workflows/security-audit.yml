@@ -133,8 +133,22 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
+      - name: Email Lighthouse report
+        if: always()
+        shell: bash
+        env:
+          AUDIT_STATUS: ${{ job.status }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          REPORT_DIR: .lighthouseci
+          SMTP_SERVER: ${{ secrets.AUDIT_SMTP_SERVER }}
+          SMTP_PORT: ${{ secrets.AUDIT_SMTP_PORT }}
+          SMTP_USERNAME: ${{ secrets.AUDIT_EMAIL_USERNAME }}
+          SMTP_PASSWORD: ${{ secrets.AUDIT_EMAIL_PASSWORD }}
+          EMAIL_TO: ${{ secrets.AUDIT_EMAIL_TO }}
+        run: bash .github/scripts/email-lighthouse-report.sh
+
   notify:
-    name: Notify on failure
+    name: Open issue on failure
     needs: [security, production-audit]
     if: >-
       always() &&

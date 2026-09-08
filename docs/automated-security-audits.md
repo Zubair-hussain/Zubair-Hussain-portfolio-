@@ -21,9 +21,29 @@ The manual trigger accepts an optional production URL. For scheduled runs, set t
 
 Lighthouse HTML and JSON reports are retained as workflow artifacts for 30 days.
 
-## Notifications
+## Notifications and emailed reports
 
-If the security scan or production audit fails, the workflow opens an issue named **Automated security or production audit failed** and assigns it to the repository owner. Later failures add comments to the same open issue instead of producing duplicates. GitHub sends the owner notifications according to their account settings.
+After every completed production audit, whether it passes or fails, the workflow
+sends an email containing the result, audited URL, workflow link, and a ZIP of
+the Lighthouse HTML/JSON reports. If Lighthouse stops before producing files,
+the completion email is still sent and directs the recipient to the logs.
+
+Configure these GitHub Actions repository secrets under **Settings → Secrets
+and variables → Actions**:
+
+| Secret | Required | Value |
+| --- | --- | --- |
+| `AUDIT_EMAIL_USERNAME` | Yes | SMTP login/sender email |
+| `AUDIT_EMAIL_PASSWORD` | Yes | SMTP password or app password |
+| `AUDIT_EMAIL_TO` | Yes | Recipient email |
+| `AUDIT_SMTP_SERVER` | No | Defaults to `smtp.gmail.com` |
+| `AUDIT_SMTP_PORT` | No | Defaults to `465`; port `587` uses STARTTLS |
+
+For Gmail, use a Google app password rather than the normal Google account
+password. The mail step skips safely, with an Actions notice, until all three
+required secrets exist.
+
+If the security scan or production audit fails, the workflow additionally opens an issue named **Automated security or production audit failed** and assigns it to the repository owner. Later failures add comments to the same open issue instead of producing duplicates. GitHub sends the owner notifications according to their account settings.
 
 The workflow needs the default `GITHUB_TOKEN` permissions declared in the workflow. CodeQL uploads require code scanning to be available for the repository.
 
@@ -35,4 +55,5 @@ Create an Actions repository variable named `PRODUCTION_URL` containing the cano
 https://zubairdeveloper.com
 ```
 
-No API token or email password is required for notifications. Repository Issues must remain enabled.
+Repository Issues must remain enabled for failure issues. SMTP secrets are
+required only for the always-on completion email described above.
