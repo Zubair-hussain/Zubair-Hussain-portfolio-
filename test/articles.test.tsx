@@ -42,9 +42,10 @@ vi.mock('framer-motion', () => {
     return MockMotionComponent;
   };
 
+  // Real framer-motion exposes both motion(Component) and motion.create(Component).
   return {
     useInView: () => true,
-    motion: Object.assign(factory, { div: factory('div'), a: factory('a') }),
+    motion: Object.assign(factory, { div: factory('div'), a: factory('a'), create: factory }),
   };
 });
 

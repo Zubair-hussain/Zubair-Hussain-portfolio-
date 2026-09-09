@@ -6,6 +6,11 @@ import { motion, useInView } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import { ArrowLeft, ArrowRight, ArrowUpRight, Clock, Newspaper, TrendingUp } from 'lucide-react';
 
+// Create the motion-wrapped Link ONCE at module scope. Calling motion(Link)
+// inside render is deprecated and produces a new component type every render,
+// which can cause remounts / hydration instability in React 19.
+const MotionLink = motion.create(Link);
+
 export interface Article {
   id: string;
   title: string;
@@ -126,7 +131,7 @@ export default function Articles({ initialArticles = [] }: { initialArticles?: A
             const linkProps = internal
               ? { href: article.url }
               : { href: article.url, target: '_blank', rel: 'noopener noreferrer' };
-            const Card = internal ? motion(Link) : motion.a;
+            const Card = internal ? MotionLink : motion.a;
 
             return (
               <Card
