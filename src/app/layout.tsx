@@ -191,6 +191,7 @@ export default async function RootLayout({
                   url: getSiteUrl(),
                   name: `${PROFILE.name} — ${PROFILE.role}`,
                   isPartOf: { '@id': `${getSiteUrl()}/#website` },
+                  mainEntity: { '@id': `${getSiteUrl()}/#person` },
                   about: { '@id': `${getSiteUrl()}/#person` },
                   inLanguage: 'en',
                 },

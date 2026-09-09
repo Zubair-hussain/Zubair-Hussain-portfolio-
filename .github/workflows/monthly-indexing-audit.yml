@@ -1,0 +1,79 @@
+name: Monthly Crawler and Search Console Audit
+
+on:
+  schedule:
+    # First day of each month at 08:30 Pakistan time (03:30 UTC).
+    - cron: '30 3 1 * *'
+  workflow_dispatch:
+    inputs:
+      site_url:
+        description: Production URL to audit (optional)
+        required: false
+        type: string
+
+concurrency:
+  group: monthly-indexing-audit
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  audit:
+    name: Crawl sitemap and inspect Google index status
+    runs-on: ubuntu-latest
+    env:
+      AUDIT_URL: ${{ inputs.site_url || vars.PRODUCTION_URL || 'https://zubair-hussain-portfolio.detroonshah.workers.dev' }}
+      SEARCH_CONSOLE_SITE_URL: ${{ vars.SEARCH_CONSOLE_SITE_URL }}
+      GOOGLE_SEARCH_CONSOLE_CREDENTIALS: ${{ secrets.GOOGLE_SEARCH_CONSOLE_CREDENTIALS }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Audit crawler access and Google index status
+        id: indexing-audit
+        continue-on-error: true
+        run: node .github/scripts/monthly-index-audit.mjs "$AUDIT_URL" artifacts/indexing-audit-report.md
+
+      - name: Upload monthly report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: monthly-indexing-audit-${{ github.run_id }}
+          path: artifacts/indexing-audit-report.md
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Open or update indexing issue
+        if: steps.indexing-audit.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          REPOSITORY_OWNER: ${{ github.repository_owner }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          TITLE="Monthly crawler or Google indexing audit failed"
+          BODY="The monthly crawler/Search Console audit found one or more problems.
+
+          Workflow run: ${RUN_URL}
+
+          Download the indexing report artifact for affected URLs and Google coverage details."
+          EXISTING=$(gh issue list --repo "$REPOSITORY" --state open --search "$TITLE in:title" --json number --jq '.[0].number // empty')
+          if [ -n "$EXISTING" ]; then
+            gh issue comment "$EXISTING" --repo "$REPOSITORY" --body "$BODY"
+          else
+            gh issue create --repo "$REPOSITORY" --title "$TITLE" --body "$BODY" --assignee "$REPOSITORY_OWNER" || \
+              gh issue create --repo "$REPOSITORY" --title "$TITLE" --body "$BODY"
+          fi
+
+      - name: Fail workflow when the audit found problems
+        if: steps.indexing-audit.outcome == 'failure'
+        run: exit 1

@@ -137,6 +137,10 @@ Failures open or update a GitHub issue so repository watchers are notified. Ligh
 
 See **[Automated security and production audits](./docs/automated-security-audits.md)** for setup, scheduling, checks, and notification behavior.
 
+The separate **Monthly Crawler and Search Console Audit** crawls every sitemap URL and can verify Google's index verdict when its read-only Search Console credentials are configured. See **[Monthly crawler and Google indexing audit](./docs/monthly-indexing-audit.md)** for setup and report details.
+
+The **Blogger Sitemap Submission** workflow also detects new Blogger URLs hourly and resubmits the changed sitemap through the authenticated Search Console API.
+
 For Cloudflare Workers Builds, use `npm run cf-build` as the build command and
 `npm run cf-deploy` as the deploy command. A plain `next build` does not create
 the `.open-next/worker.js` Worker entry point required by Wrangler.

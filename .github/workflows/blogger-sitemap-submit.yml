@@ -1,0 +1,87 @@
+name: Blogger Sitemap Submission
+
+on:
+  schedule:
+    # Blogger content is external to GitHub, so poll after the sitemap's 30-minute refresh window.
+    - cron: '17 * * * *'
+  workflow_dispatch:
+    inputs:
+      site_url:
+        description: Production URL to check (optional)
+        required: false
+        type: string
+
+concurrency:
+  group: blogger-sitemap-submission
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  submit-on-change:
+    name: Submit changed Blogger sitemap to Google
+    runs-on: ubuntu-latest
+    env:
+      AUDIT_URL: ${{ inputs.site_url || vars.PRODUCTION_URL || 'https://zubair-hussain-portfolio.detroonshah.workers.dev' }}
+      SEARCH_CONSOLE_SITE_URL: ${{ vars.SEARCH_CONSOLE_SITE_URL }}
+      GOOGLE_SEARCH_CONSOLE_CREDENTIALS: ${{ secrets.GOOGLE_SEARCH_CONSOLE_CREDENTIALS }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Read the current sitemap URL set
+        id: sitemap
+        run: node .github/scripts/detect-sitemap-change.mjs "$AUDIT_URL"
+
+      - name: Check whether this URL set was already submitted
+        id: sitemap-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .sitemap-monitor-cache
+          key: blogger-sitemap-${{ steps.sitemap.outputs.digest }}
+
+      - name: Submit changed sitemap to Search Console
+        id: submit
+        if: steps.sitemap-cache.outputs.cache-hit != 'true'
+        continue-on-error: true
+        run: node .github/scripts/submit-sitemap.mjs "$AUDIT_URL"
+
+      - name: Remember the submitted URL set
+        if: steps.sitemap-cache.outputs.cache-hit != 'true' && steps.submit.outcome == 'success'
+        uses: actions/cache/save@v4
+        with:
+          path: .sitemap-monitor-cache
+          key: blogger-sitemap-${{ steps.sitemap.outputs.digest }}
+
+      - name: Open configuration or submission issue
+        if: steps.submit.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          REPOSITORY_OWNER: ${{ github.repository_owner }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          TITLE="Blogger sitemap could not be submitted to Google"
+          BODY="A changed Blogger sitemap was detected, but its Search Console submission failed.
+
+          Workflow run: ${RUN_URL}
+
+          Confirm the Search Console API is enabled, the service-account secret is configured, and the service account has access to the exact Search Console property."
+          EXISTING=$(gh issue list --repo "$REPOSITORY" --state open --search "$TITLE in:title" --json number --jq '.[0].number // empty')
+          if [ -z "$EXISTING" ]; then
+            gh issue create --repo "$REPOSITORY" --title "$TITLE" --body "$BODY" --assignee "$REPOSITORY_OWNER" || \
+              gh issue create --repo "$REPOSITORY" --title "$TITLE" --body "$BODY"
+          fi
+
+      - name: Fail when sitemap submission failed
+        if: steps.submit.outcome == 'failure'
+        run: exit 1

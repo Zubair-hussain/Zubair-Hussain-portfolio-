@@ -7,6 +7,7 @@ export const revalidate = 1800;
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = getSiteUrl();
   const posts = await getAllPostSummaries();
+  const latestPostModified = posts[0]?.isoUpdated ? new Date(posts[0].isoUpdated) : new Date();
 
   const postEntries: MetadataRoute.Sitemap = posts.map((post) => ({
     url: `${siteUrl}/blog/${post.slug}`,
@@ -18,13 +19,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     {
       url: siteUrl,
-      lastModified: new Date(),
+      lastModified: latestPostModified,
       changeFrequency: 'monthly',
       priority: 1,
     },
     {
       url: `${siteUrl}/blog`,
-      lastModified: posts[0]?.isoUpdated ? new Date(posts[0].isoUpdated) : new Date(),
+      lastModified: latestPostModified,
       changeFrequency: 'weekly',
       priority: 0.8,
     },
