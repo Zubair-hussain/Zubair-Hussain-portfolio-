@@ -28,7 +28,12 @@ function getSigningKey(): string {
 }
 
 export async function GET() {
-  const calendlyUrl = process.env.CALENDLY_SCHEDULE_URL || PROFILE.actions.schedule.privateUrl;
+  const configuredUrl = process.env.CALENDLY_SCHEDULE_URL?.trim();
+  // The previous Calendly account/event was retired and now returns 404. An
+  // old Cloudflare variable must not override the current working profile URL.
+  const calendlyUrl = configuredUrl?.replace(/\/+$/, '') === 'https://calendly.com/detroonshah/30min'
+    ? PROFILE.actions.schedule.privateUrl
+    : configuredUrl || PROFILE.actions.schedule.privateUrl;
   const jwt = await createScheduleJwt(getSigningKey());
   const redirectUrl = buildScheduleRedirectUrl(calendlyUrl, jwt);
 

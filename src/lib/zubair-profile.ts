@@ -47,7 +47,7 @@ Cloudflare and Vercel.`,
     schedule: {
       label: 'Schedule a Call',
       publicPath: '/api/schedule',
-      privateUrl: 'https://calendly.com/detroonshah/30min',
+      privateUrl: 'https://calendly.com/zubai-hussain/30min',
       envKey: 'CALENDLY_SCHEDULE_URL',
     },
     introVideo: {

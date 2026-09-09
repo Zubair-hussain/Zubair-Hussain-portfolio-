@@ -30,7 +30,7 @@ describe('profile links and intro video metadata', () => {
 
   it('uses the secure schedule route for public booking actions', () => {
     expect(PROFILE.actions.schedule.publicPath).toBe('/api/schedule');
-    expect(PROFILE.actions.schedule.privateUrl).toBe('https://calendly.com/detroonshah/30min');
+    expect(PROFILE.actions.schedule.privateUrl).toBe('https://calendly.com/zubai-hussain/30min');
     expect(PROFILE.links).toContainEqual({
       label: 'Schedule a Call',
       href: '/api/schedule',
