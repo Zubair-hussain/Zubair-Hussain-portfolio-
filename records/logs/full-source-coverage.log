@@ -1,0 +1,98 @@
+check: full-source-coverage
+started: 2026-09-12T09:51:42.424Z
+command: npx.cmd vitest run --coverage --coverage.include=src/**/*.{ts,tsx} --coverage.reporter=text --coverage.reporter=json-summary --coverage.reportsDirectory=coverage-full --maxWorkers=4
+exit_code: 1
+duration_ms: 36991
+
+ RUN  v4.1.11 C:/Users/Zubair Hussain/Desktop/Zubair-portfolio/Zubair-Hussain-portfolio-
+      Coverage enabled with v8
+
+
+ Test Files  19 passed (19)
+      Tests  57 passed (57)
+   Start at  02:51:46
+   Duration  32.53s (transform 1.39s, setup 18.68s, import 6.26s, tests 5.78s, environment 72.30s)
+
+ % Coverage report from v8
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------------|---------|----------|---------|---------|-------------------
+All files          |   30.64 |    23.49 |   25.83 |   31.85 |                   
+ app               |   46.61 |    44.44 |   32.25 |   51.48 |                   
+  layout.tsx       |       0 |        0 |       0 |       0 | 10-149            
+  not-found.tsx    |   85.93 |    74.41 |   76.92 |   89.65 | 74-76,82,86,206   
+  ...aph-image.tsx |       0 |      100 |       0 |       0 | 4-11              
+  page.tsx         |       0 |      100 |       0 |       0 | 11-40             
+  robots.ts        |       0 |      100 |       0 |       0 | 4-8               
+  sitemap.ts       |       0 |        0 |       0 |       0 | 5-19              
+ app/api/chat      |       0 |        0 |       0 |       0 |                   
+  route.ts         |       0 |        0 |       0 |       0 | 25-310            
+ app/api/contact   |       0 |        0 |       0 |       0 |                   
+  route.ts         |       0 |        0 |       0 |       0 | 4-34              
+ ...irebase-config |       0 |        0 |       0 |       0 |                   
+  route.ts         |       0 |        0 |       0 |       0 | 7-46              
+ app/api/schedule  |   77.77 |       50 |   66.66 |   81.25 |                   
+  route.ts         |   77.77 |       50 |   66.66 |   81.25 | 15-20,27          
+ ...ggest-timeline |       0 |        0 |       0 |       0 |                   
+  route.ts         |       0 |        0 |       0 |       0 | 9-50              
+ ...i/verify-email |   83.87 |       70 |     100 |   83.87 |                   
+  route.ts         |   83.87 |       70 |     100 |   83.87 | 34,53,60,68,98    
+ app/blog          |       0 |        0 |       0 |       0 |                   
+  page.tsx         |       0 |        0 |       0 |       0 | 13-177            
+ app/blog/[slug]   |       0 |        0 |       0 |       0 |                   
+  page.tsx         |       0 |        0 |       0 |       0 | 20-394            
+ components/3d     |    26.2 |    13.63 |   22.03 |   27.86 |                   
+  ...rSequence.tsx |   40.42 |    19.56 |   39.39 |   42.69 | ...62-265,281-289 
+  Globe.tsx        |       0 |        0 |       0 |       0 | 1-83              
+  Hero3D.tsx       |       0 |        0 |       0 |       0 | 1-290             
+ ...nents/sections |   16.79 |     9.89 |   14.28 |   17.42 |                   
+  About.tsx        |       0 |        0 |       0 |       0 | 1-147             
+  Achievements.tsx |       0 |        0 |       0 |       0 | 1-88              
+  Articles.tsx     |   89.13 |    63.63 |   85.71 |   92.85 | 67,193,223        
+  ClientLogos.tsx  |       0 |        0 |       0 |       0 | 1-91              
+  FAQ.tsx          |       0 |        0 |       0 |       0 | 1-137             
+  Hero.tsx         |       0 |      100 |       0 |       0 | 5-22              
+  HeroCTA.tsx      |   82.14 |    58.33 |   55.55 |   84.61 | 75-102,129        
+  HeroContent.tsx  |       0 |        0 |       0 |       0 | 1-296             
+  Projects.tsx     |       0 |        0 |       0 |       0 | 1-450             
+  Services.tsx     |       0 |        0 |       0 |       0 | 1-128             
+  Skills.tsx       |       0 |        0 |       0 |       0 | 1-245             
+  Testimonials.tsx |       0 |        0 |       0 |       0 | 1-645             
+ components/ui     |   12.31 |     4.54 |      10 |   12.35 |                   
+  AIChatbox.tsx    |       0 |        0 |       0 |       0 | 1-263             
+  BackToTop.tsx    |       0 |        0 |       0 |       0 | 1-25              
+  ...ieConsent.tsx |   96.15 |     62.5 |    87.5 |   95.83 | 24                
+  CustomCursor.tsx |       0 |        0 |       0 |       0 | 1-59              
+  ...ientTools.tsx |   71.42 |       60 |      40 |      90 | 22,29             
+  ...gWhatsApp.tsx |       0 |        0 |       0 |       0 | 1-47              
+  Footer.tsx       |       0 |      100 |       0 |       0 | 1-65              
+  HireMeModal.tsx  |       0 |        0 |       0 |       0 | 1-430             
+  ...sProvider.tsx |       0 |        0 |       0 |       0 | 1-40              
+  Navigation.tsx   |       0 |        0 |       0 |       0 | 1-524             
+  ...lProgress.tsx |       0 |        0 |       0 |       0 | 1-22              
+  ...eProvider.tsx |   21.05 |        0 |   14.28 |   16.66 | 22-43             
+ hooks             |       0 |        0 |       0 |       0 |                   
+  ...tersection.ts |       0 |        0 |       0 |       0 | 1-49              
+ i18n              |       0 |        0 |       0 |       0 |                   
+  request.ts       |       0 |        0 |       0 |       0 | 4-14              
+ lib               |   69.19 |    54.92 |   72.72 |   72.75 |                   
+  ai.ts            |       0 |        0 |       0 |       0 | 5-30              
+  blog.ts          |   81.71 |     59.6 |   84.21 |   86.95 | ...82,727,760-771 
+  ...rification.ts |   71.42 |    67.74 |   83.33 |   79.16 | 69-80             
+  email.ts         |       0 |        0 |       0 |       0 | 5-60              
+  firebase-lazy.ts |       0 |        0 |       0 |       0 | 20-39             
+  firebase.ts      |       0 |        0 |       0 |       0 | 10-67             
+  ...e-security.ts |   94.87 |     87.5 |     100 |   97.14 | 44                
+  seo.ts           |       0 |        0 |       0 |       0 | 7-39              
+-------------------|---------|----------|---------|---------|-------------------
+
+=============================== Coverage summary ===============================
+Statements   : 30.64% ( 589/1922 )
+Branches     : 23.49% ( 320/1362 )
+Functions    : 25.83% ( 124/480 )
+Lines        : 31.85% ( 547/1717 )
+================================================================================
+ERROR: Coverage for lines (31.85%) does not meet global threshold (80%)
+ERROR: Coverage for functions (25.83%) does not meet global threshold (80%)
+ERROR: Coverage for statements (30.64%) does not meet global threshold (80%)
+ERROR: Coverage for branches (23.49%) does not meet global threshold (60%)

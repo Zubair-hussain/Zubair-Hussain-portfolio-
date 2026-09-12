@@ -1,0 +1,75 @@
+check: unit-tests
+started: 2026-09-12T09:51:12.317Z
+command: npm.cmd test -- --reporter=verbose
+exit_code: 0
+duration_ms: 30096
+
+> zubair-hussain-portfolio@1.0.0 test
+> vitest run --reporter=verbose
+
+
+ RUN  v4.1.11 C:/Users/Zubair Hussain/Desktop/Zubair-portfolio/Zubair-Hussain-portfolio-
+
+ ✓ test/articles-api.test.ts > articles api > maps Blogger feed entries into article cards with latest trending metadata 246ms
+ ✓ test/articles-api.test.ts > articles api > returns an empty post list if Blogger is unavailable 3ms
+ ✓ test/deferred-client-tools.test.tsx > DeferredClientTools > keeps non-critical client tools out of the initial render 255ms
+ ✓ test/cookie-consent.test.tsx > CookieConsent > grants Google Consent Mode v2 storage after accepting cookies 1076ms
+ ✓ test/cookie-consent.test.tsx > CookieConsent > denies Google Consent Mode v2 storage after declining cookies 121ms
+ ✓ test/articles.test.tsx > Articles > links the section header to the internal blog index 1427ms
+ ✓ test/not-found-game.test.tsx > interactive 404 game > offers an accessible game and a direct way home 1218ms
+ ✓ test/not-found-game.test.tsx > interactive 404 game > supports keyboard movement and restarting 351ms
+ ✓ test/articles.test.tsx > Articles > renders live Blogger posts as on-site reader links with the most recent marked trending 278ms
+ ✓ test/hero-cta.test.tsx > HeroCTA > opens Calendly in an in-app scheduler dialog 1316ms
+ ✓ test/hero-cta.test.tsx > HeroCTA > keeps only the intro video as an external hero link 218ms
+ ✓ test/articles.test.tsx > Articles > lists only real on-site blog posts (no external placeholder cards) 385ms
+ ✓ test/avatar-sequence-perf.test.ts > Avatar sequence performance guardrails > shows the Vercel poster without a blocking full-screen splash 629ms
+ ✓ test/avatar-sequence-perf.test.ts > Avatar sequence performance guardrails > keeps initial frame preloads small for startup performance 2ms
+ ✓ test/avatar-sequence-perf.test.ts > Avatar sequence performance guardrails > generates stable padded Vercel frame URLs 2ms
+ ✓ test/avatar-sequence-perf.test.ts > Avatar sequence performance guardrails > holds frame targets within the sequence in both scroll directions 4ms
+ ✓ test/avatar-sequence-perf.test.ts > Avatar sequence performance guardrails > releases page scrolling only at the correct directional boundary 2ms
+ ✓ test/avatar-sequence-perf.test.ts > Avatar sequence performance guardrails > falls back to local JPEG frames with matching padding 1ms
+ ✓ test/articles.test.tsx > Articles > keeps live Blogger posts on-site (no new-tab redirect to Blogger) 160ms
+ ✓ test/articles.test.tsx > Articles > paginates 3 posts per page, revealing the rest on later pages 392ms
+ ✓ test/blog-deduplication.test.ts > Blogger source and translation deduplication > shows one index card per Blogger source while retaining translation routes 112ms
+ ✓ test/blog-deduplication.test.ts > Blogger source and translation deduplication > does not recommend another translation or duplicate of the current source 2ms
+ ✓ test/blog-normalization.test.ts > Blogger content normalization > extracts article content from a pasted HTML document and keeps metadata out of excerpts 171ms
+ ✓ test/blog-normalization.test.ts > Blogger content normalization > uses authored Blogger SEO and keeps only the primary translation pane 10ms
+ ✓ test/blog-normalization.test.ts > Blogger content normalization > uses hidden portfolio-only blocks and creates one SEO-ready post per language 21ms
+ ✓ test/blog-responsive.test.ts > mobile blog regression guards > keeps article content and sidebars shrinkable inside the reader grid 9ms
+ ✓ test/blog-responsive.test.ts > mobile blog regression guards > makes embedded content, code, and tables fit narrow screens 4ms
+ ✓ test/schedule-security.test.ts > schedule security > creates a short-lived JWT that verifies with the expected schedule claims 28ms
+ ✓ test/schedule-security.test.ts > schedule security > rejects tampered schedule JWTs 4ms
+ ✓ test/schedule-security.test.ts > schedule security > builds a Calendly redirect without caching the private URL in client code 7ms
+ ✓ test/email-verification.test.ts > email verification > normalizes addresses and rejects malformed or disposable email 13ms
+ ✓ test/email-verification.test.ts > email verification > accepts a normalized address when its domain publishes MX records 65ms
+ ✓ test/email-verification.test.ts > email verification > rejects a nonexistent domain without address fallback queries 10ms
+ ✓ test/email-verification.test.ts > email verification > supports the RFC address-record fallback when MX is absent 7ms
+ ✓ test/email-verification.test.ts > email verification > returns a retryable response when DNS verification is unavailable 14ms
+ ✓ test/profile-links.test.ts > profile links and intro video metadata > uses the canonical GitHub account for profile links and live project fetching 10ms
+ ✓ test/profile-links.test.ts > profile links and intro video metadata > uses the public Upwork service URL for hiring links 2ms
+ ✓ test/profile-links.test.ts > profile links and intro video metadata > uses the secure schedule route for public booking actions 1ms
+ ✓ test/profile-links.test.ts > profile links and intro video metadata > exports the intro video metadata for chatbot and page integrations 1ms
+ ✓ test/profile-links.test.ts > profile links and intro video metadata > keeps all public profile links tagged for global discovery 2ms
+ ✓ test/utils.test.ts > shared utility functions > merges conditional classes and resolves Tailwind conflicts 30ms
+ ✓ test/utils.test.ts > shared utility functions > formats ordinary and thousand-scale numbers 1ms
+ ✓ test/utils.test.ts > shared utility functions > creates lowercase URL slugs without punctuation 1ms
+ ✓ test/form-email-integration.test.ts > public form email verification integration > Hire Me form verifies the mail domain before accepting a submission 9ms
+ ✓ test/form-email-integration.test.ts > public form email verification integration > feedback form verifies the mail domain before accepting a submission 2ms
+ ✓ test/schedule-route.test.ts > schedule route > redirects retired Calendly configuration to the current live event 24ms
+ ✓ test/schedule-route.test.ts > schedule route > keeps a future configured Calendly override 6ms
+ ✓ test/next-security.test.ts > Next security headers > ships browser hardening headers for every route 29ms
+ ✓ test/next-security.test.ts > Next security headers > keeps the CSP restrictive while allowing required integrations 2ms
+ ✓ test/site-url.test.ts > public site URL > never emits localhost when a production build variable is missing 10ms
+ ✓ test/site-url.test.ts > public site URL > keeps localhost as the development-only fallback 1ms
+ ✓ test/site-url.test.ts > public site URL > normalizes a configured hostname to a secure origin 1ms
+ ✓ test/site-url.test.ts > public site URL > uses the configured aliases in priority order 1ms
+ ✓ test/site-url.test.ts > public site URL > returns the environment fallback for an invalid URL 1ms
+ ✓ test/firebase-config.test.ts > Firebase public runtime configuration > maps the public Cloudflare variables to Firebase Web SDK config 4ms
+ ✓ test/firebase-config.test.ts > Firebase public runtime configuration > does not enable Firebase when a required value is missing 1ms
+ ✓ test/firebase-config.test.ts > Firebase public runtime configuration > trims values and preserves every optional Firebase setting 1ms
+
+ Test Files  19 passed (19)
+      Tests  57 passed (57)
+   Start at  02:51:14
+   Duration  27.78s (transform 4.69s, setup 25.26s, import 15.29s, tests 8.91s, environment 107.65s)
+

@@ -1,0 +1,48 @@
+check: build
+started: 2026-09-12T09:52:33.192Z
+command: npm.cmd run build
+exit_code: 0
+duration_ms: 108438
+
+> zubair-hussain-portfolio@1.0.0 build
+> next build --webpack
+
+▲ Next.js 16.3.3 (webpack)
+- Environments: .env.production
+✓ Running next.config.mjs took 511ms
+- Experiments (use with caution):
+  · optimizePackageImports
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 20.0s
+  Skipping validation of types
+  Finished TypeScript config validation in 50ms ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/11) ...
+  Generating static pages using 7 workers (2/11) 
+  Generating static pages using 7 workers (5/11) 
+  Generating static pages using 7 workers (8/11) 
+✓ Generating static pages using 7 workers (11/11) in 8.8s
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+Route (app)                Revalidate  Expire
+┌ ƒ /
+├ ƒ /_not-found
+├ ƒ /api/articles
+├ ƒ /api/chat
+├ ƒ /api/contact
+├ ƒ /api/firebase-config
+├ ƒ /api/schedule
+├ ƒ /api/suggest-timeline
+├ ƒ /api/verify-email
+├ ƒ /blog
+├ ƒ /blog/[slug]
+├ ○ /opengraph-image
+├ ○ /robots.txt
+└ ○ /sitemap.xml                  30m      1y
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

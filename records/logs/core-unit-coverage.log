@@ -1,0 +1,73 @@
+check: core-unit-coverage
+started: 2026-09-12T09:52:19.417Z
+command: npm.cmd run test:coverage -- --reporter=verbose
+exit_code: 0
+duration_ms: 13774
+
+> zubair-hussain-portfolio@1.0.0 test:coverage
+> vitest run test/articles-api.test.ts test/blog-deduplication.test.ts test/blog-normalization.test.ts test/email-verification.test.ts test/firebase-config.test.ts test/profile-links.test.ts test/schedule-route.test.ts test/schedule-security.test.ts test/site-url.test.ts test/utils.test.ts --coverage --logHeapUsage --maxWorkers=2 --environment=node --reporter=verbose
+
+
+ RUN  v4.1.11 C:/Users/Zubair Hussain/Desktop/Zubair-portfolio/Zubair-Hussain-portfolio-
+      Coverage enabled with v8
+
+ ✓ test/blog-normalization.test.ts > Blogger content normalization > extracts article content from a pasted HTML document and keeps metadata out of excerpts 119ms 14 MB heap used
+ ✓ test/blog-normalization.test.ts > Blogger content normalization > uses authored Blogger SEO and keeps only the primary translation pane 10ms 15 MB heap used
+ ✓ test/blog-normalization.test.ts > Blogger content normalization > uses hidden portfolio-only blocks and creates one SEO-ready post per language 16ms 15 MB heap used
+ ✓ test/articles-api.test.ts > articles api > maps Blogger feed entries into article cards with latest trending metadata 112ms 21 MB heap used
+ ✓ test/articles-api.test.ts > articles api > returns an empty post list if Blogger is unavailable 2ms 21 MB heap used
+ ✓ test/blog-deduplication.test.ts > Blogger source and translation deduplication > shows one index card per Blogger source while retaining translation routes 98ms 14 MB heap used
+ ✓ test/blog-deduplication.test.ts > Blogger source and translation deduplication > does not recommend another translation or duplicate of the current source 4ms 14 MB heap used
+ ✓ test/email-verification.test.ts > email verification > normalizes addresses and rejects malformed or disposable email 7ms 20 MB heap used
+ ✓ test/email-verification.test.ts > email verification > accepts a normalized address when its domain publishes MX records 19ms 20 MB heap used
+ ✓ test/email-verification.test.ts > email verification > rejects a nonexistent domain without address fallback queries 3ms 21 MB heap used
+ ✓ test/email-verification.test.ts > email verification > supports the RFC address-record fallback when MX is absent 3ms 21 MB heap used
+ ✓ test/email-verification.test.ts > email verification > returns a retryable response when DNS verification is unavailable 3ms 21 MB heap used
+ ✓ test/schedule-route.test.ts > schedule route > redirects retired Calendly configuration to the current live event 20ms 20 MB heap used
+ ✓ test/schedule-route.test.ts > schedule route > keeps a future configured Calendly override 2ms 20 MB heap used
+ ✓ test/schedule-security.test.ts > schedule security > creates a short-lived JWT that verifies with the expected schedule claims 31ms 19 MB heap used
+ ✓ test/schedule-security.test.ts > schedule security > rejects tampered schedule JWTs 3ms 19 MB heap used
+ ✓ test/schedule-security.test.ts > schedule security > builds a Calendly redirect without caching the private URL in client code 4ms 19 MB heap used
+ ✓ test/utils.test.ts > shared utility functions > merges conditional classes and resolves Tailwind conflicts 15ms 17 MB heap used
+ ✓ test/utils.test.ts > shared utility functions > formats ordinary and thousand-scale numbers 1ms 17 MB heap used
+ ✓ test/utils.test.ts > shared utility functions > creates lowercase URL slugs without punctuation 1ms 17 MB heap used
+ ✓ test/profile-links.test.ts > profile links and intro video metadata > uses the canonical GitHub account for profile links and live project fetching 8ms 14 MB heap used
+ ✓ test/profile-links.test.ts > profile links and intro video metadata > uses the public Upwork service URL for hiring links 2ms 14 MB heap used
+ ✓ test/profile-links.test.ts > profile links and intro video metadata > uses the secure schedule route for public booking actions 1ms 14 MB heap used
+ ✓ test/profile-links.test.ts > profile links and intro video metadata > exports the intro video metadata for chatbot and page integrations 1ms 14 MB heap used
+ ✓ test/profile-links.test.ts > profile links and intro video metadata > keeps all public profile links tagged for global discovery 1ms 14 MB heap used
+ ✓ test/firebase-config.test.ts > Firebase public runtime configuration > maps the public Cloudflare variables to Firebase Web SDK config 9ms 14 MB heap used
+ ✓ test/firebase-config.test.ts > Firebase public runtime configuration > does not enable Firebase when a required value is missing 1ms 14 MB heap used
+ ✓ test/firebase-config.test.ts > Firebase public runtime configuration > trims values and preserves every optional Firebase setting 2ms 14 MB heap used
+ ✓ test/site-url.test.ts > public site URL > never emits localhost when a production build variable is missing 7ms 14 MB heap used
+ ✓ test/site-url.test.ts > public site URL > keeps localhost as the development-only fallback 1ms 14 MB heap used
+ ✓ test/site-url.test.ts > public site URL > normalizes a configured hostname to a secure origin 0ms 14 MB heap used
+ ✓ test/site-url.test.ts > public site URL > uses the configured aliases in priority order 0ms 14 MB heap used
+ ✓ test/site-url.test.ts > public site URL > returns the environment fallback for an invalid URL 0ms 14 MB heap used
+
+ Test Files  10 passed (10)
+      Tests  33 passed (33)
+   Start at  02:52:23
+   Duration  9.65s (transform 639ms, setup 9.63s, import 1.47s, tests 572ms, environment 4ms)
+
+ % Coverage report from v8
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------------|---------|----------|---------|---------|-------------------
+All files          |   83.53 |    65.07 |   86.74 |   87.81 |                   
+ app/api/schedule  |   77.77 |       50 |   66.66 |   81.25 |                   
+  route.ts         |   77.77 |       50 |   66.66 |   81.25 | 15-20,27          
+ ...i/verify-email |   83.87 |       70 |     100 |   83.87 |                   
+  route.ts         |   83.87 |       70 |     100 |   83.87 | 34,53,60,68,98    
+ lib               |   83.61 |    65.23 |   86.48 |   88.42 |                   
+  blog.ts          |   81.71 |     59.6 |   84.21 |   86.95 | ...82,727,760-771 
+  ...rification.ts |   71.42 |    67.74 |   83.33 |   79.16 | 69-80             
+  ...e-security.ts |   94.87 |     87.5 |     100 |   97.14 | 44                
+-------------------|---------|----------|---------|---------|-------------------
+
+=============================== Coverage summary ===============================
+Statements   : 83.53% ( 345/413 )
+Branches     : 65.07% ( 231/355 )
+Functions    : 86.74% ( 72/83 )
+Lines        : 87.81% ( 317/361 )
+================================================================================

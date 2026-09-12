@@ -4,7 +4,17 @@ import reactHooks from 'eslint-plugin-react-hooks';
 
 const eslintConfig = [
   {
-    ignores: ['.next/**', 'out/**', 'dist/**', 'next-env.d.ts'],
+    ignores: [
+      '.next/**',
+      'out/**',
+      'dist/**',
+      'coverage/**',
+      'coverage-full/**',
+      'records/**',
+      '.open-next/**',
+      '.wrangler/**',
+      'next-env.d.ts',
+    ],
   },
   ...nextVitals,
   ...nextTypescript,

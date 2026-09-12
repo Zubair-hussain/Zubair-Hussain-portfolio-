@@ -22,10 +22,10 @@ Each run writes its summary to the GitHub Actions job summary and uploads `index
 
 The URL Inspection API reports the version currently known to Google's index; it does not perform a live indexing request or force Google to crawl a page. After deploying a structured-data fix, use Search Console's validation flow manually for the affected issue.
 
-## Automatic Blogger sitemap submission
+## New-blog SEO readiness email
 
-The `Blogger Sitemap Submission` workflow checks the production sitemap hourly. It hashes the URL set and submits `sitemap.xml` through the authenticated Search Console API only when the set changes, such as after a new Blogger post appears. Successfully submitted URL sets are cached, so unchanged sitemaps are not repeatedly submitted.
+The `New Blog SEO Readiness Audit` workflow checks the production sitemap hourly and keeps a cached baseline of blog URLs. Its first run only creates the baseline. On later runs, each newly discovered `/blog/` URL is checked for an HTTP 200 response, canonical URL, indexability, title, description, one H1, Open Graph and X/Twitter metadata, and Article/BlogPosting structured data.
 
-This workflow uses the same `GOOGLE_SEARCH_CONSOLE_CREDENTIALS` secret and `SEARCH_CONSOLE_SITE_URL` variable described above. Because sitemap submission needs write access, the service account authorizes the `webmasters` scope. A missing credential or rejected submission fails the workflow and opens one GitHub issue without adding repeated comments every hour.
+When every newly discovered post passes, the workflow emails the URLs to `AUDIT_EMAIL_TO` and tells the recipient to submit them manually with Search Console's URL Inspection screen. Failed posts do not produce a readiness email; their report is available as a workflow artifact. The workflow never calls a Google API and does not submit a sitemap or request indexing.
 
-Google's general Indexing API is restricted to job-posting and livestream pages, so it must not be used for ordinary blog posts. Sitemap submission informs Google about the changed sitemap but does not guarantee or force indexing.
+Email uses the required `AUDIT_EMAIL_USERNAME`, `AUDIT_EMAIL_PASSWORD`, and `AUDIT_EMAIL_TO` secrets documented in `automated-security-audits.md`. `AUDIT_SMTP_SERVER` and `AUDIT_SMTP_PORT` remain optional. A post that fails its audit, or whose email cannot be delivered, remains outside the saved baseline so the workflow retries it on the next run.

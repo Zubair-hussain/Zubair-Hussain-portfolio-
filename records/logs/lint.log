@@ -1,0 +1,209 @@
+check: lint
+started: 2026-09-12T09:49:00.894Z
+command: npm.cmd run lint
+exit_code: 0
+duration_ms: 112895
+
+> zubair-hussain-portfolio@1.0.0 lint
+> eslint .
+
+
+C:\Users\Zubair Hussain\Desktop\Zubair-portfolio\Zubair-Hussain-portfolio-\src\components\3d\AvatarSequence.tsx
+  313:18  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  342:18  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+C:\Users\Zubair Hussain\Desktop\Zubair-portfolio\Zubair-Hussain-portfolio-\src\components\3d\Hero3D.tsx
+  226:5  warning  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\Zubair Hussain\Desktop\Zubair-portfolio\Zubair-Hussain-portfolio-\src\components\3d\Hero3D.tsx:226:5
+  224 |   useEffect(() => {
+  225 |     const mq = window.matchMedia('(max-width: 768px)');
+> 226 |     setIsMobile(mq.matches);
+      |     ^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  227 |     const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+  228 |     mq.addEventListener('change', handler);
+  229 |     return () => mq.removeEventListener('change', handler);  react-hooks/set-state-in-effect
+
+C:\Users\Zubair Hussain\Desktop\Zubair-portfolio\Zubair-Hussain-portfolio-\src\components\sections\HeroContent.tsx
+  41:48  warning  'stats' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+
+C:\Users\Zubair Hussain\Desktop\Zubair-portfolio\Zubair-Hussain-portfolio-\src\components\sections\Skills.tsx
+    3:28  warning  'useCallback' is defined but never used                                   @typescript-eslint/no-unused-vars
+    3:47  warning  'useEffect' is defined but never used                                     @typescript-eslint/no-unused-vars
+    4:29  warning  'useReducedMotion' is defined but never used                              @typescript-eslint/no-unused-vars
+   10:3   warning  'Search' is defined but never used                                        @typescript-eslint/no-unused-vars
+   56:13  warning  'inView' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+  244:48  warning  'i' is defined but never used. Allowed unused args must match /^_/u       @typescript-eslint/no-unused-vars
+
+C:\Users\Zubair Hussain\Desktop\Zubair-portfolio\Zubair-Hussain-portfolio-\src\components\sections\Testimonials.tsx
+   31:26  warning  A `require()` style import is forbidden                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     @typescript-eslint/no-require-imports
+   91:14  warning  'err' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             @typescript-eslint/no-unused-vars
+   91:19  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    @typescript-eslint/no-explicit-any
+  286:7   warning  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\Zubair Hussain\Desktop\Zubair-portfolio\Zubair-Hussain-portfolio-\src\components\sections\Testimonials.tsx:286:7
+  284 |   useEffect(() => {
+  285 |     if (current >= reviews.length && reviews.length > 0) {
+> 286 |       setCurrent(0);
+      |       ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  287 |     }
+  288 |   }, [reviews.length]);
+  289 |  react-hooks/set-state-in-effect
+  288:6   warning  React Hook useEffect has a missing dependency: 'current'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  react-hooks/exhaustive-deps
+
+C:\Users\Zubair Hussain\Desktop\Zubair-portfolio\Zubair-Hussain-portfolio-\src\components\ui\AIChatbox.tsx
+   73:11  warning  Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+C:\Users\Zubair Hussain\Desktop\Zubair-portfolio\Zubair-Hussain-portfolio-\src\components\ui\AIChatbox.tsx:73:11
+  71 |
+  72 |     const userMessage: Message = {
+> 73 |       id: Date.now().toString(),
+     |           ^^^^^^^^^^ Cannot call impure function
+  74 |       role: 'user',
+  75 |       content: text,
+  76 |     };                                                                                                                                                                        react-hooks/purity
+  106:14  warning  Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+C:\Users\Zubair Hussain\Desktop\Zubair-portfolio\Zubair-Hussain-portfolio-\src\components\ui\AIChatbox.tsx:106:14
+  104 |
+  105 |       const botMessage: Message = {
+> 106 |         id: (Date.now() + 1).toString(),
+      |              ^^^^^^^^^^ Cannot call impure function
+  107 |         role: 'assistant',
+  108 |         // ✅ Agent returns data.reply — not data.response or data.message
+  109 |         content: data.reply || "I'm having trouble responding right now. Please try again!",  react-hooks/purity
+  116:14  warning  Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+C:\Users\Zubair Hussain\Desktop\Zubair-portfolio\Zubair-Hussain-portfolio-\src\components\ui\AIChatbox.tsx:116:14
+  114 |       console.error('Chat error:', error);
+  115 |       const errorMsg: Message = {
+> 116 |         id: (Date.now() + 1).toString(),
+      |              ^^^^^^^^^^ Cannot call impure function
+  117 |         role: 'assistant',
+  118 |         content:
+  119 |           "Having trouble connecting right now. Reach Zubair directly on WhatsApp: wa.me/+923708729117",      react-hooks/purity
+
+C:\Users\Zubair Hussain\Desktop\Zubair-portfolio\Zubair-Hussain-portfolio-\src\components\ui\HireMeModal.tsx
+   11:3   warning  'Calendar' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+   54:7   warning  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\Zubair Hussain\Desktop\Zubair-portfolio\Zubair-Hussain-portfolio-\src\components\ui\HireMeModal.tsx:54:7
+  52 |   useEffect(() => {
+  53 |     if (isOpen && preselectedService) {
+> 54 |       setFormData((prev) => ({
+     |       ^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  55 |         ...prev,
+  56 |         category: preselectedService.category,
+  57 |         selectedService: preselectedService.title,                                                                                                                                                                                                                                                                      react-hooks/set-state-in-effect
+   69:7   warning  Error: Cannot access variable before it is declared
+
+`getAiSuggestion` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+C:\Users\Zubair Hussain\Desktop\Zubair-portfolio\Zubair-Hussain-portfolio-\src\components\ui\HireMeModal.tsx:69:7
+  67 |   useEffect(() => {
+  68 |     if (step === 3 && formData.category && formData.location) {
+> 69 |       getAiSuggestion();
+     |       ^^^^^^^^^^^^^^^ `getAiSuggestion` accessed before it is declared
+  70 |     }
+  71 |   }, [step]);
+  72 |
+
+C:\Users\Zubair Hussain\Desktop\Zubair-portfolio\Zubair-Hussain-portfolio-\src\components\ui\HireMeModal.tsx:73:3
+  71 |   }, [step]);
+  72 |
+> 73 |   const getAiSuggestion = async () => {
+     |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 74 |     setLoading(true);
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 75 |     const suggestion = await suggestTimeline(
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 76 |       formData.category,
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 77 |       formData.location,
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 78 |     );
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 79 |     setAiSuggestion(suggestion);
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 80 |     setLoading(false);
+     | ^^^^^^^^^^^^^^^^^^^^^
+> 81 |   };
+     | ^^^^^ `getAiSuggestion` is declared here
+  82 |
+  83 |   const handleNext = async () => {
+  84 |     const newErrors: Record<string, string> = {};  react-hooks/immutability
+   71:6   warning  React Hook useEffect has missing dependencies: 'formData.category', 'formData.location', and 'getAiSuggestion'. Either include them or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            react-hooks/exhaustive-deps
+  152:21  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      @typescript-eslint/no-explicit-any
+
+C:\Users\Zubair Hussain\Desktop\Zubair-portfolio\Zubair-Hussain-portfolio-\src\components\ui\Navigation.tsx
+   33:5    warning  Do not use `window.location.assign()` to navigate to internal Next.js pages. Use `redirect()` in the render phase, or `useRouter().push()` in Client Components' event handlers instead. See: https://nextjs.org/docs/messages/no-location-assign-relative-destination                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     @next/next/no-location-assign-relative-destination
+   97:20   warning  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\Zubair Hussain\Desktop\Zubair-portfolio\Zubair-Hussain-portfolio-\src\components\ui\Navigation.tsx:97:20
+   95 |       .find(r => r.startsWith('locale='))
+   96 |       ?.split('=')[1];
+>  97 |     if (urlLocale) setLocale(urlLocale);
+      |                    ^^^^^^^^^ Avoid calling setState() directly within an effect
+   98 |     else if (saved) setLocale(saved);
+   99 |
+  100 |     const onScroll = () => setScrolled(window.scrollY > 60);  react-hooks/set-state-in-effect
+  115:5    warning  Do not use `window.location.assign()` to navigate to internal Next.js pages. Use `redirect()` in the render phase, or `useRouter().push()` in Client Components' event handlers instead. See: https://nextjs.org/docs/messages/no-location-assign-relative-destination                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     @next/next/no-location-assign-relative-destination
+  221:57   warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   @typescript-eslint/no-explicit-any
+  241:101  warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   @typescript-eslint/no-explicit-any
+  292:55   warning  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   @typescript-eslint/no-explicit-any
+
+C:\Users\Zubair Hussain\Desktop\Zubair-portfolio\Zubair-Hussain-portfolio-\src\components\ui\ThemeProvider.tsx
+  27:5  warning  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\Zubair Hussain\Desktop\Zubair-portfolio\Zubair-Hussain-portfolio-\src\components\ui\ThemeProvider.tsx:27:5
+  25 |     const savedTheme = localStorage.getItem('theme');
+  26 |     const saved: Theme = savedTheme === 'light' ? 'light' : 'dark';
+> 27 |     setThemeState(saved);
+     |     ^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  28 |     document.documentElement.setAttribute('data-theme', saved);
+  29 |   }, []);
+  30 |  react-hooks/set-state-in-effect
+
+C:\Users\Zubair Hussain\Desktop\Zubair-portfolio\Zubair-Hussain-portfolio-\src\lib\email.ts
+   9:64  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  35:17  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  47:67  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+✖ 33 problems (0 errors, 33 warnings)
+

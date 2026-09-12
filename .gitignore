@@ -6,6 +6,7 @@
 
 # testing
 /coverage
+/coverage-full
 /.lighthouseci/
 /.sitemap-monitor-cache/
 

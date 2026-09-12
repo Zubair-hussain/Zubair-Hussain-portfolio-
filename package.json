@@ -13,6 +13,8 @@
     "start": "next start",
     "lint": "eslint .",
     "test": "vitest run",
+    "test:coverage": "vitest run test/articles-api.test.ts test/blog-deduplication.test.ts test/blog-normalization.test.ts test/email-verification.test.ts test/firebase-config.test.ts test/profile-links.test.ts test/schedule-route.test.ts test/schedule-security.test.ts test/site-url.test.ts test/utils.test.ts --coverage --logHeapUsage --maxWorkers=2 --environment=node",
+    "records:generate": "node .github/scripts/generate-records.mjs",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
@@ -52,6 +54,7 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.5",
     "@types/three": "^0.168.0",
+    "@vitest/coverage-v8": "^4.1.11",
     "autoprefixer": "^10.4.20",
     "esbuild": "^0.28.2",
     "eslint": "^9.9.0",

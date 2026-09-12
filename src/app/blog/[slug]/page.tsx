@@ -1,14 +1,20 @@
-import type { Metadata } from 'next';
-import Link from 'next/link';
-import { notFound } from 'next/navigation';
-import { ArrowLeft, ArrowUpRight, Clock, Sparkles } from 'lucide-react';
-import Navigation from '@/components/ui/Navigation';
-import Footer from '@/components/ui/Footer';
-import ThemeProvider from '@/components/ui/ThemeProvider';
-import DeferredClientTools from '@/components/ui/DeferredClientTools';
-import { getAllPostSummaries, getPostBySlug, getRelatedPosts } from '@/lib/blog';
-import { getSiteUrl } from '@/lib/site-url';
-import { PROFILE } from '@/lib/zubair-profile';
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { ArrowLeft, ArrowUpRight, Clock, Sparkles } from "lucide-react";
+import Navigation from "@/components/ui/Navigation";
+import Footer from "@/components/ui/Footer";
+import ThemeProvider from "@/components/ui/ThemeProvider";
+import DeferredClientTools from "@/components/ui/DeferredClientTools";
+import { getBlogPageData, getPostBySlug, getRelatedPosts } from "@/lib/blog";
+import { getSiteUrl } from "@/lib/site-url";
+import { PROFILE } from "@/lib/zubair-profile";
+import {
+  jsonLd,
+  metaDescription,
+  readTimeToIsoDuration,
+  topicTags,
+} from "@/lib/seo";
 
 // Refetch the Blogger feed at most every 30 min; unknown slugs 404.
 export const revalidate = 1800;
@@ -19,109 +25,208 @@ interface PageProps {
 
 // BCP-47 → Open Graph locale, mirroring the root layout.
 const openGraphLocales: Record<string, string> = {
-  en: 'en_US',
-  ur: 'ur_PK',
-  es: 'es_ES',
-  hi: 'hi_IN',
-  ru: 'ru_RU',
-  de: 'de_DE',
+  en: "en_US",
+  ur: "ur_PK",
+  es: "es_ES",
+  hi: "hi_IN",
+  ru: "ru_RU",
+  de: "de_DE",
 };
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const post = await getPostBySlug(slug);
   const siteUrl = getSiteUrl();
 
   if (!post) {
     return {
-      title: 'Article not found',
+      title: "Article not found",
       robots: { index: false, follow: false },
     };
   }
 
   const canonical = `${siteUrl}/blog/${post.slug}`;
-  const images = post.image ? [{ url: post.image }] : [`${siteUrl}/opengraph-image`];
+  const title = post.seoTitle || post.title;
+  const description = metaDescription(post.seoDescription || post.excerpt);
+  const topics = topicTags(post.tags);
+  const images = post.image
+    ? [{ url: post.image, alt: post.title }]
+    : [
+        {
+          url: `${siteUrl}/opengraph-image`,
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+      ];
+  const translationUrls = post.translations.map((translation) => [
+    translation.lang,
+    translation.url.startsWith("http")
+      ? translation.url
+      : `${siteUrl}${translation.url}`,
+  ]);
+  const englishUrl =
+    post.lang === "en"
+      ? canonical
+      : translationUrls.find(([lang]) => lang === "en")?.[1];
   const languageAlternates = Object.fromEntries([
     [post.lang, canonical],
-    ...post.translations.map((translation) => [
-      translation.lang,
-      translation.url.startsWith('http') ? translation.url : `${siteUrl}${translation.url}`,
-    ]),
+    ...translationUrls,
+    // hreflang x-default only matters when the article exists in several languages.
+    ...(translationUrls.length > 0 && englishUrl
+      ? [["x-default", englishUrl]]
+      : []),
   ]);
 
   return {
     metadataBase: new URL(siteUrl),
-    title: post.seoTitle || post.title,
-    description: post.seoDescription,
+    title,
+    description,
     keywords: post.seoKeywords,
     authors: [{ name: PROFILE.name, url: siteUrl }],
+    creator: PROFILE.name,
+    publisher: PROFILE.name,
+    category: topics[0],
     alternates: {
       canonical,
       languages: languageAlternates,
     },
     openGraph: {
-      type: 'article',
+      type: "article",
       url: canonical,
-      title: post.seoTitle || post.title,
-      description: post.seoDescription,
-      siteName: 'Zubair Hussain Portfolio',
-      locale: openGraphLocales[post.lang] ?? 'en_US',
+      title,
+      description,
+      siteName: "Zubair Hussain Portfolio",
+      locale: openGraphLocales[post.lang] ?? "en_US",
       publishedTime: post.isoDate || undefined,
       modifiedTime: post.isoUpdated || post.isoDate || undefined,
-      authors: [PROFILE.name],
-      tags: post.tags,
+      authors: [siteUrl],
+      section: topics[0],
+      tags: topics.length ? topics : post.seoKeywords,
       images,
     },
     twitter: {
-      card: 'summary_large_image',
-      title: post.seoTitle || post.title,
-      description: post.seoDescription,
+      card: "summary_large_image",
+      title,
+      description,
       images,
     },
     robots: {
       index: true,
       follow: true,
-      googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 },
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+        "max-video-preview": -1,
+      },
+    },
+    other: {
+      "twitter:label1": "Written by",
+      "twitter:data1": PROFILE.name,
+      "twitter:label2": "Reading time",
+      "twitter:data2": post.readTime,
     },
   };
 }
 
 export default async function BlogPostPage({ params }: PageProps) {
   const { slug } = await params;
-  const [post, allPosts] = await Promise.all([getPostBySlug(slug), getAllPostSummaries()]);
+  const { post, summaries: allPosts } = await getBlogPageData(slug);
 
   if (!post) notFound();
 
   const related = getRelatedPosts(post, allPosts, 3);
-  const recent = allPosts.filter((item) => item.slug !== post.slug).slice(0, 5);
+  const recent = allPosts
+    .filter((item) => item.sourceUrl !== post.sourceUrl)
+    .slice(0, 5);
   const siteUrl = getSiteUrl();
   const canonical = `${siteUrl}/blog/${post.slug}`;
-  const isRtl = post.lang === 'ur';
-  const wasUpdated = Boolean(post.isoUpdated) && post.isoUpdated !== post.isoDate;
+  const isRtl = post.lang === "ur";
+  const wasUpdated =
+    Boolean(post.isoUpdated) && post.isoUpdated !== post.isoDate;
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'BlogPosting',
-    headline: post.title,
-    description: post.seoDescription,
+  const topics = topicTags(post.tags);
+  const timeRequired = readTimeToIsoDuration(post.readTime);
+  const articleLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "@id": `${canonical}#article`,
+    // Google truncates headlines past 110 characters in article rich results.
+    headline:
+      post.title.length > 110
+        ? `${post.title.slice(0, 109).trimEnd()}…`
+        : post.title,
+    ...(post.seoTitle && post.seoTitle !== post.title
+      ? { alternativeHeadline: post.seoTitle }
+      : {}),
+    description: post.seoDescription || post.excerpt,
     inLanguage: post.lang,
     datePublished: post.isoDate || undefined,
     dateModified: post.isoUpdated || post.isoDate || undefined,
-    author: { '@type': 'Person', name: PROFILE.name, url: siteUrl },
-    publisher: { '@type': 'Person', name: PROFILE.name },
-    mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
+    author: {
+      "@type": "Person",
+      "@id": `${siteUrl}/#person`,
+      name: PROFILE.name,
+      url: siteUrl,
+    },
+    publisher: {
+      "@type": "Person",
+      "@id": `${siteUrl}/#person`,
+      name: PROFILE.name,
+      url: siteUrl,
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": canonical,
+      url: canonical,
+      name: post.seoTitle || post.title,
+      isPartOf: { "@id": `${siteUrl}/#website` },
+      breadcrumb: { "@id": `${canonical}#breadcrumb` },
+      ...(related.length
+        ? { relatedLink: related.map((item) => `${siteUrl}${item.url}`) }
+        : {}),
+    },
+    isPartOf: {
+      "@type": "Blog",
+      "@id": `${siteUrl}/blog#blog`,
+      url: `${siteUrl}/blog`,
+    },
     url: canonical,
-    keywords: post.seoKeywords.join(', '),
-    ...(post.image ? { image: post.image } : {}),
+    // Google requires an image for Article rich results; fall back to the site card.
+    image: [post.image || `${siteUrl}/opengraph-image`],
+    keywords: post.seoKeywords.join(", "),
+    ...(topics[0] ? { articleSection: topics[0] } : {}),
+    ...(timeRequired ? { timeRequired } : {}),
+    ...(post.translations.length
+      ? {
+          workTranslation: post.translations.map((translation) => ({
+            "@type": "BlogPosting",
+            inLanguage: translation.lang,
+            url: translation.url.startsWith("http")
+              ? translation.url
+              : `${siteUrl}${translation.url}`,
+          })),
+        }
+      : {}),
   };
 
   const breadcrumbLd = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "@id": `${canonical}#breadcrumb`,
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: siteUrl },
-      { '@type': 'ListItem', position: 2, name: 'Articles', item: `${siteUrl}/#articles` },
-      { '@type': 'ListItem', position: 3, name: post.title, item: canonical },
+      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Articles",
+        item: `${siteUrl}/blog`,
+      },
+      { "@type": "ListItem", position: 3, name: post.title, item: canonical },
     ],
   };
 
@@ -129,14 +234,17 @@ export default async function BlogPostPage({ params }: PageProps) {
     <ThemeProvider>
       <Navigation />
 
-      <main id="main-content" className="section-padding relative overflow-hidden">
+      <main
+        id="main-content"
+        className="section-padding relative overflow-hidden"
+      >
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: jsonLd(articleLd) }}
         />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+          dangerouslySetInnerHTML={{ __html: jsonLd(breadcrumbLd) }}
         />
 
         <div className="container-custom">
@@ -148,27 +256,35 @@ export default async function BlogPostPage({ params }: PageProps) {
             All Articles
           </Link>
 
-          <div className="mt-8 grid gap-12 lg:grid-cols-[minmax(0,1fr)_320px]">
+          <div className="mt-8 grid min-w-0 gap-10 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-12">
             {/* ── Article body ── */}
-            <article lang={post.lang}>
+            <article lang={post.lang} className="min-w-0">
               <div className="flex flex-wrap items-center gap-3 text-xs font-mono text-[hsl(var(--muted-foreground))]">
                 {post.isoDate ? (
                   <time dateTime={post.isoDate}>{post.date}</time>
                 ) : (
                   <span>{post.date}</span>
                 )}
-                <span className="h-1 w-1 rounded-full bg-[hsl(var(--border))]" aria-hidden="true" />
+                <span
+                  className="h-1 w-1 rounded-full bg-[hsl(var(--border))]"
+                  aria-hidden="true"
+                />
                 <Clock size={11} aria-hidden="true" />
                 <span>{post.readTime}</span>
                 {wasUpdated && (
                   <>
-                    <span className="h-1 w-1 rounded-full bg-[hsl(var(--border))]" aria-hidden="true" />
+                    <span
+                      className="h-1 w-1 rounded-full bg-[hsl(var(--border))]"
+                      aria-hidden="true"
+                    />
                     <span>
-                      Updated{' '}
+                      Updated{" "}
                       <time dateTime={post.isoUpdated}>
-                        {new Intl.DateTimeFormat('en', { month: 'short', day: '2-digit', year: 'numeric' }).format(
-                          new Date(post.isoUpdated)
-                        )}
+                        {new Intl.DateTimeFormat("en", {
+                          month: "short",
+                          day: "2-digit",
+                          year: "numeric",
+                        }).format(new Date(post.isoUpdated))}
                       </time>
                     </span>
                   </>
@@ -195,7 +311,7 @@ export default async function BlogPostPage({ params }: PageProps) {
               <div
                 className="blog-content"
                 lang={post.lang}
-                dir={isRtl ? 'rtl' : 'ltr'}
+                dir={isRtl ? "rtl" : "ltr"}
                 // Content is Zubair's own Blogger post, sanitized in src/lib/blog.ts.
                 dangerouslySetInnerHTML={{ __html: post.contentHtml }}
               />
@@ -215,8 +331,13 @@ export default async function BlogPostPage({ params }: PageProps) {
                   />
                 </a>
                 {post.translations.length > 0 && (
-                  <nav aria-label="Article translations" className="flex flex-wrap items-center gap-2">
-                    <span className="text-xs text-[hsl(var(--muted-foreground))]">Translations:</span>
+                  <nav
+                    aria-label="Article translations"
+                    className="flex flex-wrap items-center gap-2"
+                  >
+                    <span className="text-xs text-[hsl(var(--muted-foreground))]">
+                      Translations:
+                    </span>
                     {post.translations.map((translation) => (
                       <a
                         key={`${translation.lang}-${translation.url}`}
@@ -234,7 +355,7 @@ export default async function BlogPostPage({ params }: PageProps) {
             </article>
 
             {/* ── Sidebar: suggestions + most recent ── */}
-            <aside className="flex flex-col gap-10">
+            <aside className="min-w-0 flex flex-col gap-10">
               {related.length > 0 && (
                 <section>
                   <h2 className="flex items-center gap-2 text-xs font-mono uppercase tracking-[0.3em] text-[hsl(var(--primary))]">
@@ -275,7 +396,11 @@ export default async function BlogPostPage({ params }: PageProps) {
                           href={item.url}
                           className="flex items-start gap-3 py-3 text-sm text-[hsl(var(--foreground)/0.85)] transition-colors hover:text-[hsl(var(--primary))]"
                         >
-                          <ArrowUpRight size={14} className="mt-0.5 shrink-0 text-[hsl(var(--primary))]" aria-hidden="true" />
+                          <ArrowUpRight
+                            size={14}
+                            className="mt-0.5 shrink-0 text-[hsl(var(--primary))]"
+                            aria-hidden="true"
+                          />
                           <span className="leading-snug">{item.title}</span>
                         </Link>
                       </li>
