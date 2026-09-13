@@ -178,7 +178,7 @@ const lines = [
   "",
   `- Checked: ${new Date().toISOString()}`,
   `- New posts: ${results.length}`,
-  `- Ready for manual Search Console submission: ${results.length - failed.length}`,
+  `- Passed SEO readiness checks: ${results.length - failed.length}`,
   `- Failed: ${failed.length}`,
   "",
   "| URL | Result | Warnings |",
@@ -212,6 +212,6 @@ if (failed.length) {
   process.exitCode = 1;
 } else {
   console.log(
-    `${results.length} new blog post(s) passed and can be submitted manually in Search Console.`,
+    `${results.length} new blog post(s) passed the SEO readiness audit.`,
   );
 }

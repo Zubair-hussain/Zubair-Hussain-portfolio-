@@ -356,7 +356,6 @@ async function writeReport(urls) {
     `- Site: ${site}`,
     `- Checked: ${new Date().toISOString()}`,
     `- Sitemap URLs: ${urls.length}`,
-    `- Google Search Console API: disabled`,
     `- External indexing requests: none`,
     `- Result: ${
       failures.length
@@ -511,6 +510,6 @@ if (failures.length) {
   process.exitCode = 1;
 } else {
   console.log(
-    `Audited ${urls.length} portfolio URL(s). No Google Search Console API requests were made.`,
+    `Audited ${urls.length} portfolio URL(s) without external indexing requests.`,
   );
 }

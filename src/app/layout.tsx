@@ -122,8 +122,6 @@ export async function generateMetadata(): Promise<Metadata> {
       shortcut: '/icons/favicon.svg',
     },
     manifest: '/manifest.json',
-    // Hardcoded so the verification tag is always present on Cloudflare
-    verification: { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || 'nGpyeodnALLFRAfui20FeVsfXIL4hWulCPwzdyaLwyU' },
   };
 }
 

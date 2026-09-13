@@ -69,4 +69,4 @@ with `hreflang` metadata, and displays translation links on the article page.
 4. Publish the Blogger post.
 5. Allow up to 30 minutes for the portfolio cache to refresh.
 6. Open every portfolio translation and confirm its heading, description,
-   image, and language link before requesting indexing in Search Console.
+   image, and language link before publishing or promoting the post.

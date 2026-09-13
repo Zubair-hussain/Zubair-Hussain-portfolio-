@@ -47,7 +47,6 @@ jobs:
             new-blog-seo-baseline-
 
       # This script only reads the portfolio sitemap.
-      # It does not contact Google Search Console.
       - name: Detect newly published portfolio blog posts
         id: sitemap
         run: |

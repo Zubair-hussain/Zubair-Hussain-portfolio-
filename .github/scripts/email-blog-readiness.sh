@@ -16,7 +16,7 @@ message_path="${RUNNER_TEMP:-/tmp}/new-blog-ready-${GITHUB_RUN_ID:-unknown}.txt"
 {
   printf 'From: %s\r\n' "$SMTP_USERNAME"
   printf 'To: %s\r\n' "$EMAIL_TO"
-  printf 'Subject: New blog passed SEO audit - ready for Google Search Console\r\n'
+  printf 'Subject: New blog passed the SEO readiness audit\r\n'
   printf 'Content-Type: text/plain; charset=UTF-8\r\n'
   printf '\r\n'
   printf 'Your new blog post passed the automated crawlability and SEO checks.\r\n\r\n'
@@ -24,7 +24,7 @@ message_path="${RUNNER_TEMP:-/tmp}/new-blog-ready-${GITHUB_RUN_ID:-unknown}.txt"
   while IFS= read -r url; do
     [[ -n "$url" ]] && printf -- '- %s\r\n' "$url"
   done < "$urls_file"
-  printf '\r\nSubmit each URL manually in Google Search Console using URL Inspection, then choose Request indexing.\r\n'
+  printf '\r\nReview the audited URLs and publish or promote them when ready.\r\n'
   printf 'Workflow run: %s\r\n' "$run_url"
   if [[ -f "$report_path" ]]; then
     printf '\r\nSEO audit report:\r\n'

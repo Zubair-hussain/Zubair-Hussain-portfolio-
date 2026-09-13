@@ -1,4 +1,4 @@
-name: Monthly Crawler and Search Console Audit
+name: Monthly Portfolio Audit
 
 on:
   schedule:
@@ -21,12 +21,10 @@ permissions:
 
 jobs:
   audit:
-    name: Crawl sitemap and inspect Google index status
+    name: Audit portfolio crawlability and metadata
     runs-on: ubuntu-latest
     env:
       AUDIT_URL: ${{ inputs.site_url || vars.PRODUCTION_URL || 'https://zubair-hussain-portfolio.detroonshah.workers.dev' }}
-      SEARCH_CONSOLE_SITE_URL: ${{ vars.SEARCH_CONSOLE_SITE_URL }}
-      GOOGLE_SEARCH_CONSOLE_CREDENTIALS: ${{ secrets.GOOGLE_SEARCH_CONSOLE_CREDENTIALS }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -36,7 +34,7 @@ jobs:
         with:
           node-version: 20
 
-      - name: Audit crawler access and Google index status
+      - name: Run local portfolio audit
         id: indexing-audit
         continue-on-error: true
         run: node .github/scripts/monthly-index-audit.mjs "$AUDIT_URL" artifacts/indexing-audit-report.md
@@ -60,12 +58,12 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          TITLE="Monthly crawler or Google indexing audit failed"
-          BODY="The monthly crawler/Search Console audit found one or more problems.
+          TITLE="Monthly portfolio audit failed"
+          BODY="The monthly portfolio audit found one or more problems.
 
           Workflow run: ${RUN_URL}
 
-          Download the indexing report artifact for affected URLs and Google coverage details."
+          Download the audit report artifact for details about the affected URLs."
           EXISTING=$(gh issue list --repo "$REPOSITORY" --state open --search "$TITLE in:title" --json number --jq '.[0].number // empty')
           if [ -n "$EXISTING" ]; then
             gh issue comment "$EXISTING" --repo "$REPOSITORY" --body "$BODY"
