@@ -1,18 +1,19 @@
-name: New Blog SEO Readiness Audit
+name: New Blog Portfolio SEO Audit
 
 on:
   schedule:
-    # Blogger content is external to GitHub, so check after its refresh window.
+    # Check the production portfolio regularly for newly published blog URLs.
     - cron: "17 * * * *"
+
   workflow_dispatch:
     inputs:
       site_url:
-        description: Production URL to check (optional)
+        description: Production portfolio URL to audit (optional)
         required: false
         type: string
 
 concurrency:
-  group: new-blog-seo-audit
+  group: new-blog-portfolio-seo-audit
   cancel-in-progress: true
 
 permissions:
@@ -20,10 +21,12 @@ permissions:
 
 jobs:
   audit-new-posts:
-    name: Audit newly discovered blog posts
+    name: Audit newly discovered portfolio blog posts
     runs-on: ubuntu-latest
+
     env:
       AUDIT_URL: ${{ inputs.site_url || vars.PRODUCTION_URL || 'https://zubair-hussain-portfolio.detroonshah.workers.dev' }}
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -33,21 +36,31 @@ jobs:
         with:
           node-version: 20
 
-      - name: Restore the most recent blog URL baseline
+      # Restore the previous sitemap state so existing URLs
+      # are not repeatedly treated as newly published posts.
+      - name: Restore blog URL baseline
         uses: actions/cache/restore@v4
         with:
           path: .sitemap-monitor-cache
           key: new-blog-seo-baseline-current
-          restore-keys: new-blog-seo-baseline-
+          restore-keys: |
+            new-blog-seo-baseline-
 
-      - name: Find newly published blog posts
+      # This script only reads the portfolio sitemap.
+      # It does not contact Google Search Console.
+      - name: Detect newly published portfolio blog posts
         id: sitemap
-        run: node .github/scripts/detect-sitemap-change.mjs "$AUDIT_URL"
+        run: |
+          node .github/scripts/detect-sitemap-change.mjs "$AUDIT_URL"
 
+      # Audit only URLs newly discovered in the portfolio sitemap.
       - name: Audit SEO readiness of new posts
         id: seo-audit
         if: steps.sitemap.outputs.new_count != '0'
-        run: node .github/scripts/audit-new-blog-posts.mjs .sitemap-monitor-cache/new-urls.txt artifacts/new-blog-seo-report.md
+        run: |
+          node .github/scripts/audit-new-blog-posts.mjs \
+            .sitemap-monitor-cache/new-urls.txt \
+            artifacts/new-blog-seo-report.md
 
       - name: Upload SEO audit report
         if: always() && steps.sitemap.outputs.new_count != '0'
@@ -58,28 +71,42 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Email posts ready for manual Search Console submission
+      # Email is only a notification containing the audit result.
+      # It does not submit URLs or sitemaps to Google.
+      - name: Email portfolio SEO audit result
         id: readiness-email
-        if: steps.sitemap.outputs.new_count != '0' && steps.seo-audit.outcome == 'success'
+        if: >-
+          steps.sitemap.outputs.new_count != '0' &&
+          steps.seo-audit.outcome == 'success'
         shell: bash
+
         env:
           RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
           NEW_URLS_FILE: .sitemap-monitor-cache/new-urls.txt
           REPORT_PATH: artifacts/new-blog-seo-report.md
+
           SMTP_SERVER: ${{ secrets.AUDIT_SMTP_SERVER }}
           SMTP_PORT: ${{ secrets.AUDIT_SMTP_PORT }}
           SMTP_USERNAME: ${{ secrets.AUDIT_EMAIL_USERNAME }}
           SMTP_PASSWORD: ${{ secrets.AUDIT_EMAIL_PASSWORD }}
           EMAIL_TO: ${{ secrets.AUDIT_EMAIL_TO }}
-        run: bash .github/scripts/email-blog-readiness.sh
 
-      - name: Save the updated blog URL baseline
+        run: |
+          bash .github/scripts/email-blog-readiness.sh
+
+      # Save the new sitemap state only after the audit has completed.
+      - name: Save updated blog URL baseline
         if: >-
           always() &&
           steps.sitemap.outcome == 'success' &&
           steps.sitemap.outputs.changed == 'true' &&
-          (steps.sitemap.outputs.new_count == '0' ||
-          (steps.seo-audit.outcome == 'success' && steps.readiness-email.outcome == 'success'))
+          (
+            steps.sitemap.outputs.new_count == '0' ||
+            (
+              steps.seo-audit.outcome == 'success' &&
+              steps.readiness-email.outcome == 'success'
+            )
+          )
         uses: actions/cache/save@v4
         with:
           path: .sitemap-monitor-cache
