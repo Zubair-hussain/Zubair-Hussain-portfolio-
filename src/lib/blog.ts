@@ -580,16 +580,7 @@ function mapEntry(entry: BloggerFeedEntry, index: number): BlogPost[] {
       variant.slug ||
       (variantIndex === 0 || lang === "en" ? baseSlug : `${baseSlug}-${lang}`);
     const contentTags = variant.tags.length ? variant.tags : categories;
-    const tags =
-      index === 0
-        ? [
-            "Most Recent",
-            "Trending",
-            ...(contentTags.length ? contentTags.slice(0, 1) : ["Blog"]),
-          ]
-        : contentTags.length
-          ? contentTags
-          : ["Blog"];
+    const tags = contentTags.length ? contentTags : ["Blog"];
     const seoDescription =
       variant.seoDescription || bloggerDescription || clamp(plainText, 220);
     const seoKeywords = [
@@ -619,7 +610,7 @@ function mapEntry(entry: BloggerFeedEntry, index: number): BlogPost[] {
         : firstImage(variant.contentHtml, entry.media$thumbnail?.url),
       lang,
       translations: [],
-      trending: index === 0,
+      trending: false,
     };
   });
 
@@ -677,7 +668,7 @@ async function getPostsFromApi(
       pageToken = data.nextPageToken;
     } while (pageToken && posts.length < HARD_CAP);
 
-    return posts.slice(0, HARD_CAP).flatMap(mapApiPost);
+    return sortAndMarkNewest(posts.slice(0, HARD_CAP).flatMap(mapApiPost));
   } catch {
     return null;
   }
@@ -718,7 +709,7 @@ async function fetchPosts(includeContent: boolean): Promise<BlogPost[]> {
 
   const uniqueSlugs = new Set<string>();
   const uniqueSourcesAndLanguages = new Set<string>();
-  return rawEntries.flatMap(mapEntry).filter((post) => {
+  const uniquePosts = rawEntries.flatMap(mapEntry).filter((post) => {
     const sourceLanguageKey = `${post.sourceUrl}|${post.lang}`;
     if (
       uniqueSlugs.has(post.slug) ||
@@ -729,6 +720,39 @@ async function fetchPosts(includeContent: boolean): Promise<BlogPost[]> {
     uniqueSourcesAndLanguages.add(sourceLanguageKey);
     return true;
   });
+
+  return sortAndMarkNewest(uniquePosts);
+}
+
+/**
+ * Blogger normally returns newest posts first, but make that contract explicit
+ * so homepage rotation, the archive, and the sitemap cannot depend on API order.
+ */
+function sortAndMarkNewest(posts: BlogPost[]): BlogPost[] {
+  const sorted = [...posts].sort((a, b) => {
+    const aTime = Date.parse(a.isoDate);
+    const bTime = Date.parse(b.isoDate);
+    const safeATime = Number.isNaN(aTime) ? 0 : aTime;
+    const safeBTime = Number.isNaN(bTime) ? 0 : bTime;
+    return safeBTime - safeATime;
+  });
+
+  return sorted.map((post, index) => ({
+    ...post,
+    tags:
+      index === 0
+        ? [
+            "Most Recent",
+            "Trending",
+            ...post.tags.filter(
+              (tag) => tag !== "Most Recent" && tag !== "Trending",
+            ).slice(0, 1),
+          ]
+        : post.tags.filter(
+            (tag) => tag !== "Most Recent" && tag !== "Trending",
+          ),
+    trending: index === 0,
+  }));
 }
 
 /** One card per Blogger source; translations stay available from the reader. */
