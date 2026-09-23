@@ -5,7 +5,7 @@ import Hero from '@/components/sections/Hero';
 import Footer from '@/components/ui/Footer';
 import ThemeProvider from '@/components/ui/ThemeProvider';
 import DeferredClientTools from '@/components/ui/DeferredClientTools';
-import { getAllPostSummaries } from '@/lib/blog';
+import { getLatestPostSummaries } from '@/lib/blog';
 import { HOMEPAGE_ARTICLE_LIMIT } from '@/lib/blog-config';
 
 // Lazy loaded sections for performance
@@ -30,8 +30,7 @@ const SectionFallback = () => (
 
 export default async function HomePage() {
   await getTranslations('nav');
-  const articlePosts = (await getAllPostSummaries())
-    .slice(0, HOMEPAGE_ARTICLE_LIMIT)
+  const articlePosts = (await getLatestPostSummaries(HOMEPAGE_ARTICLE_LIMIT))
     .map((post) => ({
       id: post.slug,
       title: post.title,
