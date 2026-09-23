@@ -3,7 +3,7 @@ name: Security and Production Audit
 on:
   deployment_status:
   workflow_run:
-    workflows: [Build]
+    workflows: [Build, Deploy to Cloudflare]
     types: [completed]
     branches: [main, _prod]
   schedule:
@@ -31,7 +31,8 @@ jobs:
     name: Dependency and CodeQL security scan
     if: >-
       (github.event_name != 'deployment_status' || github.event.deployment_status.state == 'success') &&
-      (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success')
+      (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success') &&
+      (github.event_name != 'workflow_run' || github.event.workflow_run.name == 'Deploy to Cloudflare' || github.event.workflow_run.head_branch == 'main')
     runs-on: ubuntu-latest
     steps:
       - name: Check out deployed revision
@@ -79,7 +80,8 @@ jobs:
     if: >-
       always() &&
       (github.event_name != 'deployment_status' || github.event.deployment_status.state == 'success') &&
-      (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success')
+      (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success') &&
+      (github.event_name != 'workflow_run' || github.event.workflow_run.name == 'Deploy to Cloudflare' || github.event.workflow_run.head_branch == 'main')
     runs-on: ubuntu-latest
     env:
       AUDIT_URL: ${{ inputs.site_url || vars.PRODUCTION_URL || github.event.deployment_status.environment_url || 'https://zubair-hussain-portfolio.detroonshah.workers.dev' }}
@@ -90,7 +92,7 @@ jobs:
           ref: ${{ github.event.deployment.sha || github.event.workflow_run.head_sha || github.sha }}
 
       - name: Wait for Cloudflare propagation
-        if: github.event_name == 'workflow_run'
+        if: github.event_name == 'workflow_run' && github.event.workflow_run.name == 'Build'
         run: sleep 90
 
       - name: Set up Node.js
