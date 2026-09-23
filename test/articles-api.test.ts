@@ -8,42 +8,43 @@ describe('articles api', () => {
   });
 
   it('maps Blogger feed entries into article cards with latest trending metadata', async () => {
+    const fetchMock = vi.fn(async (_input: unknown) => ({
+      ok: true,
+      json: async () => ({
+        feed: {
+          entry: [
+            {
+              id: { $t: 'post-2' },
+              title: { $t: 'Cursor Origin vs GitHub' },
+              summary: { $t: '<p>Git hosting comparison for 2026.</p>' },
+              published: { $t: '2026-08-26T10:00:00.000Z' },
+              link: [
+                {
+                  rel: 'alternate',
+                  href: 'https://zubair-xovato.blogspot.com/2026/08/cursor-origin-vs-github.html',
+                },
+              ],
+            },
+            {
+              id: { $t: 'post-1' },
+              title: { $t: 'GTA 6 Map Leak Explained' },
+              content: { $t: '<p>Vice City and Leonida details explained for readers.</p>' },
+              published: { $t: '2026-08-28T10:00:00.000Z' },
+              category: [{ term: 'Gaming' }],
+              link: [
+                {
+                  rel: 'alternate',
+                  href: 'https://zubair-xovato.blogspot.com/2026/08/gta-6-map-leak-explained.html',
+                },
+              ],
+            },
+          ],
+        },
+      }),
+    }));
     vi.stubGlobal(
       'fetch',
-      vi.fn(async () => ({
-        ok: true,
-        json: async () => ({
-          feed: {
-            entry: [
-              {
-                id: { $t: 'post-2' },
-                title: { $t: 'Cursor Origin vs GitHub' },
-                summary: { $t: '<p>Git hosting comparison for 2026.</p>' },
-                published: { $t: '2026-08-26T10:00:00.000Z' },
-                link: [
-                  {
-                    rel: 'alternate',
-                    href: 'https://zubair-xovato.blogspot.com/2026/08/cursor-origin-vs-github.html',
-                  },
-                ],
-              },
-              {
-                id: { $t: 'post-1' },
-                title: { $t: 'GTA 6 Map Leak Explained' },
-                content: { $t: '<p>Vice City and Leonida details explained for readers.</p>' },
-                published: { $t: '2026-08-28T10:00:00.000Z' },
-                category: [{ term: 'Gaming' }],
-                link: [
-                  {
-                    rel: 'alternate',
-                    href: 'https://zubair-xovato.blogspot.com/2026/08/gta-6-map-leak-explained.html',
-                  },
-                ],
-              },
-            ],
-          },
-        }),
-      }))
+      fetchMock,
     );
 
     const response = await GET();
@@ -63,6 +64,8 @@ describe('articles api', () => {
     });
     expect(data.posts[1].tags).toEqual(['Blog']);
     expect(data.posts[1].url).toBe('/blog/cursor-origin-vs-github');
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(String(fetchMock.mock.calls[0][0])).toContain('max-results=6');
   });
 
   it('returns an empty post list if Blogger is unavailable', async () => {
