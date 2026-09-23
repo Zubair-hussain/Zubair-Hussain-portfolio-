@@ -6,6 +6,7 @@ import Footer from '@/components/ui/Footer';
 import ThemeProvider from '@/components/ui/ThemeProvider';
 import DeferredClientTools from '@/components/ui/DeferredClientTools';
 import { getAllPostSummaries } from '@/lib/blog';
+import { HOMEPAGE_ARTICLE_LIMIT } from '@/lib/blog-config';
 
 // Lazy loaded sections for performance
 const About = lazy(() => import('@/components/sections/About'));
@@ -18,6 +19,9 @@ const Services = lazy(() => import('@/components/sections/Services'));
 const FAQ = lazy(() => import('@/components/sections/FAQ'));
 const Articles = lazy(() => import('@/components/sections/Articles'));
 
+// Keep the homepage in step with the Blogger-backed article cache.
+export const revalidate = 1800;
+
 const SectionFallback = () => (
   <div className="section-padding container-custom">
     <div className="h-64 glass rounded-2xl animate-pulse" />
@@ -26,16 +30,19 @@ const SectionFallback = () => (
 
 export default async function HomePage() {
   await getTranslations('nav');
-  const articlePosts = (await getAllPostSummaries()).map((post) => ({
-    id: post.slug,
-    title: post.title,
-    excerpt: post.excerpt,
-    tags: post.tags,
-    readTime: post.readTime,
-    date: post.date,
-    url: post.url,
-    trending: post.trending,
-  }));
+  const articlePosts = (await getAllPostSummaries())
+    .slice(0, HOMEPAGE_ARTICLE_LIMIT)
+    .map((post) => ({
+      id: post.slug,
+      title: post.title,
+      excerpt: post.excerpt,
+      tags: post.tags,
+      readTime: post.readTime,
+      date: post.date,
+      isoDate: post.isoDate,
+      url: post.url,
+      trending: post.trending,
+    }));
 
   return (
     <ThemeProvider>
