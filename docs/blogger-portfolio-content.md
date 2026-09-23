@@ -70,3 +70,47 @@ with `hreflang` metadata, and displays translation links on the article page.
 5. Allow up to 30 minutes for the portfolio cache to refresh.
 6. Open every portfolio translation and confirm its heading, description,
    image, and language link before publishing or promoting the post.
+
+The portfolio sorts the feed by publication time and automatically exposes the
+newest six posts on the homepage (three cards per page). Older posts remain in
+the complete `/blog` archive and sitemap. The homepage and Blogger fetch cache
+both revalidate every 1,800 seconds, so no homepage metadata or card list needs
+manual editing when a post is published.
+
+## Canonical and duplicate-content policy
+
+The portfolio URL is the intended primary search URL for portfolio articles:
+
+```text
+https://zubairdeveloper.com/blog/article-slug
+```
+
+The application already reinforces that choice by using a self-referencing
+canonical on each portfolio article, linking internally to the portfolio URL,
+listing only portfolio URLs in `sitemap.xml`, and using the portfolio URL in
+`BlogPosting` structured data.
+
+Do not publish the same complete article as visible content on both Blogger and
+the portfolio while letting both copies self-canonicalize. The preferred
+authoring method is the template above: keep the complete portfolio article in
+the hidden `PORTFOLIO-CONTENT` block and make the visible Blogger post a short,
+distinct summary that links readers to the portfolio article.
+
+If an existing Blogger post contains the same complete article, resolve it in
+Blogger because this repository cannot change Blogger's response headers or
+document `<head>`:
+
+1. Prefer replacing the visible Blogger copy with a short, distinct summary
+   and a link to its portfolio URL.
+2. If Blogger must remain only a private CMS/source, use Blogger's per-post
+   **Custom robots tags → No index** setting for the duplicate post. Do not use
+   `robots.txt` as a canonicalization mechanism.
+3. If the Blogger theme can emit a correct per-post cross-domain
+   `rel="canonical"`, point it to the matching portfolio URL. Do not emit a
+   second conflicting canonical.
+4. Inspect both URLs in Google Search Console after the change and confirm the
+   portfolio URL is Google's selected canonical.
+
+Keep the portfolio article self-canonical even after changing Blogger. Google
+treats canonical declarations as signals, so the sitemap, internal links,
+structured data, and Blogger-side behavior should all agree.
