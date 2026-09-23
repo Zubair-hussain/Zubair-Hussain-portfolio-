@@ -1,5 +1,6 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
+import { renderToStaticMarkup } from 'react-dom/server';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import Articles from '../src/components/sections/Articles';
 import { PROFILE } from '../src/lib/zubair-profile';
@@ -45,7 +46,12 @@ vi.mock('framer-motion', () => {
   // Real framer-motion exposes both motion(Component) and motion.create(Component).
   return {
     useInView: () => true,
-    motion: Object.assign(factory, { div: factory('div'), a: factory('a'), create: factory }),
+    motion: Object.assign(factory, {
+      div: factory('div'),
+      a: factory('a'),
+      article: factory('article'),
+      create: factory,
+    }),
   };
 });
 
@@ -130,6 +136,31 @@ describe('Articles', () => {
     expect(second).not.toHaveAttribute('target');
   });
 
+  it('renders crawlable semantic article markup from server-provided posts', () => {
+    const markup = renderToStaticMarkup(
+      <Articles
+        initialArticles={[
+          {
+            id: 'semantic-post',
+            title: 'Semantic article title',
+            excerpt: 'A meaningful excerpt that is present in the initial HTML.',
+            tags: ['SEO'],
+            readTime: '4 min',
+            date: 'Sep 22, 2026',
+            isoDate: '2026-09-22T09:00:00+05:00',
+            url: '/blog/semantic-post',
+          },
+        ]}
+      />,
+    );
+
+    expect(markup).toContain('<article');
+    expect(markup).toContain('<time dateTime="2026-09-22T09:00:00+05:00"');
+    expect(markup).toContain('Semantic article title');
+    expect(markup).toContain('A meaningful excerpt that is present in the initial HTML.');
+    expect(markup.match(/href="\/blog\/semantic-post"/g)).toHaveLength(2);
+  });
+
   it('paginates 3 posts per page, revealing the rest on later pages', async () => {
     const posts = Array.from({ length: 5 }, (_, i) => ({
       id: `post-${i}`,
@@ -163,5 +194,35 @@ describe('Articles', () => {
     expect(await screen.findByRole('link', { name: /open article: post number 3/i })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /open article: post number 4/i })).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: /open article: post number 0/i })).not.toBeInTheDocument();
+  });
+
+  it('limits the homepage to the six newest posts', async () => {
+    const posts = Array.from({ length: 8 }, (_, i) => ({
+      id: `limited-post-${i}`,
+      title: `Limited Post ${i}`,
+      excerpt: `Excerpt ${i}`,
+      tags: ['Blog'],
+      readTime: '3 min',
+      date: 'Sep 2026',
+      isoDate: `2026-09-${String(23 - i).padStart(2, '0')}`,
+      url: `/blog/limited-post-${i}`,
+    }));
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => ({
+        ok: true,
+        json: async () => ({ posts }),
+      })),
+    );
+
+    render(<Articles initialArticles={posts} />);
+
+    expect(screen.getByRole('button', { name: /page 2/i })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /page 3/i })).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /page 2/i }));
+    expect(await screen.findByRole('link', { name: /open article: limited post 5/i })).toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /open article: limited post 6/i })).not.toBeInTheDocument();
   });
 });
