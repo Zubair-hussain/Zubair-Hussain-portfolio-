@@ -141,6 +141,16 @@ The separate **Monthly Portfolio Audit** checks every sitemap URL for crawlabili
 
 The **New Blog SEO Readiness Audit** also detects new Blogger URLs hourly, validates their SEO metadata, and emails a readiness report. It does not submit URLs or request indexing.
 
+For GitHub-triggered production deployments, use the **Deploy to Cloudflare**
+workflow. It runs type checks and tests, executes `npm run deploy`, and records
+a GitHub `production` deployment when Cloudflare finishes. The workflow runs on
+pushes to `_prod` and can also be started manually from the Actions tab.
+
+Configure these repository secrets before using the deployment workflow:
+`CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`. Configure the optional
+`PRODUCTION_URL` repository variable when moving from the Workers URL to a
+custom domain.
+
 For Cloudflare Workers Builds, use `npm run cf-build` as the build command and
 `npm run cf-deploy` as the deploy command. A plain `next build` does not create
 the `.open-next/worker.js` Worker entry point required by Wrangler.
