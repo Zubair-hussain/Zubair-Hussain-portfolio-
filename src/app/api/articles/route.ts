@@ -1,15 +1,15 @@
 import { NextResponse } from 'next/server';
 import { PROFILE } from '@/lib/zubair-profile';
-import { getAllPostSummaries } from '@/lib/blog';
+import { getLatestPostSummaries } from '@/lib/blog';
 import { HOMEPAGE_ARTICLE_LIMIT } from '@/lib/blog-config';
 
 export async function GET() {
-  const allPosts = await getAllPostSummaries();
+  const allPosts = await getLatestPostSummaries(HOMEPAGE_ARTICLE_LIMIT);
 
   // Card-shaped payload for the home "Articles" grid. Note `url` now points to
   // the on-site reader (/blog/[slug]) so posts render here instead of
   // redirecting to Blogger; `sourceUrl` keeps the original permalink.
-  const posts = allPosts.slice(0, HOMEPAGE_ARTICLE_LIMIT).map((post) => ({
+  const posts = allPosts.map((post) => ({
     id: post.slug,
     slug: post.slug,
     title: post.title,
