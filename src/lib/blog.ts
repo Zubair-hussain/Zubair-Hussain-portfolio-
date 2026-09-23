@@ -100,19 +100,27 @@ const HARD_CAP = 600;
 const BLOGGER_BLOG_ID = "8399042753426695965";
 const BLOGGER_API_KEY = process.env.BLOGGER_API_KEY?.trim();
 
-function feedUrl(startIndex: number, includeContent: boolean) {
+function feedUrl(
+  startIndex: number,
+  includeContent: boolean,
+  maxResults = PAGE_SIZE,
+) {
   const base = includeContent
     ? PROFILE.sources.blogFeed
     : PROFILE.sources.blogFeed.replace("/posts/default?", "/posts/summary?");
-  return `${base}&max-results=${PAGE_SIZE}&start-index=${startIndex}`;
+  return `${base}&max-results=${maxResults}&start-index=${startIndex}`;
 }
 
-function apiUrl(includeContent: boolean, pageToken?: string) {
+function apiUrl(
+  includeContent: boolean,
+  pageToken?: string,
+  maxResults = 50,
+) {
   const params = new URLSearchParams({
     key: BLOGGER_API_KEY || "",
     fetchBodies: String(includeContent),
     fetchImages: "true",
-    maxResults: "50",
+    maxResults: String(maxResults),
     status: "live",
   });
   if (pageToken) params.set("pageToken", pageToken);
@@ -646,18 +654,24 @@ function mapApiPost(post: BloggerApiPost, index: number): BlogPost[] {
 
 async function getPostsFromApi(
   includeContent: boolean,
+  sourceLimit = HARD_CAP,
 ): Promise<BlogPost[] | null> {
   if (!BLOGGER_API_KEY) return null;
 
   const posts: BloggerApiPost[] = [];
   let pageToken: string | undefined;
+  const safeSourceLimit = Math.max(1, Math.min(sourceLimit, HARD_CAP));
 
   try {
     do {
-      const response = await fetch(apiUrl(includeContent, pageToken), {
-        headers: { Accept: "application/json" },
-        next: { revalidate: 1800 },
-      });
+      const remaining = safeSourceLimit - posts.length;
+      const response = await fetch(
+        apiUrl(includeContent, pageToken, Math.min(50, remaining)),
+        {
+          headers: { Accept: "application/json" },
+          next: { revalidate: 1800 },
+        },
+      );
       if (!response.ok) return null;
 
       const data = (await response.json()) as {
@@ -666,9 +680,11 @@ async function getPostsFromApi(
       };
       posts.push(...(data.items || []));
       pageToken = data.nextPageToken;
-    } while (pageToken && posts.length < HARD_CAP);
+    } while (pageToken && posts.length < safeSourceLimit);
 
-    return sortAndMarkNewest(posts.slice(0, HARD_CAP).flatMap(mapApiPost));
+    return sortAndMarkNewest(
+      posts.slice(0, safeSourceLimit).flatMap(mapApiPost),
+    );
   } catch {
     return null;
   }
@@ -679,18 +695,31 @@ async function getPostsFromApi(
  * not capped (a blog with 5 or 200 posts both work). Never throws — returns
  * whatever it collected (possibly []) on any failure.
  */
-async function fetchPosts(includeContent: boolean): Promise<BlogPost[]> {
-  const apiPosts = await getPostsFromApi(includeContent);
+async function fetchPosts(
+  includeContent: boolean,
+  sourceLimit = HARD_CAP,
+): Promise<BlogPost[]> {
+  const safeSourceLimit = Math.max(1, Math.min(sourceLimit, HARD_CAP));
+  const apiPosts = await getPostsFromApi(includeContent, safeSourceLimit);
   if (apiPosts?.length) return apiPosts;
 
   const rawEntries: BloggerFeedEntry[] = [];
 
   try {
-    for (let startIndex = 1; startIndex <= HARD_CAP; startIndex += PAGE_SIZE) {
-      const response = await fetch(feedUrl(startIndex, includeContent), {
-        headers: { Accept: "application/json" },
-        next: { revalidate: 1800 },
-      });
+    for (
+      let startIndex = 1;
+      startIndex <= safeSourceLimit;
+      startIndex += PAGE_SIZE
+    ) {
+      const remaining = safeSourceLimit - rawEntries.length;
+      const pageSize = Math.min(PAGE_SIZE, remaining);
+      const response = await fetch(
+        feedUrl(startIndex, includeContent, pageSize),
+        {
+          headers: { Accept: "application/json" },
+          next: { revalidate: 1800 },
+        },
+      );
       if (!response.ok) break;
 
       const data = (await response.json()) as {
@@ -699,9 +728,9 @@ async function fetchPosts(includeContent: boolean): Promise<BlogPost[]> {
       const entries = data.feed?.entry || [];
       if (entries.length === 0) break;
 
-      rawEntries.push(...entries);
+      rawEntries.push(...entries.slice(0, remaining));
       // Last page reached when Blogger returns fewer than a full batch.
-      if (entries.length < PAGE_SIZE) break;
+      if (entries.length < pageSize) break;
     }
   } catch {
     /* return whatever we managed to collect */
@@ -777,6 +806,18 @@ export async function getAllPosts(): Promise<BlogPost[]> {
  */
 export async function getAllPostSummaries(): Promise<BlogPost[]> {
   return primaryPosts(await fetchPosts(true));
+}
+
+/**
+ * Fetch only the newest Blogger sources needed by compact surfaces such as the
+ * homepage. The limit is applied at the remote request, before full HTML
+ * normalization, so a homepage request never processes the complete archive.
+ */
+export async function getLatestPostSummaries(
+  limit: number,
+): Promise<BlogPost[]> {
+  if (!Number.isFinite(limit) || limit <= 0) return [];
+  return primaryPosts(await fetchPosts(true, Math.ceil(limit))).slice(0, limit);
 }
 
 /** Fetch a single post by slug (null if not found / feed unavailable). */
