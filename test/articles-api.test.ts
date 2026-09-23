@@ -16,6 +16,18 @@ describe('articles api', () => {
           feed: {
             entry: [
               {
+                id: { $t: 'post-2' },
+                title: { $t: 'Cursor Origin vs GitHub' },
+                summary: { $t: '<p>Git hosting comparison for 2026.</p>' },
+                published: { $t: '2026-08-26T10:00:00.000Z' },
+                link: [
+                  {
+                    rel: 'alternate',
+                    href: 'https://zubair-xovato.blogspot.com/2026/08/cursor-origin-vs-github.html',
+                  },
+                ],
+              },
+              {
                 id: { $t: 'post-1' },
                 title: { $t: 'GTA 6 Map Leak Explained' },
                 content: { $t: '<p>Vice City and Leonida details explained for readers.</p>' },
@@ -25,18 +37,6 @@ describe('articles api', () => {
                   {
                     rel: 'alternate',
                     href: 'https://zubair-xovato.blogspot.com/2026/08/gta-6-map-leak-explained.html',
-                  },
-                ],
-              },
-              {
-                id: { $t: 'post-2' },
-                title: { $t: 'Cursor Origin vs GitHub' },
-                summary: { $t: '<p>Git hosting comparison for 2026.</p>' },
-                published: { $t: '2026-08-26T10:00:00.000Z' },
-                link: [
-                  {
-                    rel: 'alternate',
-                    href: 'https://zubair-xovato.blogspot.com/2026/08/cursor-origin-vs-github.html',
                   },
                 ],
               },
@@ -51,6 +51,7 @@ describe('articles api', () => {
 
     expect(data.blogHome).toBe(PROFILE.socials.blog);
     expect(data.posts).toHaveLength(2);
+    // The API sorts by publication time rather than trusting Blogger's order.
     expect(data.posts[0]).toMatchObject({
       title: 'GTA 6 Map Leak Explained',
       slug: 'gta-6-map-leak-explained',
