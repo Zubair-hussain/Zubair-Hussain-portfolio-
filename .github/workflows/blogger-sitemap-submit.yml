@@ -34,7 +34,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       # Restore the previous sitemap state so existing URLs
       # are not repeatedly treated as newly published posts.

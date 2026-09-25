@@ -2,7 +2,8 @@ import { MetadataRoute } from 'next';
 import { getSiteUrl } from '@/lib/site-url';
 import { getAllPostSummaries } from '@/lib/blog';
 
-export const revalidate = 1800;
+export const dynamic = 'force-static';
+export const revalidate = false;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = getSiteUrl();

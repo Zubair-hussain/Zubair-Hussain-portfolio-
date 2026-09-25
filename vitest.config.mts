@@ -32,6 +32,7 @@ export default defineConfig({
         "src/lib/utils.ts",
         "src/lib/zubair-profile.ts",
         "src/app/api/articles/route.ts",
+        "src/app/api/contact/route.ts",
         "src/app/api/schedule/route.ts",
         "src/app/api/verify-email/route.ts",
       ],

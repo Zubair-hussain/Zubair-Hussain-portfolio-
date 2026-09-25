@@ -4,11 +4,10 @@
 .pnp.js
 .yarn/install-state.gz
 
-# testing
-/coverage
-/coverage-full
+# testing — coverage evidence is intentionally committed for review
 /.lighthouseci/
 /.sitemap-monitor-cache/
+/.audit-tools/security-audit-skill/
 
 # next.js
 /.next/

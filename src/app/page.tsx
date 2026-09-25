@@ -19,8 +19,9 @@ const Services = lazy(() => import('@/components/sections/Services'));
 const FAQ = lazy(() => import('@/components/sections/FAQ'));
 const Articles = lazy(() => import('@/components/sections/Articles'));
 
-// Keep the homepage in step with the Blogger-backed article cache.
-export const revalidate = 1800;
+// The homepage is rebuilt from the same generated Blogger snapshot as /blog.
+export const dynamic = 'force-static';
+export const revalidate = false;
 
 const SectionFallback = () => (
   <div className="section-padding container-custom">
@@ -32,15 +33,11 @@ export default async function HomePage() {
   await getTranslations('nav');
   const articlePosts = (await getLatestPostSummaries(HOMEPAGE_ARTICLE_LIMIT))
     .map((post) => ({
-      id: post.slug,
+      slug: post.slug,
       title: post.title,
       excerpt: post.excerpt,
       tags: post.tags,
-      readTime: post.readTime,
-      date: post.date,
-      isoDate: post.isoDate,
-      url: post.url,
-      trending: post.trending,
+      date: post.isoDate,
     }));
 
   return (

@@ -6,7 +6,12 @@ import Navigation from "@/components/ui/Navigation";
 import Footer from "@/components/ui/Footer";
 import ThemeProvider from "@/components/ui/ThemeProvider";
 import DeferredClientTools from "@/components/ui/DeferredClientTools";
-import { getBlogPageData, getPostBySlug, getRelatedPosts } from "@/lib/blog";
+import {
+  getAllPosts,
+  getBlogPageData,
+  getPostBySlug,
+  getRelatedPosts,
+} from "@/lib/blog";
 import { getSiteUrl } from "@/lib/site-url";
 import { PROFILE } from "@/lib/zubair-profile";
 import {
@@ -16,11 +21,19 @@ import {
   topicTags,
 } from "@/lib/seo";
 
-// Refetch the Blogger feed at most every 30 min; unknown slugs 404.
-export const revalidate = 1800;
+// Every known Blogger article is emitted as HTML during the build. Unknown
+// slugs remain 404s until the Blogger-change workflow triggers the next build.
+export const dynamic = "force-static";
+export const dynamicParams = false;
+export const revalidate = false;
 
 interface PageProps {
   params: Promise<{ slug: string }>;
+}
+
+export async function generateStaticParams() {
+  const posts = await getAllPosts();
+  return posts.map((post) => ({ slug: post.slug }));
 }
 
 // BCP-47 → Open Graph locale, mirroring the root layout.

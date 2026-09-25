@@ -12,7 +12,6 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { suggestTimeline, validateEmail, hasProfanity } from "@/lib/ai";
-import { sendEmail } from "@/lib/email";
 import { verifyEmailAddress } from "@/lib/email-verification";
 import { Turnstile } from "@marsidev/react-turnstile";
 
@@ -31,6 +30,7 @@ export default function HireMeModal({
   onClose,
   preselectedService,
 }: HireMeModalProps) {
+  const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [emailChecking, setEmailChecking] = useState(false);
@@ -138,16 +138,25 @@ export default function HireMeModal({
 
     setLoading(true);
     try {
-      await sendEmail({
-        from_name: formData.name,
-        from_email: formData.email,
-        location: formData.location,
-        category: formData.category,
-        message: formData.details,
-        suggested_timeline: aiSuggestion,
-        selected_service: formData.selectedService || "Not specified",
-        selected_price: formData.selectedPrice || "Not specified",
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          location: formData.location,
+          category: formData.category,
+          details: formData.details,
+          suggestedTimeline: aiSuggestion,
+          selectedService: formData.selectedService || "Not specified",
+          selectedPrice: formData.selectedPrice || "Not specified",
+          turnstileToken: formData.turnstileToken,
+        }),
       });
+      if (!response.ok) {
+        const result = (await response.json().catch(() => ({}))) as { error?: string };
+        throw new Error(result.error || 'Failed to send message.');
+      }
       setStep(4); // Success step
     } catch (error: any) {
       console.warn("Submission Failed:", error);
@@ -424,13 +433,19 @@ export default function HireMeModal({
                     <div className="flex-[2] flex flex-col gap-3">
                       {/* Cloudflare Turnstile Widget */}
                       <div className="flex justify-center w-full overflow-hidden rounded-xl border border-white/5 bg-white/[0.02] p-1">
-                        <Turnstile
-                          siteKey="1x00000000000000000000AA" // Default Cloudflare test key (always passes). Replace with your actual Site Key!
-                          onSuccess={(token) =>
-                            setFormData({ ...formData, turnstileToken: token })
-                          }
-                          options={{ theme: "dark" }}
-                        />
+                        {turnstileSiteKey ? (
+                          <Turnstile
+                            siteKey={turnstileSiteKey}
+                            onSuccess={(token) =>
+                              setFormData({ ...formData, turnstileToken: token })
+                            }
+                            options={{ theme: "dark" }}
+                          />
+                        ) : (
+                          <p className="p-3 text-center text-xs text-white/50">
+                            Contact verification is temporarily unavailable.
+                          </p>
+                        )}
                       </div>
                       <button
                         type="submit"

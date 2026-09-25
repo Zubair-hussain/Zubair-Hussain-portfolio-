@@ -15,6 +15,7 @@
  */
 
 import { PROFILE } from "@/lib/zubair-profile";
+import generatedBlogPosts from "@/generated/blog-posts.json";
 
 export interface BlogPost {
   /** URL-safe id derived from the Blogger permalink (e.g. gta-6-map-leak-explained). */
@@ -669,7 +670,7 @@ async function getPostsFromApi(
         apiUrl(includeContent, pageToken, Math.min(50, remaining)),
         {
           headers: { Accept: "application/json" },
-          next: { revalidate: 1800 },
+          cache: "no-store",
         },
       );
       if (!response.ok) return null;
@@ -717,7 +718,7 @@ async function fetchPosts(
         feedUrl(startIndex, includeContent, pageSize),
         {
           headers: { Accept: "application/json" },
-          next: { revalidate: 1800 },
+          cache: "no-store",
         },
       );
       if (!response.ok) break;
@@ -797,7 +798,8 @@ function primaryPosts(posts: BlogPost[]): BlogPost[] {
 
 /** Full bodies for the native article reader. */
 export async function getAllPosts(): Promise<BlogPost[]> {
-  return fetchPosts(true);
+  if (process.env.NODE_ENV === "test") return fetchPosts(true);
+  return generatedBlogPosts as BlogPost[];
 }
 
 /**
@@ -805,7 +807,7 @@ export async function getAllPosts(): Promise<BlogPost[]> {
  * authored <head> and can expose JSON-LD/authoring notes as the description.
  */
 export async function getAllPostSummaries(): Promise<BlogPost[]> {
-  return primaryPosts(await fetchPosts(true));
+  return primaryPosts(await getAllPosts());
 }
 
 /**
@@ -817,7 +819,18 @@ export async function getLatestPostSummaries(
   limit: number,
 ): Promise<BlogPost[]> {
   if (!Number.isFinite(limit) || limit <= 0) return [];
-  return primaryPosts(await fetchPosts(true, Math.ceil(limit))).slice(0, limit);
+  if (process.env.NODE_ENV === "test") {
+    return primaryPosts(await fetchPosts(true, Math.ceil(limit))).slice(0, limit);
+  }
+  return primaryPosts(await getAllPosts()).slice(0, limit);
+}
+
+/**
+ * Build-only entry point used by scripts/generate-blog-data.mjs. Production
+ * pages never call Blogger; they read the generated JSON snapshot above.
+ */
+export async function fetchBloggerPostsForBuild(): Promise<BlogPost[]> {
+  return fetchPosts(true);
 }
 
 /** Fetch a single post by slug (null if not found / feed unavailable). */
@@ -831,7 +844,7 @@ export async function getBlogPageData(slug: string): Promise<{
   post: BlogPost | null;
   summaries: BlogPost[];
 }> {
-  const posts = await fetchPosts(true);
+  const posts = await getAllPosts();
   return {
     post: posts.find((post) => post.slug === slug) ?? null,
     summaries: primaryPosts(posts),

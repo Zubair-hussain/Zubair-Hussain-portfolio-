@@ -26,4 +26,14 @@ describe('schedule route', () => {
 
     expect(location.pathname).toBe('/example/new-event');
   });
+
+  it('rejects non-Calendly redirect overrides', async () => {
+    vi.stubEnv('CALENDLY_SCHEDULE_URL', 'https://example.com/phishing');
+
+    const response = await GET();
+    const location = new URL(response.headers.get('location')!);
+
+    expect(location.origin).toBe('https://calendly.com');
+    expect(location.pathname).toBe('/zubai-hussain/30min');
+  });
 });

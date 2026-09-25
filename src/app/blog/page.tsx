@@ -10,7 +10,8 @@ import { getSiteUrl } from "@/lib/site-url";
 import { PROFILE } from "@/lib/zubair-profile";
 import { jsonLd, metaDescription } from "@/lib/seo";
 
-export const revalidate = 1800;
+export const dynamic = "force-static";
+export const revalidate = false;
 
 const BLOG_TITLE = "Articles on Next.js, React Native & AI";
 const BLOG_DESCRIPTION =

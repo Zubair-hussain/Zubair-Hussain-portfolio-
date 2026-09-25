@@ -1,0 +1,84 @@
+name: Rebuild when Blogger changes
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+    inputs:
+      force_deploy:
+        description: Rebuild even when the Blogger fingerprint is unchanged
+        required: false
+        default: true
+        type: boolean
+
+concurrency:
+  group: cloudflare-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  deployments: write
+
+jobs:
+  detect-and-deploy:
+    name: Detect Blogger changes and deploy static pages
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: ${{ vars.PRODUCTION_URL || 'https://zubair-hussain-portfolio.detroonshah.workers.dev' }}
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      BLOGGER_API_KEY: ${{ secrets.BLOGGER_API_KEY }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Restore Blogger fingerprint
+        uses: actions/cache/restore@v4
+        with:
+          path: .blogger-monitor-cache
+          key: blogger-rebuild-${{ github.run_id }}
+          restore-keys: |
+            blogger-rebuild-
+
+      - name: Detect Blogger changes
+        id: blogger
+        run: node .github/scripts/detect-blogger-change.mjs
+
+      - name: Install dependencies
+        if: steps.blogger.outputs.changed == 'true' || inputs.force_deploy == true
+        run: npm ci
+
+      - name: Type check
+        if: steps.blogger.outputs.changed == 'true' || inputs.force_deploy == true
+        run: npm run type-check
+
+      - name: Run tests
+        if: steps.blogger.outputs.changed == 'true' || inputs.force_deploy == true
+        run: npm test
+
+      - name: Generate static blog and deploy to Cloudflare
+        if: steps.blogger.outputs.changed == 'true' || inputs.force_deploy == true
+        run: npm run deploy
+
+      - name: Save Blogger fingerprint
+        if: >-
+          always() &&
+          steps.blogger.outcome == 'success' &&
+          (
+            steps.blogger.outputs.changed != 'true' ||
+            steps.blogger.outputs.changed == 'true' && success()
+          )
+        uses: actions/cache/save@v4
+        with:
+          path: .blogger-monitor-cache
+          key: blogger-rebuild-${{ steps.blogger.outputs.digest }}

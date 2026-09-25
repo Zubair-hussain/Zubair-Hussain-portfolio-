@@ -1,9 +1,8 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import Articles from '../src/components/sections/Articles';
-import { PROFILE } from '../src/lib/zubair-profile';
+import { describe, expect, it, vi } from 'vitest';
+import Articles, { type Article } from '../src/components/sections/Articles';
 
 vi.mock('next-intl', () => ({
   useTranslations: () => (key: string) => {
@@ -56,56 +55,32 @@ vi.mock('framer-motion', () => {
 });
 
 describe('Articles', () => {
-  beforeEach(() => {
-    vi.stubGlobal(
-      'fetch',
-      vi.fn(async () => ({
-        ok: true,
-        json: async () => ({
-          blogHome: PROFILE.socials.blog,
-          posts: [
-            {
-              id: 'gta-6-map-leak-explained',
-              slug: 'gta-6-map-leak-explained',
-              title: 'GTA 6 Map Leak Explained',
-              excerpt: 'Vice City, Leonida, CyberLeek claims, and what is confirmed.',
-              tags: ['Most Recent', 'Trending', 'Gaming'],
-              readTime: '4 min',
-              date: 'Aug 28, 2026',
-              url: '/blog/gta-6-map-leak-explained',
-              sourceUrl: 'https://zubair-xovato.blogspot.com/2026/08/gta-6-map-leak-explained.html',
-              trending: true,
-            },
-            {
-              id: 'cursor-origin-vs-github',
-              slug: 'cursor-origin-vs-github',
-              title: 'Cursor Origin vs GitHub',
-              excerpt: 'A look at whether Cursor Origin is a real GitHub alternative.',
-              tags: ['Blog'],
-              readTime: '3 min',
-              date: 'Aug 26, 2026',
-              url: '/blog/cursor-origin-vs-github',
-              sourceUrl: 'https://zubair-xovato.blogspot.com/2026/08/cursor-origin-vs-github.html',
-            },
-          ],
-        }),
-      }))
-    );
-  });
-
-  afterEach(() => {
-    vi.unstubAllGlobals();
-  });
+  const initialArticles: Article[] = [
+    {
+      slug: 'gta-6-map-leak-explained',
+      title: 'GTA 6 Map Leak Explained',
+      excerpt: 'Vice City, Leonida, CyberLeek claims, and what is confirmed.',
+      tags: ['Most Recent', 'Trending', 'Gaming'],
+      date: '2026-08-28T10:00:00.000Z',
+    },
+    {
+      slug: 'cursor-origin-vs-github',
+      title: 'Cursor Origin vs GitHub',
+      excerpt: 'A look at whether Cursor Origin is a real GitHub alternative.',
+      tags: ['Blog'],
+      date: '2026-08-26T10:00:00.000Z',
+    },
+  ];
 
   it('links the section header to the internal blog index', async () => {
-    render(<Articles />);
+    render(<Articles initialArticles={initialArticles} />);
 
     expect(await screen.findByRole('link', { name: /open article: gta 6 map leak explained/i })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /^blog home$/i })).toHaveAttribute('href', '/blog');
   });
 
   it('renders live Blogger posts as on-site reader links with the most recent marked trending', async () => {
-    render(<Articles />);
+    render(<Articles initialArticles={initialArticles} />);
 
     expect(await screen.findByRole('link', { name: /open article: gta 6 map leak explained/i })).toHaveAttribute(
       'href',
@@ -116,7 +91,7 @@ describe('Articles', () => {
   });
 
   it('lists only real on-site blog posts (no external placeholder cards)', async () => {
-    render(<Articles />);
+    render(<Articles initialArticles={initialArticles} />);
 
     expect(await screen.findByRole('link', { name: /open article: gta 6 map leak explained/i })).toBeInTheDocument();
     // The old hardcoded github.io "featured" cards are gone.
@@ -125,7 +100,7 @@ describe('Articles', () => {
   });
 
   it('keeps live Blogger posts on-site (no new-tab redirect to Blogger)', async () => {
-    render(<Articles />);
+    render(<Articles initialArticles={initialArticles} />);
 
     const latest = await screen.findByRole('link', { name: /open article: gta 6 map leak explained/i });
     const second = screen.getByRole('link', { name: /open article: cursor origin vs github/i });
@@ -141,14 +116,11 @@ describe('Articles', () => {
       <Articles
         initialArticles={[
           {
-            id: 'semantic-post',
+            slug: 'semantic-post',
             title: 'Semantic article title',
             excerpt: 'A meaningful excerpt that is present in the initial HTML.',
             tags: ['SEO'],
-            readTime: '4 min',
-            date: 'Sep 22, 2026',
-            isoDate: '2026-09-22T09:00:00+05:00',
-            url: '/blog/semantic-post',
+            date: '2026-09-22T09:00:00+05:00',
           },
         ]}
       />,
@@ -163,26 +135,14 @@ describe('Articles', () => {
 
   it('paginates 3 posts per page, revealing the rest on later pages', async () => {
     const posts = Array.from({ length: 5 }, (_, i) => ({
-      id: `post-${i}`,
       slug: `post-${i}`,
       title: `Post Number ${i}`,
       excerpt: `Excerpt ${i}`,
       tags: ['Blog'],
-      readTime: '3 min',
-      date: 'Aug 2026',
-      url: `/blog/post-${i}`,
-      sourceUrl: `https://zubair-xovato.blogspot.com/post-${i}.html`,
+      date: `2026-08-${String(28 - i).padStart(2, '0')}T10:00:00.000Z`,
     }));
 
-    vi.stubGlobal(
-      'fetch',
-      vi.fn(async () => ({
-        ok: true,
-        json: async () => ({ blogHome: PROFILE.socials.blog, posts }),
-      }))
-    );
-
-    render(<Articles />);
+    render(<Articles initialArticles={posts} />);
 
     // Page 1 shows the first 3 only.
     expect(await screen.findByRole('link', { name: /open article: post number 0/i })).toBeInTheDocument();
@@ -198,23 +158,12 @@ describe('Articles', () => {
 
   it('limits the homepage to the six newest posts', async () => {
     const posts = Array.from({ length: 8 }, (_, i) => ({
-      id: `limited-post-${i}`,
+      slug: `limited-post-${i}`,
       title: `Limited Post ${i}`,
       excerpt: `Excerpt ${i}`,
       tags: ['Blog'],
-      readTime: '3 min',
-      date: 'Sep 2026',
-      isoDate: `2026-09-${String(23 - i).padStart(2, '0')}`,
-      url: `/blog/limited-post-${i}`,
+      date: `2026-09-${String(23 - i).padStart(2, '0')}T10:00:00.000Z`,
     }));
-
-    vi.stubGlobal(
-      'fetch',
-      vi.fn(async () => ({
-        ok: true,
-        json: async () => ({ posts }),
-      })),
-    );
 
     render(<Articles initialArticles={posts} />);
 

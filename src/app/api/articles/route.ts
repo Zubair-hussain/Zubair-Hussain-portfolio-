@@ -3,6 +3,9 @@ import { PROFILE } from '@/lib/zubair-profile';
 import { getLatestPostSummaries } from '@/lib/blog';
 import { HOMEPAGE_ARTICLE_LIMIT } from '@/lib/blog-config';
 
+export const dynamic = 'force-static';
+export const revalidate = false;
+
 export async function GET() {
   const allPosts = await getLatestPostSummaries(HOMEPAGE_ARTICLE_LIMIT);
 

@@ -1,24 +1,19 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { motion, useInView } from 'framer-motion';
 import { useTranslations } from 'next-intl';
-import { ArrowLeft, ArrowRight, ArrowUpRight, Clock, Newspaper, TrendingUp } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ArrowUpRight, Newspaper, TrendingUp } from 'lucide-react';
 import { HOMEPAGE_ARTICLE_LIMIT } from '@/lib/blog-config';
 
 export interface Article {
-  id: string;
+  slug: string;
   title: string;
   excerpt: string;
   tags: string[];
-  readTime: string;
+  /** ISO publication date; formatted for display without expanding the payload. */
   date: string;
-  /** Machine-readable publication date used by the semantic <time> element. */
-  isoDate?: string;
-  /** Internal reader path (/blog/[slug]) or an external URL. */
-  url: string;
-  trending?: boolean;
 }
 
 // Show 3 articles per page; clicking 2, 3, … reveals the next 3, and new posts
@@ -27,61 +22,35 @@ const PER_PAGE = 3;
 
 // Shown only when the live blog can't be reached, so the section is never empty.
 const blogHomeFallback: Article = {
-  id: 'blog-home',
+  slug: '',
   title: 'Zubair Blog Home',
   excerpt: 'Visit the main blog homepage for the complete collection of posts, research notes, tutorials, and future articles.',
   tags: ['Blog Home', 'All Posts'],
-  readTime: 'Live',
-  date: 'Home',
-  url: '/blog',
-  trending: true,
+  date: '',
 };
 
-/** Internal reader links stay on-site; external links open in a new tab. */
-const isInternal = (url: string) => url.startsWith('/');
+function displayDate(value: string) {
+  if (!value) return 'Home';
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return value;
+  return new Intl.DateTimeFormat('en', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(parsed);
+}
 
 export default function Articles({ initialArticles = [] }: { initialArticles?: Article[] }) {
   const t = useTranslations('articles');
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
-  const [articles, setArticles] = useState<Article[]>(
+  const articles = useMemo(() => (
     initialArticles.length
       ? initialArticles.slice(0, HOMEPAGE_ARTICLE_LIMIT)
-      : [blogHomeFallback],
-  );
+      : [blogHomeFallback]
+  ), [initialArticles]);
   const [page, setPage] = useState(1);
-
-  useEffect(() => {
-    let ignore = false;
-
-    async function loadArticles() {
-      try {
-        const response = await fetch('/api/articles');
-        if (!response.ok) return;
-
-        const data = await response.json();
-        const posts: Article[] = Array.isArray(data.posts) ? data.posts : [];
-
-        // Only real, on-site (OG-tagged) blog posts are listed; if the feed is
-        // empty, keep the single "Blog Home" fallback so the grid isn't blank.
-        if (!ignore) {
-          setArticles(
-            posts.length
-              ? posts.slice(0, HOMEPAGE_ARTICLE_LIMIT)
-              : [blogHomeFallback],
-          );
-        }
-      } catch {
-        if (!ignore) setArticles([blogHomeFallback]);
-      }
-    }
-
-    loadArticles();
-
-    return () => {
-      ignore = true;
-    };
-  }, []);
 
   const totalPages = Math.max(1, Math.ceil(articles.length / PER_PAGE));
 
@@ -135,14 +104,12 @@ export default function Articles({ initialArticles = [] }: { initialArticles?: A
 
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {pageArticles.map((article, i) => {
-            const internal = isInternal(article.url);
-            const externalLinkProps = internal
-              ? {}
-              : { target: '_blank', rel: 'noopener noreferrer' };
+            const articleUrl = article.slug ? `/blog/${article.slug}` : '/blog';
+            const trending = article.tags.includes('Trending');
 
             return (
               <motion.article
-                key={article.id}
+                key={article.slug || 'blog-home'}
                 initial={{ opacity: 0, y: 30 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
                 transition={{ delay: i * 0.08, duration: 0.5 }}
@@ -150,18 +117,15 @@ export default function Articles({ initialArticles = [] }: { initialArticles?: A
               >
                 <div className="flex items-center justify-between gap-3 text-xs font-mono text-[hsl(var(--muted-foreground))]">
                   <div className="flex min-w-0 items-center gap-3">
-                    {article.isoDate ? (
-                      <time dateTime={article.isoDate} className="truncate">
-                        {article.date}
+                    {article.date ? (
+                      <time dateTime={article.date} className="truncate">
+                        {displayDate(article.date)}
                       </time>
                     ) : (
-                      <span className="truncate">{article.date}</span>
+                      <span className="truncate">Home</span>
                     )}
-                    <span className="h-1 w-1 shrink-0 rounded-full bg-[hsl(var(--border))]" aria-hidden="true" />
-                    <Clock size={11} className="shrink-0" aria-hidden="true" />
-                    <span className="whitespace-nowrap">{article.readTime}</span>
                   </div>
-                  {article.trending && (
+                  {trending && (
                     <span className="inline-flex shrink-0 items-center gap-1 text-[10px] uppercase tracking-widest text-[hsl(var(--primary))]">
                       <TrendingUp size={11} aria-hidden="true" />
                       Trending
@@ -179,8 +143,7 @@ export default function Articles({ initialArticles = [] }: { initialArticles?: A
 
                 <h3 className="font-display text-xl font-light transition-colors duration-200 group-hover:text-[hsl(var(--primary))]">
                   <Link
-                    href={article.url}
-                    {...externalLinkProps}
+                    href={articleUrl}
                     aria-label={`Open article: ${article.title}`}
                     className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--primary))]"
                   >
@@ -193,11 +156,10 @@ export default function Articles({ initialArticles = [] }: { initialArticles?: A
                 </p>
 
                 <Link
-                  href={article.url}
-                  {...externalLinkProps}
+                  href={articleUrl}
                   className="flex items-center gap-1.5 text-xs font-mono tracking-wider uppercase text-[hsl(var(--primary))] group-hover:gap-3 transition-all duration-200 mt-auto pt-4 border-t border-[hsl(var(--border))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--primary))]"
                 >
-                  {article.id === 'blog-home' ? 'Open Blog' : t('read_more')}
+                  {!article.slug ? 'Open Blog' : t('read_more')}
                   <ArrowUpRight size={12} aria-hidden="true" />
                 </Link>
               </motion.article>

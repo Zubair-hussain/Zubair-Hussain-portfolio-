@@ -27,13 +27,29 @@ function getSigningKey(): string {
   return getFallbackSigningKey();
 }
 
+function safeCalendlyUrl(value: string | undefined): string {
+  if (!value) return PROFILE.actions.schedule.privateUrl;
+  try {
+    const url = new URL(value);
+    const isCalendlyHost =
+      url.hostname === 'calendly.com' || url.hostname.endsWith('.calendly.com');
+    if (url.protocol !== 'https:' || !isCalendlyHost) {
+      return PROFILE.actions.schedule.privateUrl;
+    }
+    return url.toString().replace(/\/$/, '');
+  } catch {
+    return PROFILE.actions.schedule.privateUrl;
+  }
+}
+
 export async function GET() {
   const configuredUrl = process.env.CALENDLY_SCHEDULE_URL?.trim();
   // The previous Calendly account/event was retired and now returns 404. An
   // old Cloudflare variable must not override the current working profile URL.
-  const calendlyUrl = configuredUrl?.replace(/\/+$/, '') === 'https://calendly.com/detroonshah/30min'
+  const selectedUrl = configuredUrl?.replace(/\/+$/, '') === 'https://calendly.com/detroonshah/30min'
     ? PROFILE.actions.schedule.privateUrl
     : configuredUrl || PROFILE.actions.schedule.privateUrl;
+  const calendlyUrl = safeCalendlyUrl(selectedUrl);
   const jwt = await createScheduleJwt(getSigningKey());
   const redirectUrl = buildScheduleRedirectUrl(calendlyUrl, jwt);
 
