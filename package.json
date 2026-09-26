@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": ">=22.0.0",
+    "node": ">=22.0.0 <23.0.0",
     "npm": ">=10.5.0"
   },
-  "packageManager": "npm@10.8.2",
+  "packageManager": "npm@10.9.2",
   "scripts": {
     "blog:generate": "node scripts/generate-blog-data.mjs",
     "docs:readme": "node scripts/generate-readme-handbook.mjs",
