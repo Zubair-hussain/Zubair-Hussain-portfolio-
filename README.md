@@ -22,6 +22,26 @@
 
 > **View Live Demo:** [Cloudflare deployment](https://zubair-hussain-portfolio.detroonshah.workers.dev)
 
+### Portfolio brag reel
+
+<p align="center">
+  <video src="./brag-output/brag.mp4" poster="./brag-output/brag.jpg" controls muted playsinline width="800">
+    Your browser does not support embedded video. Use the direct MP4 link below.
+  </video>
+</p>
+
+<p align="center">
+  <a href="./brag-output/brag.mp4">
+    <img src="./brag-output/brag.jpg" alt="Preview of Zubair Hussain's portfolio brag reel" width="800" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="./brag-output/brag.mp4">Watch the MP4 directly</a>
+  &nbsp;&middot;&nbsp;
+  <a href="https://zubair-hussain-portfolio.detroonshah.workers.dev/03-jacob-coxon-full-article.html">View the rendered Cloudflare HTML report</a>
+</p>
+
 ### Project visuals
 
 <table>
@@ -1407,4 +1427,3 @@ documentation, or visible application media.
 - **Role:** Automated test.
 - **Verification:** Executed by Vitest in CI and included in the project test evidence.
 - **Maintenance rule:** Keep this file aligned with the static-blog, security, accessibility, and Cloudflare deployment contracts described above.
-
