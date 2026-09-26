@@ -21,10 +21,12 @@ import {
   topicTags,
 } from "@/lib/seo";
 
-// Every known Blogger article is emitted as HTML during the build. Unknown
-// slugs remain 404s until the Blogger-change workflow triggers the next build.
+// Every known Blogger article is emitted as HTML during the build. Keep the
+// dynamic fallback enabled so OpenNext can route article requests through the
+// Worker; the page still calls notFound() when a slug is absent from the
+// generated Blogger snapshot.
 export const dynamic = "force-static";
-export const dynamicParams = false;
+export const dynamicParams = true;
 export const revalidate = false;
 
 interface PageProps {
