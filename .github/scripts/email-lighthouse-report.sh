@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Email is optional until repository secrets are configured. Do not turn an
-# otherwise healthy production audit red just because mail delivery is not set
-# up yet.
 if [[ -z "${SMTP_USERNAME:-}" || -z "${SMTP_PASSWORD:-}" || -z "${EMAIL_TO:-}" ]]; then
   echo "::notice::Lighthouse email skipped. Configure AUDIT_EMAIL_USERNAME, AUDIT_EMAIL_PASSWORD, and AUDIT_EMAIL_TO repository secrets."
   exit 0
@@ -14,59 +11,52 @@ smtp_port="${SMTP_PORT:-465}"
 audit_status="${AUDIT_STATUS:-unknown}"
 audit_url="${AUDIT_URL:-unknown}"
 run_url="${RUN_URL:-unknown}"
-report_dir="${REPORT_DIR:-lighthouse-reports}"
-run_id="${GITHUB_RUN_ID:-unknown}"
-repository="${GITHUB_REPOSITORY:-portfolio}"
-temp_dir="${RUNNER_TEMP:-/tmp}"
-archive_path="${temp_dir}/lighthouse-report-${run_id}.zip"
-message_path="${temp_dir}/lighthouse-email-${run_id}.txt"
-boundary="lighthouse-${run_id}-${RANDOM}"
-attachment_name="lighthouse-report-${run_id}.zip"
+email_html_path="${EMAIL_HTML_PATH:-artifacts/branded-lighthouse-audit/portfolio-audit-email.html}"
+email_text_path="${EMAIL_TEXT_PATH:-artifacts/branded-lighthouse-audit/portfolio-audit-email.txt}"
+pdf_path="${PDF_PATH:-artifacts/branded-lighthouse-audit/Zubair-Hussain-Portfolio-Quality-Audit.pdf}"
+message_path="${RUNNER_TEMP:-/tmp}/lighthouse-email-${GITHUB_RUN_ID:-unknown}.eml"
+boundary="lighthouse-${GITHUB_RUN_ID:-unknown}-${RANDOM}"
+alternative_boundary="lighthouse-body-${GITHUB_RUN_ID:-unknown}-${RANDOM}"
 
-has_attachment=false
-if [[ -d "$report_dir" ]] && find "$report_dir" -type f -print -quit | grep -q .; then
-  (
-    cd "$report_dir"
-    zip -q -r "$archive_path" .
-  )
-  has_attachment=true
+if [[ -f "$email_text_path" ]]; then
+  email_text="$(cat "$email_text_path")"
+else
+  email_text="The portfolio production audit completed with status: ${audit_status}. Audited site: ${audit_url}. Workflow: ${run_url}."
 fi
 
-subject="Lighthouse audit ${audit_status}: ${repository}"
+if [[ -f "$email_html_path" ]]; then
+  email_html="$(cat "$email_html_path")"
+else
+  email_html="<p>The portfolio production audit completed with status: <strong>${audit_status}</strong>.</p><p>Audited site: ${audit_url}</p><p><a href=\"${run_url}\">View the workflow run</a></p>"
+fi
 
 {
-  printf 'From: %s\r\n' "$SMTP_USERNAME"
+  printf 'From: Zubair Hussain Portfolio <%s>\r\n' "$SMTP_USERNAME"
   printf 'To: %s\r\n' "$EMAIL_TO"
-  printf 'Subject: %s\r\n' "$subject"
+  printf 'Subject: Portfolio quality audit %s | Zubair Hussain\r\n' "$audit_status"
   printf 'MIME-Version: 1.0\r\n'
   printf 'Content-Type: multipart/mixed; boundary="%s"\r\n' "$boundary"
   printf '\r\n'
   printf -- '--%s\r\n' "$boundary"
+  printf 'Content-Type: multipart/alternative; boundary="%s"\r\n\r\n' "$alternative_boundary"
+  printf -- '--%s\r\n' "$alternative_boundary"
   printf 'Content-Type: text/plain; charset=UTF-8\r\n'
-  printf 'Content-Transfer-Encoding: 8bit\r\n'
-  printf '\r\n'
-  printf 'The scheduled production Lighthouse audit has completed.\r\n\r\n'
-  printf 'Result: %s\r\n' "$audit_status"
-  printf 'Audited site: %s\r\n' "$audit_url"
-  printf 'Repository: %s\r\n' "$repository"
-  printf 'Workflow run: %s\r\n' "$run_url"
-  if [[ "$has_attachment" == true ]]; then
-    printf 'Reports: attached as %s\r\n' "$attachment_name"
-  else
-    printf 'Reports: no Lighthouse files were produced; review the workflow logs.\r\n'
-  fi
+  printf 'Content-Transfer-Encoding: 8bit\r\n\r\n'
+  printf '%s\r\n' "$email_text"
+  printf -- '--%s\r\n' "$alternative_boundary"
+  printf 'Content-Type: text/html; charset=UTF-8\r\n'
+  printf 'Content-Transfer-Encoding: 8bit\r\n\r\n'
+  printf '%s\r\n' "$email_html"
+  printf -- '--%s--\r\n' "$alternative_boundary"
 
-  if [[ "$has_attachment" == true ]]; then
-    printf '\r\n'
+  if [[ -s "$pdf_path" ]]; then
     printf -- '--%s\r\n' "$boundary"
-    printf 'Content-Type: application/zip; name="%s"\r\n' "$attachment_name"
+    printf 'Content-Type: application/pdf; name="Zubair-Hussain-Portfolio-Quality-Audit.pdf"\r\n'
     printf 'Content-Transfer-Encoding: base64\r\n'
-    printf 'Content-Disposition: attachment; filename="%s"\r\n' "$attachment_name"
-    printf '\r\n'
-    base64 -w 76 "$archive_path"
+    printf 'Content-Disposition: attachment; filename="Zubair-Hussain-Portfolio-Quality-Audit.pdf"\r\n\r\n'
+    base64 -w 76 "$pdf_path"
     printf '\r\n'
   fi
-
   printf -- '--%s--\r\n' "$boundary"
 } > "$message_path"
 
@@ -84,4 +74,4 @@ curl --fail --silent --show-error \
   --mail-rcpt "$EMAIL_TO" \
   --upload-file "$message_path"
 
-echo "Lighthouse completion email sent to ${EMAIL_TO}."
+echo "Branded Lighthouse audit email sent to ${EMAIL_TO}."
