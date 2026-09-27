@@ -27,9 +27,11 @@ the run summary and download `lighthouse-production-<run-id>` from the
 ## Notifications and emailed reports
 
 After every completed production audit, whether it passes or fails, the workflow
-sends an email containing the result, audited URL, workflow link, and a ZIP of
-the Lighthouse HTML/JSON reports. If Lighthouse stops before producing files,
-the completion email is still sent and directs the recipient to the logs.
+creates a branded executive PDF and sends a responsive HTML email containing the
+result, audited URL, score cards, workflow link, portfolio mark, and GitHub link.
+The raw Lighthouse HTML/JSON files and the premium PDF remain available together
+in the workflow artifact. If Lighthouse stops before producing files, the email
+still directs the recipient to the workflow logs.
 
 Configure these GitHub Actions repository secrets under **Settings → Secrets
 and variables → Actions**:
@@ -44,7 +46,8 @@ and variables → Actions**:
 
 For Gmail, use a Google app password rather than the normal Google account
 password. The mail step skips safely, with an Actions notice, until all three
-required secrets exist.
+required secrets exist. Email delivery is optional and cannot change the audit
+result.
 
 If the security scan or production audit fails, the workflow additionally opens an issue named **Automated security or production audit failed** and assigns it to the repository owner. Later failures add comments to the same open issue instead of producing duplicates. GitHub sends the owner notifications according to their account settings.
 
