@@ -184,7 +184,6 @@ so injected markup cannot break out of the script tag.
 | `EMAILJS_*` | `/api/contact` | Cloudflare env |
 | `SCHEDULE_JWT_SECRET` | `/api/schedule` | Cloudflare env |
 | `BLOGGER_API_KEY` | `src/lib/blog.ts` | Cloudflare env |
-| `GOOGLE_SEARCH_CONSOLE_CREDENTIALS` | Indexing audit workflow | GitHub secrets |
 | `AUDIT_EMAIL_USERNAME` / `AUDIT_EMAIL_PASSWORD` / `AUDIT_EMAIL_TO` | Blog readiness email | GitHub secrets |
 
 `wrangler.toml` sets `keep_vars = true` so a deploy never wipes dashboard
@@ -207,12 +206,16 @@ every visitor" and must never hold a credential.
 | Lint, type-check, tests, build | GitHub Actions | Every push and pull request |
 | Security audit workflow | `.github/workflows/security-audit.yml` | Scheduled and on demand |
 | Production audit and Lighthouse | `.github/scripts/audit-production.mjs` | Scheduled |
-| Indexing and blog-readiness audits | `.github/workflows/*indexing*`, `*sitemap-submit*` | Monthly and hourly |
+| Crawlability and blog-readiness audits | `.github/workflows/monthly-indexing-audit.yml`, `.github/workflows/blogger-sitemap-submit.yml` | Monthly and hourly |
 | Cloudflare security-audit snapshot | `docs/cloudflare-security-audit-2026-09-25.md` | Point-in-time review |
 
 The evidence package in `records/` stores raw logs rather than summary claims,
 including the non-MIT dependency licences, so the record can be checked rather
 than trusted.
+
+GitHub Actions does not hold Google Search Console credentials and does not call
+Google Search Console, an indexing API, or a sitemap-submission endpoint. Search
+Console submission is intentionally handled outside this repository's workflows.
 
 ---
 
