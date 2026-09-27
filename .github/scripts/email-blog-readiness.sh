@@ -2,34 +2,65 @@
 set -euo pipefail
 
 if [[ -z "${SMTP_USERNAME:-}" || -z "${SMTP_PASSWORD:-}" || -z "${EMAIL_TO:-}" ]]; then
-  echo "::error::Blog readiness email cannot be sent. Configure AUDIT_EMAIL_USERNAME, AUDIT_EMAIL_PASSWORD, and AUDIT_EMAIL_TO repository secrets."
-  exit 1
+  echo "::warning::Skipping the optional blog readiness email. Configure AUDIT_EMAIL_USERNAME, AUDIT_EMAIL_PASSWORD, and AUDIT_EMAIL_TO repository secrets to enable it."
+  exit 0
 fi
 
 smtp_server="${SMTP_SERVER:-smtp.gmail.com}"
 smtp_port="${SMTP_PORT:-465}"
-urls_file="${NEW_URLS_FILE:-.sitemap-monitor-cache/new-urls.txt}"
-report_path="${REPORT_PATH:-artifacts/new-blog-seo-report.md}"
 run_url="${RUN_URL:-unknown}"
-message_path="${RUNNER_TEMP:-/tmp}/new-blog-ready-${GITHUB_RUN_ID:-unknown}.txt"
+report_path="${REPORT_PATH:-artifacts/new-blog-seo-report.md}"
+email_html_path="${EMAIL_HTML_PATH:-artifacts/branded-blog-audit/portfolio-audit-email.html}"
+email_text_path="${EMAIL_TEXT_PATH:-artifacts/branded-blog-audit/portfolio-audit-email.txt}"
+pdf_path="${PDF_PATH:-artifacts/branded-blog-audit/Zubair-Hussain-New-Blog-SEO-Audit.pdf}"
+message_path="${RUNNER_TEMP:-/tmp}/new-blog-ready-${GITHUB_RUN_ID:-unknown}.eml"
+boundary="audit-${GITHUB_RUN_ID:-unknown}-${RANDOM}"
+alternative_boundary="audit-body-${GITHUB_RUN_ID:-unknown}-${RANDOM}"
+
+if [[ -f "$email_text_path" ]]; then
+  email_text="$(cat "$email_text_path")"
+else
+  email_text="The new blog SEO readiness audit passed. Review the workflow at ${run_url}."
+fi
+
+if [[ -f "$email_html_path" ]]; then
+  email_html="$(cat "$email_html_path")"
+else
+  email_html="<p>The new blog SEO readiness audit passed.</p><p><a href=\"${run_url}\">View the workflow run</a></p>"
+fi
 
 {
-  printf 'From: %s\r\n' "$SMTP_USERNAME"
+  printf 'From: Zubair Hussain Portfolio <%s>\r\n' "$SMTP_USERNAME"
   printf 'To: %s\r\n' "$EMAIL_TO"
-  printf 'Subject: New blog passed the SEO readiness audit\r\n'
-  printf 'Content-Type: text/plain; charset=UTF-8\r\n'
+  printf 'Subject: New blog SEO audit passed | Zubair Hussain\r\n'
+  printf 'MIME-Version: 1.0\r\n'
+  printf 'Content-Type: multipart/mixed; boundary="%s"\r\n' "$boundary"
   printf '\r\n'
-  printf 'Your new blog post passed the automated crawlability and SEO checks.\r\n\r\n'
-  printf 'Ready URLs:\r\n'
-  while IFS= read -r url; do
-    [[ -n "$url" ]] && printf -- '- %s\r\n' "$url"
-  done < "$urls_file"
-  printf '\r\nReview the audited URLs and publish or promote them when ready.\r\n'
-  printf 'Workflow run: %s\r\n' "$run_url"
+  printf -- '--%s\r\n' "$boundary"
+  printf 'Content-Type: multipart/alternative; boundary="%s"\r\n\r\n' "$alternative_boundary"
+  printf -- '--%s\r\n' "$alternative_boundary"
+  printf 'Content-Type: text/plain; charset=UTF-8\r\n'
+  printf 'Content-Transfer-Encoding: 8bit\r\n\r\n'
+  printf '%s\r\n' "$email_text"
   if [[ -f "$report_path" ]]; then
-    printf '\r\nSEO audit report:\r\n'
+    printf '\r\nTechnical summary:\r\n'
     sed 's/$/\r/' "$report_path"
   fi
+  printf -- '--%s\r\n' "$alternative_boundary"
+  printf 'Content-Type: text/html; charset=UTF-8\r\n'
+  printf 'Content-Transfer-Encoding: 8bit\r\n\r\n'
+  printf '%s\r\n' "$email_html"
+  printf -- '--%s--\r\n' "$alternative_boundary"
+
+  if [[ -s "$pdf_path" ]]; then
+    printf -- '--%s\r\n' "$boundary"
+    printf 'Content-Type: application/pdf; name="Zubair-Hussain-New-Blog-SEO-Audit.pdf"\r\n'
+    printf 'Content-Transfer-Encoding: base64\r\n'
+    printf 'Content-Disposition: attachment; filename="Zubair-Hussain-New-Blog-SEO-Audit.pdf"\r\n\r\n'
+    base64 -w 76 "$pdf_path"
+    printf '\r\n'
+  fi
+  printf -- '--%s--\r\n' "$boundary"
 } > "$message_path"
 
 if [[ "$smtp_port" == "465" ]]; then
@@ -46,4 +77,4 @@ curl --fail --silent --show-error \
   --mail-rcpt "$EMAIL_TO" \
   --upload-file "$message_path"
 
-echo "Blog readiness email sent to ${EMAIL_TO}."
+echo "Branded blog readiness email sent to ${EMAIL_TO}."
