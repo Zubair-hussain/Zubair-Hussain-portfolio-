@@ -61,12 +61,27 @@ jobs:
             .sitemap-monitor-cache/new-urls.txt \
             artifacts/new-blog-seo-report.md
 
+      - name: Create premium email and PDF report
+        id: branded-report
+        if: steps.seo-audit.outcome == 'success'
+        continue-on-error: true
+        env:
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          node .github/scripts/generate-branded-audit-report.mjs \
+            blog \
+            artifacts/new-blog-seo-report.md \
+            artifacts/branded-blog-audit
+          bash .github/scripts/render-audit-pdf.sh \
+            artifacts/branded-blog-audit/portfolio-audit-report.html \
+            artifacts/branded-blog-audit/Zubair-Hussain-New-Blog-SEO-Audit.pdf
+
       - name: Upload SEO audit report
         if: always() && steps.sitemap.outputs.new_count != '0'
         uses: actions/upload-artifact@v4
         with:
           name: new-blog-seo-audit-${{ github.run_id }}
-          path: artifacts/new-blog-seo-report.md
+          path: artifacts/
           if-no-files-found: warn
           retention-days: 30
 
@@ -74,6 +89,9 @@ jobs:
       # It does not submit URLs or sitemaps to Google.
       - name: Email portfolio SEO audit result
         id: readiness-email
+        # Email is an optional notification. A missing/expired SMTP credential
+        # must not turn a successful SEO audit into a failed workflow run.
+        continue-on-error: true
         if: >-
           steps.sitemap.outputs.new_count != '0' &&
           steps.seo-audit.outcome == 'success'
@@ -83,6 +101,9 @@ jobs:
           RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
           NEW_URLS_FILE: .sitemap-monitor-cache/new-urls.txt
           REPORT_PATH: artifacts/new-blog-seo-report.md
+          EMAIL_HTML_PATH: artifacts/branded-blog-audit/portfolio-audit-email.html
+          EMAIL_TEXT_PATH: artifacts/branded-blog-audit/portfolio-audit-email.txt
+          PDF_PATH: artifacts/branded-blog-audit/Zubair-Hussain-New-Blog-SEO-Audit.pdf
 
           SMTP_SERVER: ${{ secrets.AUDIT_SMTP_SERVER }}
           SMTP_PORT: ${{ secrets.AUDIT_SMTP_PORT }}
@@ -94,6 +115,8 @@ jobs:
           bash .github/scripts/email-blog-readiness.sh
 
       # Save the new sitemap state only after the audit has completed.
+      # Do not make baseline persistence depend on optional email delivery;
+      # otherwise the same posts are rediscovered and emailed every hour.
       - name: Save updated blog URL baseline
         if: >-
           always() &&
@@ -101,10 +124,7 @@ jobs:
           steps.sitemap.outputs.changed == 'true' &&
           (
             steps.sitemap.outputs.new_count == '0' ||
-            (
-              steps.seo-audit.outcome == 'success' &&
-              steps.readiness-email.outcome == 'success'
-            )
+            steps.seo-audit.outcome == 'success'
           )
         uses: actions/cache/save@v4
         with:
