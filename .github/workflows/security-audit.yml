@@ -119,21 +119,40 @@ jobs:
         run: npm install --global @lhci/cli@0.15.1
 
       - name: Run Lighthouse audit
+        id: lighthouse
         run: lhci autorun --config=./lighthouserc.cjs
         env:
           AUDIT_URL: ${{ env.AUDIT_URL }}
+
+      - name: Create premium email and PDF report
+        if: always()
+        continue-on-error: true
+        env:
+          AUDIT_STATUS: ${{ job.status }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          node .github/scripts/generate-branded-audit-report.mjs \
+            lighthouse \
+            lighthouse-reports \
+            artifacts/branded-lighthouse-audit
+          bash .github/scripts/render-audit-pdf.sh \
+            artifacts/branded-lighthouse-audit/portfolio-audit-report.html \
+            artifacts/branded-lighthouse-audit/Zubair-Hussain-Portfolio-Quality-Audit.pdf
 
       - name: Upload Lighthouse reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: lighthouse-production-${{ github.run_id }}
-          path: lighthouse-reports/
+          path: |
+            lighthouse-reports/
+            artifacts/branded-lighthouse-audit/
           if-no-files-found: warn
           retention-days: 30
 
       - name: Email Lighthouse report
         if: always()
+        continue-on-error: true
         shell: bash
         env:
           AUDIT_STATUS: ${{ job.status }}
@@ -144,6 +163,9 @@ jobs:
           SMTP_USERNAME: ${{ secrets.AUDIT_EMAIL_USERNAME }}
           SMTP_PASSWORD: ${{ secrets.AUDIT_EMAIL_PASSWORD }}
           EMAIL_TO: ${{ secrets.AUDIT_EMAIL_TO }}
+          EMAIL_HTML_PATH: artifacts/branded-lighthouse-audit/portfolio-audit-email.html
+          EMAIL_TEXT_PATH: artifacts/branded-lighthouse-audit/portfolio-audit-email.txt
+          PDF_PATH: artifacts/branded-lighthouse-audit/Zubair-Hussain-Portfolio-Quality-Audit.pdf
         run: bash .github/scripts/email-lighthouse-report.sh
 
   notify:
