@@ -23,7 +23,7 @@ jobs:
     env:
       NEXT_TELEMETRY_DISABLED: '1'
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      CONFIGURED_CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
     steps:
       - uses: actions/checkout@v4
 
@@ -32,6 +32,9 @@ jobs:
         with:
           node-version: 22
           cache: npm
+
+      - name: Resolve Cloudflare account
+        run: node .github/scripts/resolve-cloudflare-account.mjs
 
       - name: Install dependencies
         run: npm ci

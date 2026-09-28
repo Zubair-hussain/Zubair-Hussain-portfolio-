@@ -30,7 +30,7 @@ jobs:
       NEXT_TELEMETRY_DISABLED: '1'
       BLOGGER_API_KEY: ${{ secrets.BLOGGER_API_KEY }}
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      CONFIGURED_CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
     steps:
       - name: Check out repository
@@ -53,6 +53,10 @@ jobs:
       - name: Detect Blogger changes
         id: blogger
         run: node .github/scripts/detect-blogger-change.mjs
+
+      - name: Resolve Cloudflare account
+        if: steps.blogger.outputs.changed == 'true' || inputs.force_deploy == true
+        run: node .github/scripts/resolve-cloudflare-account.mjs
 
       - name: Install dependencies
         if: steps.blogger.outputs.changed == 'true' || inputs.force_deploy == true
