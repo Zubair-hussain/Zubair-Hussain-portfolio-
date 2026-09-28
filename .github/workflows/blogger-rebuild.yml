@@ -2,7 +2,7 @@ name: Rebuild when Blogger changes
 
 on:
   schedule:
-    - cron: "*/30 * * * *"
+    - cron: "*/10 * * * *"
   workflow_dispatch:
     inputs:
       force_deploy:

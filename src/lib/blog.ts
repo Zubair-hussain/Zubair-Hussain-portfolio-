@@ -96,6 +96,11 @@ interface PortfolioContentBlock {
 // HARD_CAP is a safety ceiling so a huge blog can never spin forever.
 const PAGE_SIZE = 25;
 const HARD_CAP = 600;
+// Unknown article routes check only the newest Blogger sources. This closes the
+// publication-to-deployment gap without making normal page views depend on
+// Blogger or repeatedly downloading the complete archive.
+const LIVE_FALLBACK_SOURCE_LIMIT = 10;
+const LIVE_FALLBACK_TTL_MS = 5 * 60 * 1000;
 // This portfolio reads from one fixed public blog. Keep the ID here so every
 // deployment uses the same source without requiring environment configuration.
 const BLOGGER_BLOG_ID = "8399042753426695965";
@@ -833,10 +838,58 @@ export async function fetchBloggerPostsForBuild(): Promise<BlogPost[]> {
   return fetchPosts(true);
 }
 
-/** Fetch a single post by slug (null if not found / feed unavailable). */
+let liveFallbackCache:
+  | { expiresAt: number; posts: BlogPost[] }
+  | undefined;
+let liveFallbackRequest: Promise<BlogPost[]> | undefined;
+
+function validRequestedSlug(slug: string): boolean {
+  return (
+    slug.length > 0 &&
+    slug.length <= 160 &&
+    /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)
+  );
+}
+
+/**
+ * Read a small, short-lived slice of the public feed when a route is newer
+ * than the generated snapshot. Both successful and empty responses are cached
+ * so arbitrary missing URLs cannot make every request hit Blogger.
+ */
+async function getLiveFallbackPosts(): Promise<BlogPost[]> {
+  const now = Date.now();
+  if (liveFallbackCache && liveFallbackCache.expiresAt > now) {
+    return liveFallbackCache.posts;
+  }
+  if (liveFallbackRequest) return liveFallbackRequest;
+
+  liveFallbackRequest = fetchPosts(true, LIVE_FALLBACK_SOURCE_LIMIT)
+    .then((posts) => {
+      liveFallbackCache = {
+        expiresAt: Date.now() + LIVE_FALLBACK_TTL_MS,
+        posts,
+      };
+      return posts;
+    })
+    .finally(() => {
+      liveFallbackRequest = undefined;
+    });
+
+  return liveFallbackRequest;
+}
+
+/**
+ * Fetch a single post by slug. Snapshot hits stay local; a miss checks the
+ * newest live Blogger entries so a just-published article never waits for the
+ * scheduled deployment before its portfolio URL starts working.
+ */
 export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
   const posts = await getAllPosts();
-  return posts.find((post) => post.slug === slug) ?? null;
+  const snapshotPost = posts.find((post) => post.slug === slug);
+  if (snapshotPost || !validRequestedSlug(slug)) return snapshotPost ?? null;
+
+  const livePosts = await getLiveFallbackPosts();
+  return livePosts.find((post) => post.slug === slug) ?? null;
 }
 
 /** Fetch once for a reader request, then derive the article and unique sidebars. */
@@ -845,9 +898,18 @@ export async function getBlogPageData(slug: string): Promise<{
   summaries: BlogPost[];
 }> {
   const posts = await getAllPosts();
+  const snapshotPost = posts.find((post) => post.slug === slug);
+  if (snapshotPost || !validRequestedSlug(slug)) {
+    return {
+      post: snapshotPost ?? null,
+      summaries: primaryPosts(posts),
+    };
+  }
+
+  const livePosts = await getLiveFallbackPosts();
   return {
-    post: posts.find((post) => post.slug === slug) ?? null,
-    summaries: primaryPosts(posts),
+    post: livePosts.find((post) => post.slug === slug) ?? null,
+    summaries: primaryPosts(sortAndMarkNewest([...livePosts, ...posts])),
   };
 }
 

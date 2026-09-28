@@ -21,13 +21,11 @@ import {
   topicTags,
 } from "@/lib/seo";
 
-// Every known Blogger article is emitted as HTML during the build. Keep the
-// dynamic fallback enabled so OpenNext can route article requests through the
-// Worker; the page still calls notFound() when a slug is absent from the
-// generated Blogger snapshot.
-export const dynamic = "force-static";
+// Snapshot articles remain local and fast, while an unknown slug can check the
+// newest Blogger entries during the publication-to-deployment gap.
+export const dynamic = "force-dynamic";
 export const dynamicParams = true;
-export const revalidate = false;
+export const revalidate = 0;
 
 interface PageProps {
   params: Promise<{ slug: string }>;

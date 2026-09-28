@@ -33,7 +33,9 @@ try {
 }
 
 const baseline = previous.length === 0;
-const changed = !baseline && previous !== fingerprint;
+// A missing/expired cache must deploy once. Treating it as "unchanged" can
+// otherwise strand posts that were published before the first scheduled run.
+const changed = baseline || previous !== fingerprint;
 
 await mkdir(cacheDirectory, { recursive: true });
 await writeFile(fingerprintPath, `${fingerprint}\n`, "utf8");
@@ -48,7 +50,7 @@ if (process.env.GITHUB_OUTPUT) {
 
 console.log(
   baseline
-    ? "Created the initial Blogger fingerprint."
+    ? "Created the initial Blogger fingerprint; a rebuild is required."
     : changed
       ? "Blogger content changed; a rebuild is required."
       : "Blogger content has not changed.",
