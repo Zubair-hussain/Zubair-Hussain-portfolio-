@@ -32,19 +32,10 @@ const jetbrainsMono = JetBrains_Mono({
   preload: false,
 });
 
-const cloudflareAnalyticsToken = process.env.NEXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN;
-const googleAnalyticsId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
-const googleTagManagerId = process.env.NEXT_PUBLIC_GTM_ID;
-const languageAlternates = {
-  en: '/',
-  ur: '/?lang=ur',
-  es: '/?lang=es',
-  hi: '/?lang=hi',
-  ru: '/?lang=ru',
-  de: '/?lang=de',
-  'x-default': '/',
-};
-
+// Hardcoded fallbacks so analytics always work on Cloudflare (env vars may not be available at build time)
+const cloudflareAnalyticsToken = process.env.NEXT_PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN || '9029794e0891475bbc93bd66f5a36bb2';
+const googleAnalyticsId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || 'G-ZYH5HM0HG6';
+const googleTagManagerId = process.env.NEXT_PUBLIC_GTM_ID || 'GTM-MQV8P8VM';
 const openGraphLocales: Record<string, string> = {
   en: 'en_US',
   ur: 'ur_PK',
@@ -58,54 +49,78 @@ const openGraphLocales: Record<string, string> = {
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
   const siteUrl = getSiteUrl();
-  const canonical = locale === 'en' ? '/' : `/?lang=${locale}`;
+  const canonical = '/';
 
   return {
     metadataBase: new URL(siteUrl),
     title: {
-      default: 'Zubair Hussain - Full Stack Developer',
+      default: 'Zubair Hussain | Full Stack Next.js & React Native Developer',
       template: '%s | Zubair Hussain',
     },
     description:
-      'Full Stack Developer (MERN, Next.js, React Native, AI) based in Hyderabad, Pakistan. Co-founder of Xovato. Building high-performance web and mobile applications.',
+      'Hire Zubair Hussain, a full-stack developer in Hyderabad, Pakistan building fast Next.js, React Native & AI apps. Co-founder of Xovato. Book a free call.',
+    applicationName: 'Zubair Hussain Portfolio',
     alternates: {
       canonical,
-      languages: languageAlternates,
     },
     keywords: [
+      'Zubair Hussain',
+      'Syed Zubair Hussain Shah',
+      'zubairhussain.xyz',
+      'Zubair Hussain portfolio',
+      'Zubair Hussain developer',
       'Full Stack Developer',
-      'MERN Stack',
       'Next.js Developer',
-      'React Native',
+      'React Native Developer',
+      'MERN Stack Developer',
       'AI Integration',
-      'Freelancer',
-      'Xovato',
-      'Hyderabad Pakistan',
-      'Web Developer',
+      'AI Chatbot Developer',
+      'Hire Next.js Developer',
+      'Freelance Web Developer',
+      'Freelance Full Stack Developer Pakistan',
+      'Web Developer Hyderabad Pakistan',
+      'Next.js Developer Pakistan',
+      'React Developer Pakistan',
+      'AI Developer Pakistan',
       'Mobile App Developer',
+      'UI/UX Designer',
+      'Xovato',
     ],
     authors: [{ name: 'Zubair Hussain', url: siteUrl }],
     creator: 'Zubair Hussain',
+    publisher: 'Zubair Hussain',
+    category: 'technology',
+    formatDetection: { email: false, address: false, telephone: false },
     openGraph: {
-      type: 'website',
+      type: 'profile',
       locale: openGraphLocales[locale] ?? 'en_US',
       url: canonical,
-      title: 'Zubair Hussain - Full Stack Developer',
+      title: 'Zubair Hussain | Full Stack Next.js & React Native Developer',
       description:
-        'MERN, Next.js, React Native, AI Integrations. Building digital experiences that convert.',
+        'Fast Next.js websites, React Native apps and AI chatbots that turn visitors into clients. See projects, reviews and book a free call with Zubair.',
       siteName: 'Zubair Hussain Portfolio',
+      firstName: 'Zubair',
+      lastName: 'Hussain',
+      username: 'Zubair-Hussain',
       // OG image is generated dynamically by src/app/opengraph-image.tsx
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Zubair Hussain - Full Stack Developer',
-      description: 'MERN, Next.js, React Native, AI Integrations',
+      title: 'Zubair Hussain | Full Stack Next.js & React Native Developer',
+      description:
+        'Fast Next.js websites, React Native apps and AI chatbots that turn visitors into clients. Book a free call.',
       // Twitter image reuses the dynamic opengraph-image.
     },
     robots: {
       index: true,
       follow: true,
-      googleBot: { index: true, follow: true, 'max-video-preview': -1, 'max-image-preview': 'large' },
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
     },
     icons: {
       icon: '/icons/favicon.svg',
@@ -113,11 +128,6 @@ export async function generateMetadata(): Promise<Metadata> {
       shortcut: '/icons/favicon.svg',
     },
     manifest: '/manifest.json',
-    // Only emit the verification tag when the code is actually configured,
-    // so we never ship a bogus google-site-verification meta tag.
-    ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
-      ? { verification: { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION } }
-      : {}),
   };
 }
 
@@ -204,6 +214,7 @@ export default async function RootLayout({
                   url: getSiteUrl(),
                   name: `${PROFILE.name} — ${PROFILE.role}`,
                   isPartOf: { '@id': `${getSiteUrl()}/#website` },
+                  mainEntity: { '@id': `${getSiteUrl()}/#person` },
                   about: { '@id': `${getSiteUrl()}/#person` },
                   inLanguage: 'en',
                 },
@@ -212,6 +223,8 @@ export default async function RootLayout({
           }}
         />
         {isRTL && (
+          // Loaded only for Urdu; next/font does not expose every Nastaliq weight.
+          // eslint-disable-next-line @next/next/no-page-custom-font
           <link
             rel="stylesheet"
             href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;500;600&display=swap"
@@ -260,7 +273,7 @@ export default async function RootLayout({
         {googleTagManagerId && (
           <Script
             id="google-tag-manager"
-            strategy="afterInteractive"
+            strategy="lazyOnload"
             dangerouslySetInnerHTML={{
               __html: `
                 (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -277,11 +290,11 @@ export default async function RootLayout({
             <Script
               id="google-analytics-src"
               src={`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`}
-              strategy="afterInteractive"
+              strategy="lazyOnload"
             />
             <Script
               id="google-analytics"
-              strategy="afterInteractive"
+              strategy="lazyOnload"
               dangerouslySetInnerHTML={{
                 __html: `
                   window.dataLayer = window.dataLayer || [];

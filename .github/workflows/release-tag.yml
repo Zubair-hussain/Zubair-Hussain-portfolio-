@@ -5,7 +5,7 @@ name: Release Tag
 
 on:
   workflow_run:
-    workflows: ["Build"]
+    workflows: ["Deploy to Cloudflare"]
     types: [completed]
     branches: [_prod]
 

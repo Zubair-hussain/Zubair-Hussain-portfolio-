@@ -1,107 +1,70 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
+import Link from 'next/link';
 import { motion, useInView } from 'framer-motion';
 import { useTranslations } from 'next-intl';
-import { ArrowUpRight, Clock, Newspaper, TrendingUp } from 'lucide-react';
-import { PROFILE } from '@/lib/zubair-profile';
+import { ArrowLeft, ArrowRight, ArrowUpRight, Newspaper, TrendingUp } from 'lucide-react';
+import { HOMEPAGE_ARTICLE_LIMIT } from '@/lib/blog-config';
 
-interface Article {
-  id: string;
+export interface Article {
+  slug: string;
   title: string;
   excerpt: string;
   tags: string[];
-  readTime: string;
+  /** ISO publication date; formatted for display without expanding the payload. */
   date: string;
-  url: string;
-  trending?: boolean;
 }
 
-const blogHomeArticle: Article = {
-  id: 'blog-home',
+// Show 3 articles per page; clicking 2, 3, … reveals the next 3, and new posts
+// simply add more pages automatically.
+const PER_PAGE = 3;
+
+// Shown only when the live blog can't be reached, so the section is never empty.
+const blogHomeFallback: Article = {
+  slug: '',
   title: 'Zubair Blog Home',
   excerpt: 'Visit the main blog homepage for the complete collection of posts, research notes, tutorials, and future articles.',
   tags: ['Blog Home', 'All Posts'],
-  readTime: 'Live',
-  date: 'Home',
-  url: PROFILE.socials.blog,
-  trending: true,
+  date: '',
 };
 
-const featuredArticles: Article[] = [
-  {
-    id: 'nextjs-15-performance',
-    title: 'Achieving Lighthouse 100 with Next.js 15',
-    excerpt: 'A deep dive into Server Components, image optimization, and bundle splitting strategies that push Lighthouse scores to perfection.',
-    tags: ['Featured', 'Next.js', 'SEO'],
-    readTime: '8 min',
-    date: 'Dec 2024',
-    url: 'https://zubair-hussain.github.io/Achieving-Lighthouse-100-with-Next.js-15/',
-  },
-  {
-    id: 'ai-voice-agents',
-    title: 'Building Production AI Voice Agents with Vapi',
-    excerpt: 'How to integrate Vapi and Retell with OpenAI to create business-grade voice receptionists that integrate with CRMs and calendars.',
-    tags: ['Featured', 'AI', 'Voice'],
-    readTime: '10 min',
-    date: 'Nov 2024',
-    url: 'https://zubair-hussain.github.io/AI-Voice-Agents-with-Vapi/',
-  },
-  {
-    id: 'react-native-performance',
-    title: 'React Native Performance: 60fps on Low-End Devices',
-    excerpt: 'Practical techniques for using Reanimated 3, FlatList optimization, and Hermes to squeeze 60fps out of any device.',
-    tags: ['Featured', 'React Native'],
-    readTime: '6 min',
-    date: 'Oct 2024',
-    url: 'https://zubair-hussain.github.io/FlatList-optimization-/',
-  },
-];
+function displayDate(value: string) {
+  if (!value) return 'Home';
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return value;
+  return new Intl.DateTimeFormat('en', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(parsed);
+}
 
-const fallbackArticles: Article[] = [blogHomeArticle, ...featuredArticles];
-
-export default function Articles() {
+export default function Articles({ initialArticles = [] }: { initialArticles?: Article[] }) {
   const t = useTranslations('articles');
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
-  const [articles, setArticles] = useState<Article[]>(fallbackArticles);
+  const articles = useMemo(() => (
+    initialArticles.length
+      ? initialArticles.slice(0, HOMEPAGE_ARTICLE_LIMIT)
+      : [blogHomeFallback]
+  ), [initialArticles]);
+  const [page, setPage] = useState(1);
 
-  useEffect(() => {
-    let ignore = false;
+  const totalPages = Math.max(1, Math.ceil(articles.length / PER_PAGE));
 
-    async function loadArticles() {
-      try {
-        const response = await fetch('/api/articles');
-        if (!response.ok) return;
+  const activePage = Math.min(page, totalPages);
 
-        const data = await response.json();
-        const posts: Article[] = Array.isArray(data.posts) ? data.posts : [];
-        const blogHome = typeof data.blogHome === 'string' ? data.blogHome : PROFILE.socials.blog;
+  const pageArticles = useMemo(() => {
+    const start = (activePage - 1) * PER_PAGE;
+    return articles.slice(start, start + PER_PAGE);
+  }, [activePage, articles]);
 
-        if (!ignore) {
-          setArticles([
-            {
-              ...blogHomeArticle,
-              excerpt: 'Open the main blog homepage for every current and upcoming article from Zubair.',
-              url: blogHome,
-              tags: ['Blog Home', `${posts.length || 4}+ Blog Posts`],
-              trending: posts.length === 0,
-            },
-            ...posts,
-            ...featuredArticles,
-          ]);
-        }
-      } catch {
-        if (!ignore) setArticles(fallbackArticles);
-      }
-    }
-
-    loadArticles();
-
-    return () => {
-      ignore = true;
-    };
-  }, []);
+  const goTo = (next: number) => {
+    setPage(Math.min(Math.max(1, next), totalPages));
+    ref.current?.scrollIntoView?.({ behavior: 'smooth', block: 'start' });
+  };
 
   return (
     <section
@@ -128,70 +91,128 @@ export default function Articles() {
               </h2>
             </div>
 
-            <a
-              href={PROFILE.socials.blog}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/blog"
               className="group inline-flex w-fit items-center gap-2 rounded-full border border-[hsl(var(--primary)/0.35)] px-5 py-3 text-xs font-mono uppercase tracking-widest text-[hsl(var(--primary))] transition-all duration-300 hover:border-[hsl(var(--primary)/0.7)] hover:bg-[hsl(var(--primary)/0.08)]"
             >
               <Newspaper size={14} aria-hidden="true" />
               Blog Home
               <ArrowUpRight size={12} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
-            </a>
+            </Link>
           </div>
         </motion.div>
 
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {articles.map((article, i) => (
-            <motion.a
-              key={article.id}
-              href={article.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              initial={{ opacity: 0, y: 30 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: i * 0.08, duration: 0.7 }}
-              className="glass glass-hover rounded-2xl p-8 flex min-h-[300px] flex-col gap-4 group cursor-pointer"
-              aria-label={`Open article: ${article.title}`}
-            >
-              <div className="flex items-center justify-between gap-3 text-xs font-mono text-[hsl(var(--muted-foreground))]">
-                <div className="flex min-w-0 items-center gap-3">
-                  <span className="truncate">{article.date}</span>
-                  <span className="h-1 w-1 shrink-0 rounded-full bg-[hsl(var(--border))]" aria-hidden="true" />
-                  <Clock size={11} className="shrink-0" aria-hidden="true" />
-                  <span className="whitespace-nowrap">{article.readTime}</span>
+          {pageArticles.map((article, i) => {
+            const articleUrl = article.slug ? `/blog/${article.slug}` : '/blog';
+            const trending = article.tags.includes('Trending');
+
+            return (
+              <motion.article
+                key={article.slug || 'blog-home'}
+                initial={{ opacity: 0, y: 30 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ delay: i * 0.08, duration: 0.5 }}
+                className="glass glass-hover rounded-2xl p-8 flex min-h-[300px] flex-col gap-4 group"
+              >
+                <div className="flex items-center justify-between gap-3 text-xs font-mono text-[hsl(var(--muted-foreground))]">
+                  <div className="flex min-w-0 items-center gap-3">
+                    {article.date ? (
+                      <time dateTime={article.date} className="truncate">
+                        {displayDate(article.date)}
+                      </time>
+                    ) : (
+                      <span className="truncate">Home</span>
+                    )}
+                  </div>
+                  {trending && (
+                    <span className="inline-flex shrink-0 items-center gap-1 text-[10px] uppercase tracking-widest text-[hsl(var(--primary))]">
+                      <TrendingUp size={11} aria-hidden="true" />
+                      Trending
+                    </span>
+                  )}
                 </div>
-                {article.trending && (
-                  <span className="inline-flex shrink-0 items-center gap-1 text-[10px] uppercase tracking-widest text-[hsl(var(--primary))]">
-                    <TrendingUp size={11} aria-hidden="true" />
-                    Trending
-                  </span>
-                )}
-              </div>
 
-              <div className="flex flex-wrap gap-1.5">
-                {article.tags.map((tag) => (
-                  <span key={tag} className="text-xs font-mono text-[hsl(var(--primary))] border border-[hsl(var(--primary)/0.3)] px-2 py-0.5">
-                    {tag}
-                  </span>
-                ))}
-              </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {article.tags.map((tag) => (
+                    <span key={tag} className="text-xs font-mono text-[hsl(var(--primary))] border border-[hsl(var(--primary)/0.3)] px-2 py-0.5">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
 
-              <h3 className="font-display text-xl font-light group-hover:text-[hsl(var(--primary))] transition-colors duration-200">
-                {article.title}
-              </h3>
+                <h3 className="font-display text-xl font-light transition-colors duration-200 group-hover:text-[hsl(var(--primary))]">
+                  <Link
+                    href={articleUrl}
+                    aria-label={`Open article: ${article.title}`}
+                    className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--primary))]"
+                  >
+                    {article.title}
+                  </Link>
+                </h3>
 
-              <p className="text-sm text-[hsl(var(--muted-foreground))] leading-relaxed line-clamp-4">
-                {article.excerpt || 'Open this article on the blog to read the full post.'}
-              </p>
+                <p className="text-sm text-[hsl(var(--muted-foreground))] leading-relaxed line-clamp-4">
+                  {article.excerpt || 'Open this article on the blog to read the full post.'}
+                </p>
 
-              <span className="flex items-center gap-1.5 text-xs font-mono tracking-wider uppercase text-[hsl(var(--primary))] group-hover:gap-3 transition-all duration-200 mt-auto pt-4 border-t border-[hsl(var(--border))]">
-                {article.id === 'blog-home' ? 'Open Blog' : t('read_more')}
-                <ArrowUpRight size={12} aria-hidden="true" />
-              </span>
-            </motion.a>
-          ))}
+                <Link
+                  href={articleUrl}
+                  className="flex items-center gap-1.5 text-xs font-mono tracking-wider uppercase text-[hsl(var(--primary))] group-hover:gap-3 transition-all duration-200 mt-auto pt-4 border-t border-[hsl(var(--border))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--primary))]"
+                >
+                  {!article.slug ? 'Open Blog' : t('read_more')}
+                  <ArrowUpRight size={12} aria-hidden="true" />
+                </Link>
+              </motion.article>
+            );
+          })}
         </div>
+
+        {totalPages > 1 && (
+          <nav
+            className="mt-12 flex items-center justify-center gap-2"
+            aria-label="Article pages"
+          >
+            <button
+              type="button"
+              onClick={() => goTo(activePage - 1)}
+              disabled={activePage === 1}
+              aria-label="Previous page"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[hsl(var(--border))] text-[hsl(var(--foreground))] transition-all hover:border-[hsl(var(--primary)/0.7)] hover:text-[hsl(var(--primary))] disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              <ArrowLeft size={16} aria-hidden="true" />
+            </button>
+
+            {Array.from({ length: totalPages }, (_, index) => index + 1).map((number) => {
+              const active = number === activePage;
+              return (
+                <button
+                  key={number}
+                  type="button"
+                  onClick={() => goTo(number)}
+                  aria-label={`Page ${number}`}
+                  aria-current={active ? 'page' : undefined}
+                  className={`inline-flex h-10 min-w-[2.5rem] items-center justify-center rounded-full border px-3 text-sm font-mono transition-all ${
+                    active
+                      ? 'border-[hsl(var(--primary))] bg-[hsl(var(--primary)/0.12)] text-[hsl(var(--primary))]'
+                      : 'border-[hsl(var(--border))] text-[hsl(var(--muted-foreground))] hover:border-[hsl(var(--primary)/0.7)] hover:text-[hsl(var(--primary))]'
+                  }`}
+                >
+                  {number}
+                </button>
+              );
+            })}
+
+            <button
+              type="button"
+              onClick={() => goTo(activePage + 1)}
+              disabled={activePage === totalPages}
+              aria-label="Next page"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[hsl(var(--border))] text-[hsl(var(--foreground))] transition-all hover:border-[hsl(var(--primary)/0.7)] hover:text-[hsl(var(--primary))] disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              <ArrowRight size={16} aria-hidden="true" />
+            </button>
+          </nav>
+        )}
       </div>
     </section>
   );

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="360" viewBox="0 0 900 360" role="img" aria-labelledby="title desc">
+  <title id="title">Test coverage evidence</title><desc id="desc">Core unit and full source coverage percentages.</desc>
+  <rect width="900" height="360" rx="24" fill="#0f172a"/><text x="48" y="62" fill="#f8fafc" font-family="Arial,sans-serif" font-size="30" font-weight="700">Coverage evidence</text>
+  <text x="48" y="110" fill="#e2e8f0" font-family="Arial,sans-serif" font-size="19">Core statements: 83.53%</text><rect x="48" y="128" width="760" height="28" rx="14" fill="#334155"/><rect x="48" y="128" width="634.8" height="28" rx="14" fill="#22c55e"/>
+  <text x="48" y="205" fill="#e2e8f0" font-family="Arial,sans-serif" font-size="19">Full-source statements: 30.64%</text><rect x="48" y="223" width="760" height="28" rx="14" fill="#334155"/><rect x="48" y="223" width="232.9" height="28" rx="14" fill="#38bdf8"/>
+  <text x="48" y="325" fill="#94a3b8" font-family="Arial,sans-serif" font-size="16">Generated from Vitest V8 coverage-summary.json</text>
+</svg>

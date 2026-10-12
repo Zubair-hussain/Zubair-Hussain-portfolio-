@@ -28,10 +28,10 @@ describe('schedule security', () => {
   });
 
   it('builds a Calendly redirect without caching the private URL in client code', () => {
-    const redirect = buildScheduleRedirectUrl('https://calendly.com/detroonshah/30min', 'jwt-value');
+    const redirect = buildScheduleRedirectUrl('https://calendly.com/zubai-hussain/30min', 'jwt-value');
 
     expect(redirect.origin).toBe('https://calendly.com');
-    expect(redirect.pathname).toBe('/detroonshah/30min');
+    expect(redirect.pathname).toBe('/zubai-hussain/30min');
     expect(redirect.searchParams.get('utm_source')).toBe('portfolio');
     expect(redirect.searchParams.get('utm_medium')).toBe('secure_redirect');
     expect(redirect.searchParams.get('utm_content')).toBe('jwt-value');

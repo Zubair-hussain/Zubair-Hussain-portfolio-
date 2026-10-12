@@ -1,0 +1,9 @@
+check: type-check
+started: 2026-09-12T09:50:53.793Z
+command: npm.cmd run type-check
+exit_code: 0
+duration_ms: 18521
+
+> zubair-hussain-portfolio@1.0.0 type-check
+> tsc --noEmit
+

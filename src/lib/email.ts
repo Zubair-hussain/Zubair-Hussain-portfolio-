@@ -1,9 +1,10 @@
 // src/lib/email.ts
 import emailjs from '@emailjs/browser';
 
-const SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || '';
-const TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || '';
-const PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || '';
+// Hardcoded so they work on Cloudflare Pages/Workers (env vars not available at build time)
+const SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || 'service_jzchra6';
+const TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || 'template_wuhacrm';
+const PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || 'PjG5khEde3q9iXrg_';
 
 export const sendEmail = async (templateParams: Record<string, any>) => {
   // Early validation – prevents silent failures

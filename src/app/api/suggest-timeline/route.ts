@@ -25,7 +25,8 @@ export async function POST(request: Request) {
   try {
     const { getCloudflareContext } = await import('@opennextjs/cloudflare');
     type AIBinding = { run: (model: string, options: Record<string, unknown>) => Promise<{ response?: string }> };
-    const env = (await getCloudflareContext({ async: true })).env as { AI?: AIBinding };
+    const context = await getCloudflareContext({ async: true });
+    const env = context.env as unknown as { AI?: AIBinding };
     if (env?.AI) {
       const out = await env.AI.run(AI_MODEL, {
         messages: [

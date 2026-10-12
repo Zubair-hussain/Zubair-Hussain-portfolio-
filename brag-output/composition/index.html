@@ -1,0 +1,762 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      /* Palette lifted from src/styles/globals.css (dark "Premium Cyber Red" theme) */
+      :root {
+        --bg: #000000;
+        --fg: #f5f4f0;
+        --muted: rgba(245, 244, 240, 0.64);
+        --faint: rgba(245, 244, 240, 0.54);
+        --brand: #c8141e;
+        --brand-bright: rgb(220, 40, 50);
+        --brand-glow: rgb(239, 68, 68);
+        --brand-text: rgb(255, 122, 114);
+        --hairline: rgba(255, 255, 255, 0.07);
+        --panel: rgba(255, 255, 255, 0.03);
+        --gold-line: hsl(45 30% 12%);
+        --display: "Instrument Serif", "Cormorant Garamond", Georgia, serif;
+        --body: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+        --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: var(--bg);
+      }
+
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        background: var(--bg);
+        font-family: var(--body);
+        color: var(--fg);
+      }
+
+      .clip {
+        position: absolute;
+        inset: 0;
+        width: 1920px;
+        height: 1080px;
+      }
+
+      /* Shared bits ---------------------------------------------------- */
+      .stage {
+        position: absolute;
+        inset: 0;
+        z-index: 3;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 0 190px;
+      }
+
+      .mono {
+        font-family: var(--mono);
+        text-transform: uppercase;
+      }
+
+      .badge {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+      }
+
+      .dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 999px;
+        background: var(--brand-glow);
+        box-shadow:
+          0 0 12px rgba(220, 40, 50, 0.9),
+          0 0 30px rgba(200, 20, 30, 0.55);
+      }
+
+      .badge-label {
+        font-size: 22px;
+        font-weight: 600;
+        letter-spacing: 0.4em;
+        color: var(--brand-text);
+      }
+
+      .bloom {
+        z-index: 0;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 1500px;
+        height: 760px;
+        transform: translate(-50%, -50%);
+        background: radial-gradient(
+          ellipse at center,
+          rgba(200, 20, 30, 0.3) 0%,
+          rgba(200, 20, 30, 0.08) 42%,
+          rgba(0, 0, 0, 0) 70%
+        );
+        pointer-events: none;
+      }
+
+      .grain {
+        z-index: 1;
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background-image: linear-gradient(
+          rgba(255, 255, 255, 0.014) 1px,
+          rgba(0, 0, 0, 0) 1px
+        );
+        background-size: 100% 3px;
+      }
+
+      .vignette {
+        z-index: 1;
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: radial-gradient(
+          ellipse at center,
+          rgba(0, 0, 0, 0) 45%,
+          rgba(0, 0, 0, 0.62) 100%
+        );
+      }
+
+      /* Scene 1 --------------------------------------------------------- */
+      #s1-h1 {
+        font-family: var(--display);
+        font-style: italic;
+        font-weight: 400;
+        text-transform: uppercase;
+        font-size: 196px;
+        line-height: 0.83;
+        letter-spacing: -0.04em;
+        color: var(--fg);
+        text-shadow:
+          0 0 80px rgba(200, 20, 30, 0.35),
+          0 2px 0 rgba(0, 0, 0, 0.5);
+        margin-top: 86px;
+      }
+
+      #s1-sub {
+        margin-top: 40px;
+        font-size: 23px;
+        letter-spacing: 0.38em;
+        color: var(--muted);
+      }
+
+      /* Scenes 2 & 3 — UI recreations ----------------------------------- */
+      .panel {
+        width: 1180px;
+        border: 1px solid var(--gold-line);
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.035) 0%,
+          rgba(255, 255, 255, 0.012) 100%
+        );
+        border-radius: 22px;
+        padding: 46px 52px 50px;
+        box-shadow: 0 40px 120px rgba(0, 0, 0, 0.75);
+      }
+
+      .panel-head {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        padding-bottom: 28px;
+        border-bottom: 1px solid var(--hairline);
+        font-size: 19px;
+        letter-spacing: 0.34em;
+        color: var(--muted);
+      }
+
+      .scene-label {
+        font-size: 20px;
+        letter-spacing: 0.42em;
+        color: var(--brand-text);
+        margin-bottom: 34px;
+      }
+
+      .msg {
+        display: flex;
+        margin-top: 34px;
+      }
+
+      .msg.out {
+        justify-content: flex-end;
+      }
+
+      .bubble {
+        max-width: 780px;
+        border-radius: 18px;
+        padding: 26px 32px;
+        font-size: 31px;
+        line-height: 1.45;
+      }
+
+      .bubble.user {
+        background: rgba(200, 20, 30, 0.14);
+        border: 1px solid rgba(200, 20, 30, 0.42);
+        color: var(--fg);
+        white-space: nowrap;
+        overflow: hidden;
+      }
+
+      .bubble.bot {
+        background: var(--panel);
+        border: 1px solid var(--hairline);
+        color: rgba(245, 244, 240, 0.9);
+      }
+
+      .typed {
+        display: inline-block;
+        overflow: hidden;
+        white-space: nowrap;
+        vertical-align: bottom;
+      }
+
+      .caret {
+        display: inline-block;
+        width: 3px;
+        height: 34px;
+        background: var(--brand-glow);
+        vertical-align: bottom;
+        margin-left: 4px;
+      }
+
+      .thinking {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        padding: 30px 34px;
+      }
+
+      .tdot {
+        width: 12px;
+        height: 12px;
+        border-radius: 999px;
+        background: rgba(245, 244, 240, 0.55);
+      }
+
+      .chips {
+        display: flex;
+        gap: 18px;
+        margin-top: 30px;
+        padding-left: 4px;
+      }
+
+      .chip {
+        border: 1px solid rgba(200, 20, 30, 0.45);
+        border-radius: 999px;
+        padding: 14px 26px;
+        font-size: 19px;
+        letter-spacing: 0.22em;
+        color: var(--brand-text);
+        font-family: var(--mono);
+        text-transform: uppercase;
+      }
+
+      .chip.ghost {
+        border-color: var(--hairline);
+        color: var(--muted);
+      }
+
+      /* Scene 3 rows */
+      .row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 26px 4px;
+        border-bottom: 1px solid var(--hairline);
+        font-size: 28px;
+      }
+
+      .row-label {
+        font-family: var(--mono);
+        font-size: 19px;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: var(--faint);
+      }
+
+      .row-value {
+        color: var(--fg);
+        font-size: 30px;
+      }
+
+      .tick {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        font-family: var(--mono);
+        font-size: 19px;
+        letter-spacing: 0.26em;
+        text-transform: uppercase;
+        color: #4ade80;
+      }
+
+      .tick-mark {
+        width: 26px;
+        height: 26px;
+        border-radius: 999px;
+        border: 1.5px solid #4ade80;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        line-height: 1;
+      }
+
+      .timeline-chip {
+        display: inline-block;
+        margin-top: 8px;
+        border: 1px solid rgba(200, 20, 30, 0.4);
+        background: rgba(200, 20, 30, 0.1);
+        border-radius: 12px;
+        padding: 16px 26px;
+        font-size: 27px;
+        color: rgba(245, 244, 240, 0.92);
+      }
+
+      .cta {
+        margin-top: 38px;
+        display: flex;
+        align-items: center;
+        gap: 26px;
+      }
+
+      .btn {
+        background: var(--brand);
+        color: #fff;
+        border-radius: 999px;
+        padding: 20px 46px;
+        font-family: var(--mono);
+        font-size: 20px;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+      }
+
+      .sent {
+        font-size: 30px;
+        color: #4ade80;
+      }
+
+      /* Scene 4 — cards -------------------------------------------------- */
+      .cards {
+        display: flex;
+        gap: 36px;
+        margin-top: 56px;
+      }
+
+      .card {
+        flex: 1;
+        border: 1px solid var(--gold-line);
+        background: var(--panel);
+        border-radius: 20px;
+        padding: 46px 40px 48px;
+        min-height: 300px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .card-index {
+        font-family: var(--mono);
+        font-size: 18px;
+        letter-spacing: 0.3em;
+        color: var(--brand-text);
+      }
+
+      .card-title {
+        font-family: var(--display);
+        font-size: 62px;
+        line-height: 1.02;
+        color: var(--fg);
+      }
+
+      .card-note {
+        font-family: var(--mono);
+        font-size: 19px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--faint);
+      }
+
+      /* Scene 5 — outro --------------------------------------------------- */
+      #s5-frames {
+        z-index: 2;
+        position: absolute;
+        left: 50%;
+        top: 336px;
+        width: 1120px;
+        height: 630px;
+        transform: translateX(-50%);
+      }
+
+      #s5-frames img {
+        position: absolute;
+        inset: 0;
+        width: 1120px;
+        height: 630px;
+        object-fit: cover;
+        border-radius: 16px;
+      }
+
+      .frame-mask {
+        z-index: 2;
+        position: absolute;
+        left: 50%;
+        top: 336px;
+        width: 1120px;
+        height: 630px;
+        transform: translateX(-50%);
+        border-radius: 16px;
+        box-shadow:
+          inset 0 0 120px rgba(0, 0, 0, 0.85),
+          inset 0 -90px 130px rgba(0, 0, 0, 0.95);
+        pointer-events: none;
+      }
+
+      .outro-copy {
+        z-index: 4;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 128px;
+        text-align: center;
+      }
+
+      #s5-name {
+        font-family: var(--display);
+        font-style: italic;
+        font-size: 128px;
+        line-height: 1;
+        letter-spacing: -0.03em;
+        color: var(--fg);
+        text-shadow: 0 0 70px rgba(200, 20, 30, 0.3);
+      }
+
+      #s5-tag {
+        margin-top: 26px;
+        font-family: var(--mono);
+        font-size: 22px;
+        letter-spacing: 0.36em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      #s5-url {
+        z-index: 4;
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 66px;
+        text-align: center;
+        font-family: var(--mono);
+        font-size: 20px;
+        letter-spacing: 0.24em;
+        color: var(--faint);
+      }
+
+      /* Initial hidden state authored in CSS so frame 0 renders correctly. */
+      #s1-h1, #s1-sub, #s1-bloom,
+      #s2-panel, #s2-user, #s2-think, #s2-answer, #s2-chip1, #s2-chip2,
+      #s3-panel, #s3-cat, #s3-timeline, #s3-verify, #s3-human, #s3-btn, #s3-sent,
+      #s4-label, #s4-c1, #s4-c2, #s4-c3,
+      #s5-bloom, #s5-frames, #s5-frames img, #s5-name, #s5-tag, #s5-url {
+        opacity: 0;
+      }
+
+      #s2-typed { width: 0; }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="19.5"
+      data-width="1920"
+      data-height="1080"
+    >
+      <!-- ══ SCENE 1 — Signal (0.0 → 3.0) ══════════════════════════════ -->
+      <div id="s1" class="clip" data-start="0" data-duration="3.05" data-track-index="0">
+        <div id="s1-bloom" class="bloom"></div>
+        <div class="stage">
+          <div class="badge">
+            <div id="s1-dot" class="dot"></div>
+            <div id="s1-badge" class="mono badge-label">Available for hire</div>
+          </div>
+          <h1 id="s1-h1">Full Stack<br />Developer</h1>
+          <div id="s1-sub" class="mono">Building digital experiences that convert.</div>
+        </div>
+        <div class="grain"></div>
+        <div class="vignette"></div>
+      </div>
+
+      <!-- ══ SCENE 2 — Ask Zubair AI (3.0 → 7.5) ═══════════════════════ -->
+      <div id="s2" class="clip" data-start="3" data-duration="4.55" data-track-index="0">
+        <div class="stage" style="align-items: center">
+          <div id="s2-panel" class="panel">
+            <div class="panel-head mono">
+              <span class="dot" style="width: 10px; height: 10px"></span>
+              Zubair AI
+              <span style="margin-left: auto; color: var(--faint)">Edge assistant</span>
+            </div>
+
+            <div class="msg out">
+              <div id="s2-user" class="bubble user">
+                <span id="s2-typed" class="typed">Can you build a Next.js store?</span><span
+                  id="s2-caret"
+                  class="caret"
+                ></span>
+              </div>
+            </div>
+
+            <div id="s2-think" class="msg">
+              <div class="bubble bot thinking">
+                <span class="tdot" id="s2-d1"></span>
+                <span class="tdot" id="s2-d2"></span>
+                <span class="tdot" id="s2-d3"></span>
+              </div>
+            </div>
+
+            <div id="s2-answer" class="msg">
+              <div class="bubble bot">
+                Yes — Next.js storefronts are my core stack. Here is a build I wrote up, or grab a
+                slot and we can scope yours.
+              </div>
+            </div>
+
+            <div class="chips">
+              <div id="s2-chip1" class="chip ghost">/blog/next-js-store-build</div>
+              <div id="s2-chip2" class="chip">Schedule a Call</div>
+            </div>
+          </div>
+        </div>
+        <div class="vignette"></div>
+      </div>
+
+      <!-- ══ SCENE 3 — Hire flow (7.5 → 12.0) ══════════════════════════ -->
+      <div id="s3" class="clip" data-start="7.5" data-duration="4.55" data-track-index="0">
+        <div class="stage" style="align-items: center">
+          <div id="s3-panel" class="panel">
+            <div class="panel-head mono">
+              Hire Me
+              <span style="margin-left: auto; color: var(--faint)">Verified intake</span>
+            </div>
+
+            <div class="row">
+              <span class="row-label">Project</span>
+              <span id="s3-cat" class="row-value">E-commerce</span>
+            </div>
+
+            <div class="row" style="align-items: flex-start">
+              <span class="row-label" style="padding-top: 14px">AI timeline</span>
+              <span id="s3-timeline" class="timeline-chip">4-7 weeks (based on store complexity)</span>
+            </div>
+
+            <div class="row">
+              <span class="row-label">Email</span>
+              <span id="s3-verify" class="tick">
+                <span class="tick-mark">&#10003;</span>
+                Domain verified
+              </span>
+            </div>
+
+            <div class="row" style="border-bottom: none">
+              <span class="row-label">Human check</span>
+              <span id="s3-human" class="tick">
+                <span class="tick-mark">&#10003;</span>
+                Passed
+              </span>
+            </div>
+
+            <div class="cta">
+              <div id="s3-btn" class="btn">Send Message</div>
+              <div id="s3-sent" class="sent">Message sent! I&#39;ll reply within 24 hours.</div>
+            </div>
+          </div>
+        </div>
+        <div class="vignette"></div>
+      </div>
+
+      <!-- ══ SCENE 4 — What it runs on (12.0 → 16.0) ═══════════════════ -->
+      <div id="s4" class="clip" data-start="12" data-duration="4.05" data-track-index="0">
+        <div class="stage">
+          <div id="s4-label" class="mono scene-label">Under the hood</div>
+          <div class="cards">
+            <div id="s4-c1" class="card">
+              <div class="card-index mono">01</div>
+              <div class="card-title">6 languages<br />full RTL</div>
+              <div class="card-note">next-intl · Urdu, Hindi, Russian, Spanish, German</div>
+            </div>
+            <div id="s4-c2" class="card">
+              <div class="card-index mono">02</div>
+              <div class="card-title">Static at<br />the edge</div>
+              <div class="card-note">Cloudflare Workers · OpenNext · Workers AI</div>
+            </div>
+            <div id="s4-c3" class="card">
+              <div class="card-index mono">03</div>
+              <div class="card-title">63 tests<br />green</div>
+              <div class="card-note">CSP · Firestore rules · signed redirects</div>
+            </div>
+          </div>
+        </div>
+        <div class="vignette"></div>
+      </div>
+
+      <!-- ══ SCENE 5 — Outro (16.0 → 19.5) ═════════════════════════════ -->
+      <div id="s5" class="clip" data-start="16" data-duration="3.5" data-track-index="0">
+        <div id="s5-bloom" class="bloom" style="top: 58%"></div>
+        <div id="s5-frames">
+          <img id="fr01" src="assets/frames/f01.jpg" alt="Avatar frame 1" />
+          <img id="fr02" src="assets/frames/f02.jpg" alt="Avatar frame 2" />
+          <img id="fr03" src="assets/frames/f03.jpg" alt="Avatar frame 3" />
+          <img id="fr04" src="assets/frames/f04.jpg" alt="Avatar frame 4" />
+          <img id="fr05" src="assets/frames/f05.jpg" alt="Avatar frame 5" />
+          <img id="fr06" src="assets/frames/f06.jpg" alt="Avatar frame 6" />
+          <img id="fr07" src="assets/frames/f07.jpg" alt="Avatar frame 7" />
+          <img id="fr08" src="assets/frames/f08.jpg" alt="Avatar frame 8" />
+          <img id="fr09" src="assets/frames/f09.jpg" alt="Avatar frame 9" />
+          <img id="fr10" src="assets/frames/f10.jpg" alt="Avatar frame 10" />
+          <img id="fr11" src="assets/frames/f11.jpg" alt="Avatar frame 11" />
+          <img id="fr12" src="assets/frames/f12.jpg" alt="Avatar frame 12" />
+          <img id="fr13" src="assets/frames/f13.jpg" alt="Avatar frame 13" />
+          <img id="fr14" src="assets/frames/f14.jpg" alt="Avatar frame 14" />
+          <img id="fr15" src="assets/frames/f15.jpg" alt="Avatar frame 15" />
+          <img id="fr16" src="assets/frames/f16.jpg" alt="Avatar frame 16" />
+        </div>
+        <div class="frame-mask"></div>
+        <div class="outro-copy">
+          <div id="s5-name">Zubair Hussain</div>
+          <div id="s5-tag">Building digital experiences that convert.</div>
+        </div>
+        <div id="s5-url" class="mono">zubair-hussain-portfolio.detroonshah.workers.dev</div>
+        <div class="grain"></div>
+        <div class="vignette"></div>
+      </div>
+
+      <!-- ══ AUDIO ═════════════════════════════════════════════════════
+           Music bed. data-media-start=16.02 puts the track's strong-cue
+           grid under the edit: video 1.00s → cue 17.02s (H1 slam),
+           11.00s → 27.02s (message sent), 17.00s → 33.02s (name set). -->
+      <audio
+        id="bed"
+        data-start="0"
+        data-duration="19.5"
+        data-media-start="16.02"
+        data-volume="0.3"
+        data-fade-in="0.9"
+        data-fade-out="1.3"
+        data-track-index="3"
+        src="assets/music/happy-beats-business-moves-vol-1-by-ende-dot-app.mp3"
+      ></audio>
+    </div>
+
+    <script>
+      const tl = gsap.timeline({ paused: true });
+
+      /* Every reveal is a fromTo so any seek lands on an exact state.
+         Initial hidden values live in CSS, not in a zero-duration set at 0. */
+
+      /* ── Scene 1 — Signal ─────────────────────────────────────────── */
+      tl.fromTo('#s1-dot', { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.35 }, 0.1);
+      tl.fromTo('#s1-badge', { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.45 }, 0.22);
+      tl.to('#s1-dot', { opacity: 0.35, duration: 0.55, repeat: 3, yoyo: true, overwrite: 'auto' }, 0.55);
+
+      // beat-locked: 17.02s strong cue -> video 1.00s
+      tl.fromTo('#s1-h1', { opacity: 0, y: 60, scale: 1.04 }, { opacity: 1, y: 0, scale: 1, duration: 0.34, ease: 'power4.out' }, 1.0);
+      tl.fromTo('#s1-bloom', { opacity: 0, scale: 0.86 }, { opacity: 1, scale: 1, duration: 0.7, ease: 'power2.out' }, 1.0);
+      tl.fromTo('#s1-sub', { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.45, ease: 'power2.out' }, 1.62);
+      tl.to('#s1', { opacity: 0, duration: 0.42, ease: 'power1.inOut' }, 2.62);
+
+      /* ── Scene 2 — Ask Zubair AI ──────────────────────────────────── */
+      tl.fromTo('#s2-panel', { opacity: 0, y: 34 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, 3.02);
+      tl.fromTo('#s2-user', { opacity: 0 }, { opacity: 1, duration: 0.2 }, 3.2);
+      // Typewriter: width in ch steps is deterministic and seek-safe.
+      tl.fromTo('#s2-typed', { width: 0 }, { width: '29ch', duration: 1.05, ease: 'steps(29)' }, 3.35);
+      tl.fromTo('#s2-caret', { opacity: 1 }, { opacity: 0.15, duration: 0.28, repeat: 5, yoyo: true }, 3.35);
+      tl.to('#s2-caret', { opacity: 0, duration: 0.15, overwrite: 'auto' }, 4.52);
+
+      tl.fromTo('#s2-think', { opacity: 0 }, { opacity: 1, duration: 0.18 }, 4.55);
+      tl.fromTo('#s2-d1', { opacity: 0.25 }, { opacity: 1, duration: 0.2, repeat: 2, yoyo: true }, 4.6);
+      tl.fromTo('#s2-d2', { opacity: 0.25 }, { opacity: 1, duration: 0.2, repeat: 2, yoyo: true }, 4.72);
+      tl.fromTo('#s2-d3', { opacity: 0.25 }, { opacity: 1, duration: 0.2, repeat: 2, yoyo: true }, 4.84);
+      tl.to('#s2-think', { opacity: 0, duration: 0.15, overwrite: 'auto' }, 5.02);
+
+      tl.fromTo('#s2-answer', { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, 5.05);
+      tl.fromTo('#s2-chip1', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.3 }, 5.55);
+      tl.fromTo('#s2-chip2', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.3 }, 5.85);
+      tl.to('#s2', { opacity: 0, duration: 0.4, ease: 'power1.inOut' }, 7.15);
+
+      /* ── Scene 3 — Hire flow ──────────────────────────────────────── */
+      tl.fromTo('#s3-panel', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.45, ease: 'power2.out' }, 7.52);
+      tl.fromTo('#s3-cat', { opacity: 0, x: 14 }, { opacity: 1, x: 0, duration: 0.3 }, 7.9);
+      tl.fromTo('#s3-timeline', { opacity: 0, y: 14, scale: 0.97 }, { opacity: 1, y: 0, scale: 1, duration: 0.42, ease: 'power2.out' }, 8.42);
+      tl.fromTo('#s3-verify', { opacity: 0, scale: 0.92 }, { opacity: 1, scale: 1, duration: 0.3 }, 9.5);
+      tl.fromTo('#s3-human', { opacity: 0, scale: 0.92 }, { opacity: 1, scale: 1, duration: 0.3 }, 10.0);
+      tl.fromTo('#s3-btn', { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.26 }, 10.45);
+      tl.to('#s3-btn', { scale: 0.95, duration: 0.12, overwrite: 'auto' }, 10.82);
+      tl.to('#s3-btn', { scale: 1, opacity: 0.35, duration: 0.18, overwrite: 'auto' }, 10.94);
+      // beat-locked: 27.02s -> video 11.00s (the payoff line)
+      tl.fromTo('#s3-sent', { opacity: 0, x: -18 }, { opacity: 1, x: 0, duration: 0.34, ease: 'power3.out' }, 11.0);
+      tl.to('#s3', { opacity: 0, duration: 0.4, ease: 'power1.inOut' }, 11.65);
+
+      /* ── Scene 4 — What it runs on ────────────────────────────────── */
+      tl.fromTo('#s4-label', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 12.05);
+      // beat-grid (every other beat, ~1.0s apart): 28.52 / 29.52 / 30.52
+      tl.fromTo('#s4-c1', { opacity: 0, y: 42 }, { opacity: 1, y: 0, duration: 0.42, ease: 'power2.out' }, 12.5);
+      tl.fromTo('#s4-c2', { opacity: 0, y: 42 }, { opacity: 1, y: 0, duration: 0.42, ease: 'power2.out' }, 13.5);
+      tl.fromTo('#s4-c3', { opacity: 0, y: 42 }, { opacity: 1, y: 0, duration: 0.42, ease: 'power2.out' }, 14.5);
+      tl.to('#s4', { opacity: 0, duration: 0.42, ease: 'power1.inOut' }, 15.62);
+
+      /* ── Scene 5 — Outro ──────────────────────────────────────────── */
+      const frameIds = [];
+      for (let i = 1; i <= 16; i += 1) {
+        frameIds.push('#fr' + String(i).padStart(2, '0'));
+      }
+
+      tl.fromTo('#s5-frames', { opacity: 0, scale: 1.06 }, { opacity: 1, scale: 1, duration: 0.85, ease: 'power2.out' }, 16.02);
+      tl.fromTo('#s5-bloom', { opacity: 0 }, { opacity: 0.85, duration: 0.9 }, 16.02);
+
+      // Frame-by-frame avatar sequence: discrete sets after t=0, fully seek-safe.
+      const frameStart = 16.05;
+      const frameStep = 0.1;
+      frameIds.forEach((id, index) => {
+        const at = frameStart + index * frameStep;
+        tl.set(id, { opacity: 1 }, at);
+        if (index > 0) {
+          tl.set(frameIds[index - 1], { opacity: 0 }, at);
+        }
+      });
+
+      // beat-locked: 33.02s -> video 17.00s (the name)
+      tl.fromTo('#s5-name', { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, 17.0);
+      tl.fromTo('#s5-tag', { opacity: 0 }, { opacity: 1, duration: 0.45 }, 17.45);
+      tl.fromTo('#s5-url', { opacity: 0 }, { opacity: 1, duration: 0.4 }, 17.9);
+      tl.to('#s5', { opacity: 0, duration: 0.55, ease: 'power1.in' }, 18.95);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

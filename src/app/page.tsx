@@ -5,6 +5,8 @@ import Hero from '@/components/sections/Hero';
 import Footer from '@/components/ui/Footer';
 import ThemeProvider from '@/components/ui/ThemeProvider';
 import DeferredClientTools from '@/components/ui/DeferredClientTools';
+import { getLatestPostSummaries } from '@/lib/blog';
+import { HOMEPAGE_ARTICLE_LIMIT } from '@/lib/blog-config';
 
 // Lazy loaded sections for performance
 const About = lazy(() => import('@/components/sections/About'));
@@ -17,6 +19,10 @@ const Services = lazy(() => import('@/components/sections/Services'));
 const FAQ = lazy(() => import('@/components/sections/FAQ'));
 const Articles = lazy(() => import('@/components/sections/Articles'));
 
+// The homepage is rebuilt from the same generated Blogger snapshot as /blog.
+export const dynamic = 'force-static';
+export const revalidate = false;
+
 const SectionFallback = () => (
   <div className="section-padding container-custom">
     <div className="h-64 glass rounded-2xl animate-pulse" />
@@ -25,6 +31,14 @@ const SectionFallback = () => (
 
 export default async function HomePage() {
   await getTranslations('nav');
+  const articlePosts = (await getLatestPostSummaries(HOMEPAGE_ARTICLE_LIMIT))
+    .map((post) => ({
+      slug: post.slug,
+      title: post.title,
+      excerpt: post.excerpt,
+      tags: post.tags,
+      date: post.isoDate,
+    }));
 
   return (
     <ThemeProvider>
@@ -68,7 +82,7 @@ export default async function HomePage() {
         </Suspense>
 
         <Suspense fallback={<SectionFallback />}>
-          <Articles />
+          <Articles initialArticles={articlePosts} />
         </Suspense>
       </main>
 

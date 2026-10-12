@@ -5,6 +5,7 @@ import { motion, useInView } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { ExternalLink } from 'lucide-react';
+import { PROFILE } from '@/lib/zubair-profile';
 
 const stats = [
   { key: 'years', value: '4+' },
@@ -79,7 +80,7 @@ export default function About() {
                 <span className="text-6xl sm:text-8xl font-black text-red-500/5 font-display italic tracking-tighter group-hover:scale-110 transition-transform duration-700">ZH.</span>
 
                 <Image
-                  src="/images/projects/zubair-about.jpg"
+                  src="/images/projects/zubair-about.webp"
                   alt="Zubair Hussain"
                   fill
                   sizes="(min-width: 1024px) 480px, (min-width: 640px) 70vw, 92vw"
@@ -140,7 +141,7 @@ export default function About() {
             {/* Call to Actions */}
             <motion.div variants={itemVariants} className="flex flex-wrap gap-6 pt-6">
               {[
-                { href: 'https://www.upwork.com/freelancers/zubairdeveloper', label: 'Upwork Profile' },
+                { href: PROFILE.socials.upwork, label: 'Upwork Service' },
                 { href: 'https://xovato.com', label: 'Xovato Agency' },
               ].map((link) => (
                 <motion.a

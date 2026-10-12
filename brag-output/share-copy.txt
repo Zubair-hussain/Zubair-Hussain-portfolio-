@@ -1,0 +1,3 @@
+My portfolio is a product, not a résumé: an edge AI that only knows me, a hire flow that verifies your email before I ever see it, and a six-language article reader — all running on one Cloudflare Worker.
+
+Building digital experiences that convert. → zubair-hussain-portfolio.detroonshah.workers.dev

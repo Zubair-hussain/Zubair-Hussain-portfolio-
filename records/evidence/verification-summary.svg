@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="360" viewBox="0 0 900 360" role="img" aria-labelledby="title desc">
+  <title id="title">Verification evidence summary</title><desc id="desc">Required checks and dependency license inventory.</desc>
+  <rect width="900" height="360" rx="24" fill="#111827"/><text x="48" y="62" fill="#f9fafb" font-family="Arial,sans-serif" font-size="30" font-weight="700">Verification snapshot</text>
+  <rect x="48" y="100" width="380" height="180" rx="18" fill="#1f2937"/><text x="76" y="146" fill="#9ca3af" font-family="Arial,sans-serif" font-size="18">Required checks passed</text><text x="76" y="225" fill="#22c55e" font-family="Arial,sans-serif" font-size="64" font-weight="700">5/5</text>
+  <rect x="472" y="100" width="380" height="180" rx="18" fill="#1f2937"/><text x="500" y="146" fill="#9ca3af" font-family="Arial,sans-serif" font-size="18">Dependency license flags</text><text x="500" y="225" fill="#f59e0b" font-family="Arial,sans-serif" font-size="64" font-weight="700">371</text><text x="500" y="255" fill="#9ca3af" font-family="Arial,sans-serif" font-size="16">of 1199 installed records</text>
+  <text x="48" y="325" fill="#9ca3af" font-family="Arial,sans-serif" font-size="16">Non-MIT, mixed, and unknown declarations are flagged for review.</text>
+</svg>

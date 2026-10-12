@@ -2,9 +2,9 @@
 
 import React, { useRef } from 'react';
 import { motion, useInView, useScroll, useTransform } from 'framer-motion';
-import dynamic from 'next/dynamic';
-const AvatarSequence = dynamic(() => import('@/components/3d/AvatarSequence'), { ssr: false });
+import AvatarSequence from '@/components/3d/AvatarSequence';
 import HeroCTA from './HeroCTA';
+import { useTheme } from '@/components/ui/ThemeProvider';
 
 interface HeroContentProps {
   t: {
@@ -39,6 +39,8 @@ const fadeIn = {
 };
 
 export default function HeroContent({ t, tags, stats }: HeroContentProps) {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const containerRef = useRef<HTMLDivElement>(null);
   const manifestoRef = useRef<HTMLDivElement>(null);
   const manifestoInView = useInView(manifestoRef, { once: true, margin: '-20% 0px -20% 0px' });
@@ -62,7 +64,14 @@ export default function HeroContent({ t, tags, stats }: HeroContentProps) {
       {/* ══════════════════════════════════════
           STICKY HERO VIEWPORT
       ══════════════════════════════════════ */}
-      <div className="relative flex min-h-[100svh] w-full flex-col items-center justify-center overflow-hidden pt-[90px] sm:pt-20 lg:pt-28">
+      <div
+        className="relative flex min-h-[100svh] w-full flex-col items-center justify-center overflow-hidden pt-[90px] sm:pt-20 lg:pt-28"
+        style={{
+          background: isLight
+            ? 'linear-gradient(145deg, #f8f5ef 0%, #f1ede6 58%, #f8f5ef 100%)'
+            : undefined,
+        }}
+      >
 
         {/* ── Atmospheric red glow layers ── */}
         <motion.div style={{ opacity: bgOpacity }} className="absolute inset-0 z-0 pointer-events-none">
@@ -91,7 +100,9 @@ export default function HeroContent({ t, tags, stats }: HeroContentProps) {
           <div
             className="absolute inset-0"
             style={{
-              background: 'radial-gradient(ellipse 100% 100% at 50% 50%, transparent 35%, rgba(0,0,0,0.65) 100%)',
+              background: isLight
+                ? 'radial-gradient(ellipse 100% 100% at 50% 48%, transparent 38%, rgba(38,30,32,0.09) 100%)'
+                : 'radial-gradient(ellipse 100% 100% at 50% 50%, transparent 35%, rgba(0,0,0,0.65) 100%)',
             }}
           />
         </motion.div>
@@ -140,9 +151,10 @@ export default function HeroContent({ t, tags, stats }: HeroContentProps) {
                   fontFamily: "'Instrument Serif', serif",
                   fontSize: 'clamp(3.8rem, 9vw, 9.5rem)',
                   fontStyle: 'italic',
-                  color: '#f5f4f0',
-                  textShadow:
-                    '0 0 80px rgba(var(--brand-rgb),0.18), 0 2px 0 rgba(0,0,0,0.5)',
+                  color: isLight ? '#171821' : '#f5f4f0',
+                  textShadow: isLight
+                    ? '0 18px 55px rgba(48,35,39,0.1)'
+                    : '0 0 80px rgba(var(--brand-rgb),0.18), 0 2px 0 rgba(0,0,0,0.5)',
                   letterSpacing: '-0.04em',
                 }}
               >
@@ -164,9 +176,9 @@ export default function HeroContent({ t, tags, stats }: HeroContentProps) {
                     key={tag}
                     className="text-[9px] font-mono tracking-[0.2em] uppercase px-3 py-1 rounded-full pointer-events-auto"
                     style={{
-                      background: 'rgba(var(--hl-rgb),0.03)',
-                      border: '1px solid rgba(var(--hl-rgb),0.07)',
-                      color: 'rgba(245,244,240,0.45)',
+                      background: isLight ? 'rgba(255,255,255,0.72)' : 'rgba(var(--hl-rgb),0.03)',
+                      border: isLight ? '1px solid rgba(24,26,39,0.13)' : '1px solid rgba(var(--hl-rgb),0.07)',
+                      color: isLight ? 'rgba(24,26,39,0.68)' : 'rgba(245,244,240,0.45)',
                       backdropFilter: 'blur(8px)',
                     }}
                   >
@@ -204,7 +216,7 @@ export default function HeroContent({ t, tags, stats }: HeroContentProps) {
       ══════════════════════════════════════ */}
       <div
         className="relative z-20 mt-5 flex min-h-[100svh] w-full flex-col items-center justify-center overflow-hidden bg-cover bg-center bg-no-repeat pb-14 pt-24 sm:mt-7 sm:pb-16 sm:pt-28 md:mt-8 md:pb-20 md:pt-32"
-        style={{ backgroundImage: "url('/images/projects/Background-Image.png')" }}
+        style={{ backgroundImage: "url('/images/projects/background-image.webp')" }}
       >
 
         {/* Dark gradient transition from hero */}
