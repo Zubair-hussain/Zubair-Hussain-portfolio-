@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      AUDIT_URL: ${{ inputs.site_url || vars.PRODUCTION_URL || 'https://zubair-hussain-portfolio.detroonshah.workers.dev' }}
+      AUDIT_URL: ${{ inputs.site_url || vars.PRODUCTION_URL || 'https://zubairhussain.xyz' }}
 
     steps:
       - name: Check out repository

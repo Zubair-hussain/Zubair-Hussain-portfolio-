@@ -82,7 +82,7 @@ manual editing when a post is published.
 The portfolio URL is the intended primary search URL for portfolio articles:
 
 ```text
-https://zubairdeveloper.com/blog/article-slug
+https://zubairhussain.xyz/blog/article-slug
 ```
 
 The application already reinforces that choice by using a self-referencing

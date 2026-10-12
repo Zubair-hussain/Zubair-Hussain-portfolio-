@@ -7,6 +7,16 @@ compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
 # Preserve them when Workers Builds deploys this configuration.
 keep_vars = true
 
+# Custom domains are created and their DNS/TLS are managed by Cloudflare when
+# this Worker is deployed. The apex domain is the canonical SEO hostname.
+[[routes]]
+pattern = "zubairhussain.xyz"
+custom_domain = true
+
+[[routes]]
+pattern = "www.zubairhussain.xyz"
+custom_domain = true
+
 # Static assets emitted by the OpenNext build.
 [assets]
 directory = ".open-next/assets"

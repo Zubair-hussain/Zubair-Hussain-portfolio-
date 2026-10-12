@@ -17,10 +17,10 @@
 ## 📸 Snapshot
 
 <p align="center">
-  <img src="https://zubair-hussain-portfolio.detroonshah.workers.dev/opengraph-image" alt="Zubair Hussain portfolio snapshot" width="800" />
+  <img src="https://zubairhussain.xyz/opengraph-image" alt="Zubair Hussain portfolio snapshot" width="800" />
 </p>
 
-> **View Live Demo:** [Cloudflare deployment](https://zubair-hussain-portfolio.detroonshah.workers.dev)
+> **View Live Demo:** [zubairhussain.xyz](https://zubairhussain.xyz)
 
 ### Portfolio brag reel
 
@@ -39,7 +39,7 @@
 <p align="center">
   <a href="./brag-output/brag.mp4">Watch the MP4 directly</a>
   &nbsp;&middot;&nbsp;
-  <a href="https://zubair-hussain-portfolio.detroonshah.workers.dev/03-jacob-coxon-full-article.html">View the rendered Cloudflare HTML report</a>
+  <a href="https://zubairhussain.xyz/03-jacob-coxon-full-article.html">View the rendered Cloudflare HTML report</a>
 </p>
 
 ### Project visuals
@@ -353,7 +353,7 @@ This project is licensed under the [MIT License](LICENSE) - see the LICENSE file
 ---
 
 <p align="center">
-  <i>Developed with ❤️ by <a href="https://zubair-hussain-portfolio.detroonshah.workers.dev">Syed Zubair Hussain</a></i>
+  <i>Developed with ❤️ by <a href="https://zubairhussain.xyz">Syed Zubair Hussain</a></i>
 </p>
 
 <!-- GENERATED-PROJECT-HANDBOOK -->

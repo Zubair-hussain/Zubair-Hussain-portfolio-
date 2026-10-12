@@ -13,8 +13,16 @@ describe("public site URL", () => {
     vi.stubEnv("CF_PAGES_URL", "");
 
     expect(getSiteUrl()).toBe(
-      "https://zubair-hussain-portfolio.detroonshah.workers.dev",
+      "https://zubairhussain.xyz",
     );
+  });
+
+  it("cannot be overridden by a stale production environment variable", () => {
+    vi.stubEnv("NODE_ENV", "production");
+    vi.stubEnv("NEXT_PUBLIC_SITE_URL", "https://old-domain.example");
+    vi.stubEnv("SITE_URL", "https://another-old-domain.example");
+
+    expect(getSiteUrl()).toBe("https://zubairhussain.xyz");
   });
 
   it("keeps localhost as the development-only fallback", () => {
@@ -27,9 +35,9 @@ describe("public site URL", () => {
   });
 
   it("normalizes a configured hostname to a secure origin", () => {
-    vi.stubEnv("NEXT_PUBLIC_SITE_URL", "zubairdeveloper.com/path/");
+    vi.stubEnv("NEXT_PUBLIC_SITE_URL", "zubairhussain.xyz/path/");
 
-    expect(getSiteUrl()).toBe("https://zubairdeveloper.com");
+    expect(getSiteUrl()).toBe("https://zubairhussain.xyz");
   });
 
   it("uses the configured aliases in priority order", () => {

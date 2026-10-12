@@ -1,4 +1,4 @@
-const site = (process.env.AUDIT_URL || 'https://zubair-hussain-portfolio.detroonshah.workers.dev').replace(/\/+$/, '');
+const site = (process.env.AUDIT_URL || 'https://zubairhussain.xyz').replace(/\/+$/, '');
 
 module.exports = {
   ci: {

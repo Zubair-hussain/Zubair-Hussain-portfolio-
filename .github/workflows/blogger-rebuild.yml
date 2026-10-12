@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: production
-      url: ${{ vars.PRODUCTION_URL || 'https://zubair-hussain-portfolio.detroonshah.workers.dev' }}
+      url: ${{ vars.PRODUCTION_URL || 'https://zubairhussain.xyz' }}
     env:
       NEXT_TELEMETRY_DISABLED: '1'
       BLOGGER_API_KEY: ${{ secrets.BLOGGER_API_KEY }}

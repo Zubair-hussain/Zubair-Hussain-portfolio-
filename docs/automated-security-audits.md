@@ -58,7 +58,7 @@ The workflow needs the default `GITHUB_TOKEN` permissions declared in the workfl
 Create an Actions repository variable named `PRODUCTION_URL` containing the canonical deployment origin, without a trailing slash. Example:
 
 ```text
-https://zubairdeveloper.com
+https://zubairhussain.xyz
 ```
 
 Repository Issues must remain enabled for failure issues. SMTP secrets are
