@@ -16,6 +16,7 @@ const Projects = lazy(() => import('@/components/sections/Projects'));
 const Testimonials = lazy(() => import('@/components/sections/Testimonials'));
 const ClientLogos = lazy(() => import('@/components/sections/ClientLogos'));
 const Services = lazy(() => import('@/components/sections/Services'));
+const CreativeServices = lazy(() => import('@/components/sections/CreativeServices'));
 const FAQ = lazy(() => import('@/components/sections/FAQ'));
 const Articles = lazy(() => import('@/components/sections/Articles'));
 
@@ -75,6 +76,10 @@ export default async function HomePage() {
 
         <Suspense fallback={<SectionFallback />}>
           <Services />
+        </Suspense>
+
+        <Suspense fallback={<SectionFallback />}>
+          <CreativeServices />
         </Suspense>
 
         <Suspense fallback={<SectionFallback />}>
