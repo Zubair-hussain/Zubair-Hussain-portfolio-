@@ -18,6 +18,7 @@
 
 import { NextResponse } from 'next/server';
 import { PROFILE } from '@/lib/zubair-profile';
+import { SITE_PAGES } from '@/lib/site-pages';
 import { getSiteUrl } from '@/lib/site-url';
 import { getAllPostSummaries } from '@/lib/blog';
 
@@ -156,7 +157,12 @@ function knowledgeBase(repos: Repo[], posts: Post[]) {
     .map((profile) => `- ${profile.label}: ${profile.href}`)
     .join('\n');
 
+  const pageLines = SITE_PAGES.map((p) => `- ${p.title} (${p.path}): ${p.description}`).join('\n');
+
   return `${PROFILE.bio}
+
+SITE PAGES:
+${pageLines}
 
 ROLE: ${PROFILE.role}
 SKILLS: ${skillsText()}
