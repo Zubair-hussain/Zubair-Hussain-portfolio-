@@ -21,7 +21,7 @@ const BLOG_SOCIAL_DESCRIPTION =
 
 export function generateMetadata(): Metadata {
   const siteUrl = getSiteUrl();
-  const canonical = `${siteUrl}/blog`;
+  const canonical = `${siteUrl}/blogs`;
   const images = [
     {
       url: `${siteUrl}/opengraph-image`,
@@ -84,7 +84,7 @@ export function generateMetadata(): Metadata {
 export default async function BlogIndexPage() {
   const posts = await getAllPostSummaries();
   const siteUrl = getSiteUrl();
-  const canonical = `${siteUrl}/blog`;
+  const canonical = `${siteUrl}/blogs`;
 
   const blogLd = {
     "@context": "https://schema.org",

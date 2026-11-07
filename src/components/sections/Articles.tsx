@@ -92,7 +92,7 @@ export default function Articles({ initialArticles = [] }: { initialArticles?: A
             </div>
 
             <Link
-              href="/blog"
+              href="/blogs"
               className="group inline-flex w-fit items-center gap-2 rounded-full border border-[hsl(var(--primary)/0.35)] px-5 py-3 text-xs font-mono uppercase tracking-widest text-[hsl(var(--primary))] transition-all duration-300 hover:border-[hsl(var(--primary)/0.7)] hover:bg-[hsl(var(--primary)/0.08)]"
             >
               <Newspaper size={14} aria-hidden="true" />
@@ -104,7 +104,7 @@ export default function Articles({ initialArticles = [] }: { initialArticles?: A
 
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {pageArticles.map((article, i) => {
-            const articleUrl = article.slug ? `/blog/${article.slug}` : '/blog';
+            const articleUrl = article.slug ? `/blogs/${article.slug}` : '/blogs';
             const trending = article.tags.includes('Trending');
 
             return (
