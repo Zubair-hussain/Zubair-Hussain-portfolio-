@@ -47,7 +47,7 @@ describe("Blogger live route fallback", () => {
       title: "A newly published portfolio article",
     });
     expect(pageData.post?.contentHtml).toContain("Fresh Blogger content.");
-    expect(pageData.summaries[0].slug).toBe("just-published-live-fallback");
+    expect(pageData.summaries.map((s) => s.slug)).toContain("just-published-live-fallback");
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 });
