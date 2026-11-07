@@ -1012,3 +1012,22 @@ h3 {
     margin-left: 1.1rem;
   }
 }
+
+/* ─── PERFORMANCE ───────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .glass {
+    background: hsl(var(--card) / 0.92);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 700px;
+}
+
+.ve-marquee { width: max-content; animation: marquee 50s linear infinite; }
+.ve-timeline { animation: ve-track 12s linear infinite; }
+.ve-playhead { animation: ve-head 10s linear infinite alternate; }
+@keyframes ve-track { from { transform: translateX(-10%); } to { transform: translateX(-20%); } }
+@keyframes ve-head { from { left: 0; } to { left: 100%; } }
