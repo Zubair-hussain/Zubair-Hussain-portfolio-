@@ -1,20 +1,42 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { Github, Linkedin, Twitter } from 'lucide-react';
+import { Github, Instagram, Linkedin, Youtube } from 'lucide-react';
 import { PROFILE } from '@/lib/zubair-profile';
 
+function XIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3l-4.9-6.4L6.3 22H3.2l7.3-8.3L2.8 2h6.4l4.4 5.9L18.9 2Zm-1.1 18h1.7L8.3 3.9H6.5L17.8 20Z" />
+    </svg>
+  );
+}
+
 const socials = [
-  { icon: Github,   href: PROFILE.socials.github,   label: 'GitHub' },
-  { icon: Linkedin, href: PROFILE.socials.linkedin, label: 'LinkedIn' },
-  { icon: Twitter,  href: 'https://twitter.com/zubairdeveloper',   label: 'Twitter' },
+  { icon: Youtube,   href: PROFILE.socials.youtube,   label: 'YouTube' },
+  { icon: Instagram, href: PROFILE.socials.instagram, label: 'Instagram' },
+  { icon: XIcon,     href: PROFILE.socials.x,         label: 'X' },
+  { icon: Linkedin,  href: PROFILE.socials.linkedin,  label: 'LinkedIn' },
+  { icon: Github,    href: PROFILE.socials.github,    label: 'GitHub' },
 ];
 
 const footerLinks = [
-  { label: 'About',    href: '#about' },
-  { label: 'Projects', href: '#projects' },
-  { label: 'Services', href: '#services' },
+  { label: 'About',    href: '/#about' },
+  { label: 'Projects', href: '/#projects' },
+  { label: 'Services', href: '/#services' },
+  { label: 'Blog',     href: '/blogs' },
 ];
+
+// Clears the stored choice so the consent banner is shown again on reload.
+function resetCookieConsent() {
+  try {
+    localStorage.removeItem('cookie-consent');
+  } catch {
+    // Storage unavailable; the cookie reset below still applies.
+  }
+  document.cookie = 'cookie-consent=; Path=/; Max-Age=0; SameSite=Lax';
+  window.location.reload();
+}
 
 export default function Footer() {
   const t = useTranslations('footer');
@@ -56,6 +78,33 @@ export default function Footer() {
                   </a>
                 </li>
               ))}
+              <li>
+                <a href="/video-editing-services" className="text-xs font-mono tracking-wider uppercase text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--primary))] transition-colors duration-200">
+                  {t('videoEditing')}
+                </a>
+              </li>
+              <li>
+                <a href="/graphic-design-services" className="text-xs font-mono tracking-wider uppercase text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--primary))] transition-colors duration-200">
+                  {t('graphicDesign')}
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/privacy-policy"
+                  className="text-xs font-mono tracking-wider uppercase text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--primary))] transition-colors duration-200"
+                >
+                  {t('privacy')}
+                </a>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={resetCookieConsent}
+                  className="text-xs font-mono tracking-wider uppercase text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--primary))] transition-colors duration-200"
+                >
+                  {t('cookieSettings')}
+                </button>
+              </li>
             </ul>
           </nav>
 
