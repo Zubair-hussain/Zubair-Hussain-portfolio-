@@ -114,6 +114,8 @@ export default function NotFound() {
 
   return (
     <main data-theme-surface="dark" className="relative min-h-screen overflow-hidden bg-[#030303] px-4 py-8 text-white sm:px-6 lg:px-8">
+      <title>Page not found | Zubair Hussain</title>
+      <meta name="robots" content="noindex" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,rgba(220,38,38,0.18),transparent_28%),radial-gradient(circle_at_82%_80%,rgba(127,29,29,0.16),transparent_30%)]" />
       <div className="pointer-events-none absolute inset-0 opacity-[0.08] [background-image:linear-gradient(rgba(239,68,68,0.5)_1px,transparent_1px),linear-gradient(90deg,rgba(239,68,68,0.5)_1px,transparent_1px)] [background-size:42px_42px]" />
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.18)_50%)] bg-[length:100%_4px] opacity-30" />
