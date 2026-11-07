@@ -57,13 +57,13 @@ describe('articles api', () => {
       title: 'GTA 6 Map Leak Explained',
       slug: 'gta-6-map-leak-explained',
       // Posts now render on-site instead of redirecting to Blogger.
-      url: '/blog/gta-6-map-leak-explained',
+      url: '/blogs/gta-6-map-leak-explained',
       sourceUrl: 'https://zubair-xovato.blogspot.com/2026/08/gta-6-map-leak-explained.html',
       tags: ['Most Recent', 'Trending', 'Gaming'],
       trending: true,
     });
     expect(data.posts[1].tags).toEqual(['Blog']);
-    expect(data.posts[1].url).toBe('/blog/cursor-origin-vs-github');
+    expect(data.posts[1].url).toBe('/blogs/cursor-origin-vs-github');
     expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(String(fetchMock.mock.calls[0][0])).toContain('max-results=6');
   });

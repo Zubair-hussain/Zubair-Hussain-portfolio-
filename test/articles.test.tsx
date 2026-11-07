@@ -76,7 +76,7 @@ describe('Articles', () => {
     render(<Articles initialArticles={initialArticles} />);
 
     expect(await screen.findByRole('link', { name: /open article: gta 6 map leak explained/i })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /^blog home$/i })).toHaveAttribute('href', '/blog');
+    expect(screen.getByRole('link', { name: /^blog home$/i })).toHaveAttribute('href', '/blogs');
   });
 
   it('renders live Blogger posts as on-site reader links with the most recent marked trending', async () => {
@@ -84,7 +84,7 @@ describe('Articles', () => {
 
     expect(await screen.findByRole('link', { name: /open article: gta 6 map leak explained/i })).toHaveAttribute(
       'href',
-      '/blog/gta-6-map-leak-explained'
+      '/blogs/gta-6-map-leak-explained'
     );
     expect(screen.getByText('Most Recent')).toBeInTheDocument();
     expect(screen.getAllByText('Trending').length).toBeGreaterThan(0);
@@ -105,9 +105,9 @@ describe('Articles', () => {
     const latest = await screen.findByRole('link', { name: /open article: gta 6 map leak explained/i });
     const second = screen.getByRole('link', { name: /open article: cursor origin vs github/i });
 
-    expect(latest).toHaveAttribute('href', '/blog/gta-6-map-leak-explained');
+    expect(latest).toHaveAttribute('href', '/blogs/gta-6-map-leak-explained');
     expect(latest).not.toHaveAttribute('target');
-    expect(second).toHaveAttribute('href', '/blog/cursor-origin-vs-github');
+    expect(second).toHaveAttribute('href', '/blogs/cursor-origin-vs-github');
     expect(second).not.toHaveAttribute('target');
   });
 
@@ -130,7 +130,7 @@ describe('Articles', () => {
     expect(markup).toContain('<time dateTime="2026-09-22T09:00:00+05:00"');
     expect(markup).toContain('Semantic article title');
     expect(markup).toContain('A meaningful excerpt that is present in the initial HTML.');
-    expect(markup.match(/href="\/blog\/semantic-post"/g)).toHaveLength(2);
+    expect(markup.match(/href="\/blogs\/semantic-post"/g)).toHaveLength(2);
   });
 
   it('paginates 3 posts per page, revealing the rest on later pages', async () => {
