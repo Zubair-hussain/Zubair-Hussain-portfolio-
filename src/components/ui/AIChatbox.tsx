@@ -2,7 +2,16 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, Send, X, User, Sparkles, Loader2 } from 'lucide-react';
+import { ArrowLeft, Bot, Calendar, Mail, MessageCircle, Send, X, User, Sparkles, Loader2 } from 'lucide-react';
+import { PROFILE } from '@/lib/zubair-profile';
+
+type ChatView = 'home' | 'ai' | 'zubair';
+
+const DIRECT_LINKS = [
+  { icon: MessageCircle, label: 'WhatsApp', detail: 'Usually the fastest', href: 'https://wa.me/923708729117' },
+  { icon: Mail, label: 'Email', detail: PROFILE.email, href: `mailto:${PROFILE.email}` },
+  { icon: Calendar, label: 'Book a call', detail: '30 minutes on Google Meet', href: '/book' },
+];
 
 interface Message {
   id: string;
@@ -12,12 +21,12 @@ interface Message {
 
 // Turn URLs and emails inside a bot reply into clickable links.
 function renderRich(text: string) {
-  const parts = text.split(/(https?:\/\/[^\s]+|\/api\/schedule|[\w.+-]+@[\w-]+\.[\w.-]+)/g);
+  const parts = text.split(/(https?:\/\/[^\s]+|\/book(?![\w-])|[\w.+-]+@[\w-]+\.[\w.-]+)/g);
   return parts.map((part, i) => {
-    if (part === '/api/schedule')
+    if (part === '/book')
       return (
         <a key={i} href={part} target="_blank" rel="noopener noreferrer" className="text-red-400 underline underline-offset-2 hover:text-red-300 break-all">
-          secure schedule link
+          booking page
         </a>
       );
     if (/^https?:\/\//.test(part))
@@ -38,6 +47,7 @@ function renderRich(text: string) {
 
 export default function AIChatbox() {
   const [isOpen, setIsOpen] = useState(false);
+  const [view, setView] = useState<ChatView>('home');
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -138,17 +148,29 @@ export default function AIChatbox() {
             {/* Header */}
             <div className="p-5 border-b border-white/5 bg-gradient-to-r from-red-600/10 to-transparent flex items-center justify-between">
               <div className="flex items-center gap-3">
+                {view !== 'home' && (
+                  <button
+                    onClick={() => setView('home')}
+                    className="p-1.5 hover:bg-white/5 rounded-full text-white/40 hover:text-white transition-colors"
+                    aria-label="Back to chat options"
+                  >
+                    <ArrowLeft size={16} />
+                  </button>
+                )}
                 <div className="w-10 h-10 rounded-full bg-red-600/20 flex items-center justify-center border border-red-500/30">
-                  <Bot size={20} className="text-red-500" />
+                  {view === 'zubair' ? (
+                    <span className="font-display text-lg italic text-red-500">Z</span>
+                  ) : (
+                    <Bot size={20} className="text-red-500" />
+                  )}
                 </div>
                 <div>
-                  <h4 className="text-white text-sm font-bold tracking-tight">Zubair AI</h4>
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                    <span className="text-[10px] text-white/40 uppercase font-mono tracking-widest">
-                      Active now
-                    </span>
-                  </div>
+                  <h4 className="text-white text-sm font-bold tracking-tight">
+                    {view === 'home' ? 'Hi there 👋' : view === 'ai' ? 'Zubair AI' : 'Zubair Hussain'}
+                  </h4>
+                  <span className="text-[10px] text-white/40 uppercase font-mono tracking-widest">
+                    {view === 'home' ? 'How can we help?' : view === 'ai' ? 'AI assistant' : 'Talk to me directly'}
+                  </span>
                 </div>
               </div>
               <button
@@ -160,7 +182,59 @@ export default function AIChatbox() {
               </button>
             </div>
 
+            {view === 'home' && (
+              <div className="flex-grow p-5 flex flex-col gap-3">
+                <p className="text-sm text-white/60 mb-1">Who would you like to talk to?</p>
+                <button
+                  onClick={() => setView('ai')}
+                  className="flex items-center gap-4 p-4 rounded-2xl border border-white/10 bg-white/[0.03] hover:border-red-500/40 hover:bg-red-600/10 transition-all text-left"
+                >
+                  <span className="w-12 h-12 rounded-full bg-red-600/20 border border-red-500/30 flex items-center justify-center shrink-0">
+                    <Sparkles size={20} className="text-red-500" />
+                  </span>
+                  <span>
+                    <b className="block text-sm text-white">Zubair AI</b>
+                    <span className="text-xs text-white/50">Instant answers about projects, skills and blogs</span>
+                  </span>
+                </button>
+                <button
+                  onClick={() => setView('zubair')}
+                  className="flex items-center gap-4 p-4 rounded-2xl border border-white/10 bg-white/[0.03] hover:border-red-500/40 hover:bg-red-600/10 transition-all text-left"
+                >
+                  <span className="w-12 h-12 rounded-full bg-red-600 flex items-center justify-center shrink-0 font-display text-2xl italic text-white">
+                    Z
+                  </span>
+                  <span>
+                    <b className="block text-sm text-white">Zubair Hussain</b>
+                    <span className="text-xs text-white/50">Talk to me directly</span>
+                  </span>
+                </button>
+              </div>
+            )}
+
+            {view === 'zubair' && (
+              <div className="flex-grow p-5 flex flex-col gap-3">
+                <p className="text-sm text-white/60 mb-1">Choose how you'd like to reach me:</p>
+                {DIRECT_LINKS.map(({ icon: Icon, label, detail, href }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    target={href.startsWith('/') ? undefined : '_blank'}
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-4 p-4 rounded-2xl border border-white/10 bg-white/[0.03] hover:border-red-500/40 hover:bg-red-600/10 transition-all"
+                  >
+                    <Icon size={20} className="text-red-500 shrink-0" />
+                    <span>
+                      <b className="block text-sm text-white">{label}</b>
+                      <span className="text-xs text-white/50 break-all">{detail}</span>
+                    </span>
+                  </a>
+                ))}
+              </div>
+            )}
+
             {/* Messages */}
+            {view === 'ai' && (<>
             <div
               ref={scrollRef}
               data-lenis-prevent="true"
@@ -252,6 +326,7 @@ export default function AIChatbox() {
                 </button>
               </div>
             </form>
+            </>)}
           </motion.div>
         )}
       </AnimatePresence>
@@ -260,7 +335,7 @@ export default function AIChatbox() {
       <motion.button
         whileHover={{ scale: 1.05, rotate: 5 }}
         whileTap={{ scale: 0.95 }}
-        onClick={() => setIsOpen((prev) => !prev)}
+        onClick={() => { setView('home'); setIsOpen((prev) => !prev); }}
         className="relative w-16 h-16 rounded-full bg-red-600 flex items-center justify-center text-white shadow-[0_10px_30px_rgba(var(--brand-rgb-5),0.4)] transition-all group overflow-hidden"
         aria-label={isOpen ? 'Close AI chat' : 'Open AI chat'}
       >
