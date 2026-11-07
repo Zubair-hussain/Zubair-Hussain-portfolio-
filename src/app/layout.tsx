@@ -85,6 +85,8 @@ export async function generateMetadata(): Promise<Metadata> {
       'Mobile App Developer',
       'UI/UX Designer',
       'Xovato',
+      'Video Editing Services',
+      'Graphic Design Services',
     ],
     authors: [{ name: 'Zubair Hussain', url: siteUrl }],
     creator: 'Zubair Hussain',
@@ -158,12 +160,15 @@ export default async function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {isRTL && <link rel="preconnect" href="https://fonts.googleapis.com" />}
+        {isRTL && <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />}
         <link rel="preconnect" href="https://portfolio-assets-sigma.vercel.app" />
         <link rel="preconnect" href="https://i.ytimg.com" />
         <link rel="me" href={PROFILE.socials.github} />
         <link rel="me" href={PROFILE.socials.linkedin} />
+        <link rel="me" href={PROFILE.socials.x} />
+        <link rel="me" href={PROFILE.socials.instagram} />
+        <link rel="me" href={PROFILE.socials.youtube} />
         <link rel="author" href={PROFILE.socials.blog} />
         <link rel="video_src" href={PROFILE.actions.introVideo.embedUrl} />
 
@@ -193,6 +198,9 @@ export default async function RootLayout({
                   sameAs: [
                     PROFILE.socials.github,
                     PROFILE.socials.linkedin,
+                    PROFILE.socials.x,
+                    PROFILE.socials.instagram,
+                    PROFILE.socials.youtube,
                     PROFILE.socials.blog,
                     PROFILE.socials.figma,
                     PROFILE.socials.fiverr,

@@ -41,14 +41,12 @@ Cloudflare and Vercel.`,
   } as Record<string, string[]>,
 
   // Contact + booking. These are the actions the bot will offer.
-  email: 'thezubairh@gmail.com',
+  email: 'zubair@zubairhussain.xyz',
 
   actions: {
     schedule: {
       label: 'Schedule a Call',
-      publicPath: '/api/schedule',
-      privateUrl: 'https://calendly.com/zubai-hussain/30min',
-      envKey: 'CALENDLY_SCHEDULE_URL',
+      publicPath: '/book',
     },
     introVideo: {
       label: 'My Intro',
@@ -65,8 +63,11 @@ Cloudflare and Vercel.`,
 
   socials: {
     github: 'https://github.com/Zubair-Hussain',
+    x: 'https://x.com/ShahZuabir',
+    instagram: 'https://www.instagram.com/detro_onshah',
+    youtube: 'https://www.youtube.com/@detroonshah-786',
     linkedin:
-      'https://www.linkedin.com/in/syed-zubair-hussain-shah-491294376',
+      'https://www.linkedin.com/in/zubairhussain123',
     blog: 'https://zubair-xovato.blogspot.com/',
     fiverr: 'https://www.fiverr.com/zubair_8223/develop-a-fast-responsive-nextjs-website-for-your-business',
     upwork: 'https://www.upwork.com/services/product/development-it-syed-zubair-2030587661487129538?ref=project_share',
@@ -103,16 +104,16 @@ Cloudflare and Vercel.`,
       eyebrow: 'Best for quick project fit',
       description:
         'Book a direct call when the work needs a custom quote, a technical discussion, or a faster decision before using a marketplace.',
-      href: '/api/schedule',
+      href: '/book',
       cta: 'Book a Call',
       highlights: ['Custom quote', 'Scope review', 'Fast response'],
     },
   ],
 
   links: [
-    { label: 'Schedule a Call', href: '/api/schedule', tag: 'booking' },
+    { label: 'Schedule a Call', href: '/book', tag: 'booking' },
     { label: 'My Intro', href: 'https://youtu.be/W3Zmlo3D49Y', tag: 'video' },
-    { label: 'Email', href: 'mailto:thezubairh@gmail.com', tag: 'contact' },
+    { label: 'Email', href: 'mailto:zubair@zubairhussain.xyz', tag: 'contact' },
     { label: 'GitHub', href: 'https://github.com/Zubair-Hussain', tag: 'code' },
     {
       label: 'Fiverr Gigs',
@@ -126,7 +127,7 @@ Cloudflare and Vercel.`,
     },
     {
       label: 'LinkedIn',
-      href: 'https://www.linkedin.com/in/syed-zubair-hussain-shah-491294376',
+      href: 'https://www.linkedin.com/in/zubairhussain123',
       tag: 'professional',
     },
     { label: 'Blog', href: 'https://zubair-xovato.blogspot.com/', tag: 'writing' },

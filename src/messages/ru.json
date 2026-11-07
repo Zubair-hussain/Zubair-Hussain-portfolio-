@@ -2,6 +2,8 @@
   "nav": {
     "about": "Обо мне",
     "skills": "Навыки",
+    "video": "Видео",
+    "design": "Дизайн",
     "projects": "Проекты",
     "services": "Услуги",
     "articles": "Блог",
@@ -91,11 +93,16 @@
   },
   "footer": {
     "rights": "Все права защищены.",
-    "built": "Создано на Next.js 15 + React 19"
+    "built": "Создано на Next.js 15 + React 19",
+    "cookieSettings": "Настройки cookie",
+    "videoEditing": "Видеомонтаж",
+    "graphicDesign": "Графический дизайн",
+    "privacy": "Политика конфиденциальности"
   },
   "cookie": {
     "message": "Этот сайт использует файлы cookie для улучшения вашего опыта.",
     "accept": "Принять",
-    "decline": "Отклонить"
+    "decline": "Отклонить",
+    "policy": "Политика конфиденциальности"
   }
 }
