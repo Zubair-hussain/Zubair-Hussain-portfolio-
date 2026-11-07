@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Book a Call | Zubair Hussain</title>
+<meta name="description" content="Book a free 30-minute Google Meet call with Zubair Hussain to discuss your website, app, AI, video editing or design project.">
+<link rel="canonical" href="https://zubairhussain.xyz/book">
+<link rel="icon" href="/icons/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--accent:#c8111e;--grad:linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent) 50%,#000));--bg:#ffffff;--card:#ffffff;--text:#0f172a;--muted:#5b6475;--line:#e5e7eb}
+*{box-sizing:border-box}
+body{margin:0;background-color:var(--bg);background-image:radial-gradient(900px 520px at 0% 0%,rgba(200,17,30,.16),transparent 62%),radial-gradient(800px 520px at 100% 100%,rgba(200,17,30,.12),transparent 62%);background-attachment:fixed;font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;display:flex;flex-wrap:wrap;width:100%;max-width:960px;box-shadow:0 1px 3px rgba(15,23,42,.08),0 8px 24px rgba(15,23,42,.06);overflow:hidden;position:relative}
+.card::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:var(--grad);z-index:1}
+.info{flex:1 1 260px;padding:34px 28px 28px;background:linear-gradient(180deg,rgba(200,17,30,.09),rgba(200,17,30,0) 55%);border-right:1px solid var(--line)}
+.main{flex:2 1 460px;padding:28px;display:flex;gap:24px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;margin-bottom:22px;color:inherit;text-decoration:none}
+.badge{width:36px;height:36px;border-radius:10px;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center}
+.muted{color:var(--muted);font-size:14px}
+h1{font-size:24px;margin:4px 0 12px}
+.row{display:flex;gap:8px;align-items:center;margin:8px 0;color:var(--muted);font-size:14px}
+.cal{flex:1 1 300px}
+.cal h2{font-size:17px;margin:0 0 14px}
+.nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.nav button{border:0;background:none;color:var(--accent);font:600 13px "Inter",sans-serif;cursor:pointer;padding:8px 12px;border-radius:8px}
+.nav button:hover{background:#f3f4f6}
+.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center}
+.dow{font-size:11px;color:var(--muted);font-weight:600}
+.day{aspect-ratio:1;border:0;border-radius:50%;background:none;color:var(--muted);font-size:14px}
+.day.ok{background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);font-weight:700;cursor:pointer}
+.day.ok:hover{background:color-mix(in srgb,var(--accent) 28%,transparent)}
+.day.ok.sel,.day.ok.sel:hover{background:var(--grad);color:#fff}
+.day:disabled{cursor:default}
+.nav button:disabled{opacity:.3;cursor:default}
+.pair{display:flex;gap:6px}
+.slot.on,.slot.on:disabled{background:#4b5563;border-color:#4b5563;color:#fff;cursor:default}
+.slot.go{background:var(--grad);border-color:transparent;color:#fff}
+.slots{flex:0 0 230px;max-height:380px;overflow:auto}
+.slot{font-family:inherit;display:block;width:100%;padding:12px;margin-bottom:8px;border:1px solid var(--accent);color:var(--accent);background:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:14px}
+.slot:hover{background:var(--accent);color:#fff}
+form{flex:1 1 300px}
+label{display:block;font-weight:600;font-size:14px;margin:12px 0 5px}
+input,textarea{width:100%;padding:10px;border:1px solid #d1d5db;border-radius:8px;background:#fff;color:var(--text);font:inherit}
+.btn{font-family:inherit;margin-top:16px;padding:12px 22px;border:0;border-radius:24px;background:var(--grad);color:#fff;font-weight:700;font-size:15px;cursor:pointer}
+.btn.ghost{background:none;color:var(--accent);padding-left:0}
+.btn:disabled{opacity:.6}
+.err{color:#d93025;font-size:14px;margin-top:10px}
+.done{text-align:center;width:100%;padding:30px 10px}
+.done a{color:var(--accent);font-weight:700;word-break:break-all}
+.hide{display:none!important}
+.hint{color:var(--muted);font-size:14px;margin:14px 0 0}
+.tzline{margin:14px 0 0;color:var(--muted);font-size:14px}
+.timeview{flex:1 1 100%;display:flex;flex-direction:column;align-items:center;text-align:center}
+.timeview .btn.ghost{align-self:flex-start;margin:0}
+.readout{font-size:38px;font-weight:700;margin:6px 0 2px;font-variant-numeric:tabular-nums}
+.ampm{display:flex;gap:6px;margin:10px 0 14px}
+.ampm button{font:600 13px "Inter",sans-serif;padding:7px 16px;border-radius:20px;border:1px solid var(--line);background:none;color:var(--muted);cursor:pointer}
+.ampm button.on{background:var(--grad);border-color:transparent;color:#fff}
+.ampm button:disabled{opacity:.35;cursor:default}
+.dial{position:relative;width:min(300px,78vw);aspect-ratio:1;border-radius:50%;background:#fff;border:2px solid color-mix(in srgb,var(--accent) 25%,#fff)}
+.dial svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.tick{position:absolute;width:40px;height:40px;margin:-20px 0 0 -20px;border:0;border-radius:50%;background:none;color:#334155;font:600 16px "Inter",sans-serif}
+.tick:disabled{opacity:.75}
+.tick.ok{color:var(--accent);font-weight:800;cursor:pointer;background:#fff;box-shadow:0 1px 3px rgba(15,23,42,.18)}
+.tick.ok:hover{background:color-mix(in srgb,var(--accent) 20%,transparent)}
+.tick.sel,.tick.sel:hover{background:var(--grad);color:#fff}
+.dialstep{color:var(--muted);font-size:14px;margin:12px 0 0}
+</style>
+</head>
+<body>
+<div class="card">
+  <aside class="info">
+    <a class="logo" href="/" target="_top"><div class="badge">Z</div><span>ZH</span></a>
+    <div class="muted" id="host"></div>
+    <h1 id="title"></h1>
+    <div class="row"><span id="dur"></span> minutes</div>
+    <div class="row">Google Meet link sent by email</div>
+    <div class="row hide" id="whenRow"><span id="when"></span></div>
+    <p class="muted" id="desc"></p>
+  </aside>
+
+  <section class="main" id="pick">
+    <div class="cal" id="calView">
+      <h2>Select a date &amp; time</h2>
+      <div class="nav"><button id="prev" aria-label="Previous month">Prev</button><b id="month"></b><button id="next" aria-label="Next month">Next</button></div>
+      <div class="grid" id="dows"></div>
+      <div class="grid" id="days"></div>
+      <p class="tzline" id="tz"></p>
+      <p class="hint" id="hint">Select a date to see available times.</p>
+    </div>
+    <div class="timeview hide" id="slots"></div>
+  </section>
+
+  <section class="main hide" id="formWrap">
+    <form id="form">
+      <button type="button" class="btn ghost" id="back">Back</button>
+      <h2 style="margin:6px 0 0">Enter your details</h2>
+      <label for="name">Name</label><input id="name" required maxlength="100">
+      <label for="email">Email</label><input id="email" type="email" required>
+      <label for="notes">Anything you’d like to share beforehand?</label><textarea id="notes" rows="3" maxlength="2000"></textarea>
+      <button class="btn" id="submit">Schedule event</button>
+      <div class="err" id="err"></div>
+    </form>
+  </section>
+
+  <section class="main hide" id="done">
+    <div class="done">
+      <h2>You’re scheduled</h2>
+      <p class="muted">A calendar invitation was sent to your email.</p>
+      <p id="doneWhen"></p>
+      <p id="meet"></p>
+    </div>
+  </section>
+</div>
+
+<script>
+/* ========= EDIT THESE ========= */
+const CONFIG = {
+  hostName: "Zubair Hussain",
+  eventTitle: "30 Minute Meeting",
+  description: "Pick a time that works for you and we’ll talk over Google Meet.",
+  duration: 30,
+  workDays: [1,2,3,4,5],       // 0=Sun … 6=Sat
+  maxDate: "2030-12-31",       // last bookable day
+  contactEmail: "zubair@zubairhussain.xyz",
+  API_URL: "https://calendly-booking-navy.vercel.app/api"                // booking service URL. Empty = requests go by email
+};
+/* ============================== */
+
+const $ = id => document.getElementById(id);
+$('host').textContent = CONFIG.hostName;
+$('title').textContent = CONFIG.eventTitle;
+$('dur').textContent = CONFIG.duration;
+$('desc').textContent = CONFIG.description;
+if(!CONFIG.API_URL) $('submit').textContent = "Send request by email";
+
+let TZ = Intl.DateTimeFormat().resolvedOptions().timeZone, PLACE = "";
+function showZone(){ $('tz').textContent = "Your time zone: "+(PLACE ? PLACE+" ("+TZ+")" : TZ); }
+showZone();
+// Cloudflare location for the visitor's IP; the browser time zone is the fallback.
+fetch("/api/geo").then(r=>r.json()).then(j=>{
+  if(!j.timezone) return;
+  new Intl.DateTimeFormat([], {timeZone:j.timezone});
+  TZ = j.timezone; PLACE = [j.city,j.country].filter(Boolean).join(", ");
+  showZone();
+  if(selDate) renderSlots();
+}).catch(()=>{});
+
+$('dows').innerHTML = "SMTWTFS".split("").map(d=>'<div class="dow">'+d+'</div>').join("");
+let view = new Date(); view.setDate(1);
+let selDate = null, selSlot = null, curSlots = [];
+const today = new Date(); today.setHours(0,0,0,0);
+const last = new Date(CONFIG.maxDate+"T00:00:00");
+const ymd = d => d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const fmtT = iso => new Date(iso).toLocaleTimeString([], {hour:"numeric",minute:"2-digit",timeZone:TZ});
+const fmtD = iso => new Date(iso).toLocaleDateString([], {weekday:"long",month:"long",day:"numeric",year:"numeric",timeZone:TZ});
+
+function render(){
+  $('month').textContent = view.toLocaleDateString([], {month:"long",year:"numeric"});
+  let h = "", first = view.getDay(), n = new Date(view.getFullYear(), view.getMonth()+1, 0).getDate();
+  for(let i=0;i<first;i++) h += "<span></span>";
+  for(let d=1; d<=n; d++){
+    const dt = new Date(view.getFullYear(), view.getMonth(), d);
+    const ok = dt>=today && dt<=last && CONFIG.workDays.includes(dt.getDay());
+    const sel = selDate===ymd(dt);
+    h += '<button class="day'+(ok?' ok':'')+(sel?' sel':'')+'" '+(ok?'data-d="'+ymd(dt)+'"':'disabled')+'>'+d+'</button>';
+  }
+  $('days').innerHTML = h;
+  $('prev').disabled = view <= new Date(today.getFullYear(), today.getMonth(), 1);
+  $('next').disabled = view >= new Date(last.getFullYear(), last.getMonth(), 1);
+}
+$('prev').onclick = () => { view.setMonth(view.getMonth()-1); render(); };
+$('next').onclick = () => { view.setMonth(view.getMonth()+1); render(); };
+let period = "AM", pickHour = null;
+function parts(iso){
+  const p = Object.fromEntries(new Intl.DateTimeFormat("en-US",{hour:"numeric",minute:"numeric",hourCycle:"h23",timeZone:TZ}).formatToParts(new Date(iso)).map(x=>[x.type,Number(x.value)]));
+  return {hour:p.hour%12||12, minute:p.minute, period:p.hour<12?"AM":"PM"};
+}
+function renderSlots(){
+  const dateLabel = new Date(selDate+"T12:00:00Z").toLocaleDateString([], {weekday:"long",month:"long",day:"numeric",timeZone:"UTC"});
+  const back = '<button type="button" class="btn ghost" data-back="1">Change date</button>';
+  if(!curSlots.length){ $('slots').innerHTML = back+'<b>'+dateLabel+'</b><p class="muted">No times available on this day.</p>'; return; }
+  const items = curSlots.map(iso => ({iso, ...parts(iso)}));
+  if(!items.some(i=>i.period===period)) period = items[0].period;
+  const inPeriod = items.filter(i=>i.period===period);
+  const minutes = pickHour ? inPeriod.filter(i=>i.hour===pickHour) : [];
+  const chosen = items.find(i=>i.iso===selSlot);
+  const at = deg => { const a=(deg-90)*Math.PI/180; return 'left:'+(50+40*Math.cos(a))+'%;top:'+(50+40*Math.sin(a))+'%'; };
+  const hand = deg => { const a=(deg-90)*Math.PI/180, x=50+29*Math.cos(a), y=50+29*Math.sin(a), t=4, n=a+Math.PI/2;
+    let marks=""; for(let m=0;m<60;m++){ const b=m*6*Math.PI/180, r=m%5?47:45.5; marks+='<line x1="'+(50+49*Math.sin(b))+'" y1="'+(50-49*Math.cos(b))+'" x2="'+(50+r*Math.sin(b))+'" y2="'+(50-r*Math.cos(b))+'" stroke="#94a3b8" stroke-width="'+(m%5?.3:.7)+'"/>'; }
+    return '<svg viewBox="0 0 100 100" aria-hidden="true">'+marks+'<line x1="50" y1="50" x2="'+x+'" y2="'+y+'" stroke="#c8111e" stroke-width="1.6" stroke-linecap="round"/><polygon fill="#c8111e" points="'+(x+t*1.6*Math.cos(a))+','+(y+t*1.6*Math.sin(a))+' '+(x+t*.7*Math.cos(n))+','+(y+t*.7*Math.sin(n))+' '+(x-t*.7*Math.cos(n))+','+(y-t*.7*Math.sin(n))+'"/><circle cx="50" cy="50" r="2.6" fill="#c8111e"/></svg>'; };
+  let ticks = "", angle = (inPeriod[0].hour%12)*30;
+  if(pickHour){
+    angle = chosen ? chosen.minute*6 : pickHour*30;
+    for(let m=0;m<60;m+=5){
+      const i = minutes.find(x=>x.minute===m), label = String(m).padStart(2,"0");
+      ticks += '<button type="button" class="tick'+(i?' ok':'')+(i&&i.iso===selSlot?' sel':'')+'" style="'+at(m*6)+'" '+(i?'data-s="'+i.iso+'" aria-label="'+fmtT(i.iso)+'"':'disabled')+'>'+label+'</button>';
+    }
+  }else{
+    for(let h=1;h<=12;h++){
+      const ok = inPeriod.some(i=>i.hour===h);
+      ticks += '<button type="button" class="tick'+(ok?' ok':'')+'" style="'+at(h*30)+'" '+(ok?'data-h="'+h+'"':'disabled')+'>'+h+'</button>';
+    }
+  }
+  const has = p => items.some(i=>i.period===p);
+  const read = chosen ? fmtT(chosen.iso) : (pickHour ? pickHour+':--' : '--:--')+' '+period;
+  $('slots').innerHTML = back+'<b>'+dateLabel+'</b><div class="readout">'+read+'</div>'
+    +'<div class="ampm">'+["AM","PM"].map(p=>'<button type="button" data-p="'+p+'" class="'+(p===period?'on':'')+'" '+(has(p)?'':'disabled')+'>'+p+'</button>').join("")+'</div>'
+    +'<div class="dial">'+hand(angle)+ticks+'</div>'
+    +(chosen ? '<button type="button" class="btn" data-go="1">Next</button>'
+      : '<p class="dialstep">'+(pickHour?'Now pick the minutes.':'Pick an hour on the clock.')+(pickHour?' <a href="#" data-hours="1" style="color:var(--accent)">Change hour</a>':'')+'</p>');
+}
+$('days').onclick = e => { const b = e.target.closest('[data-d]'); if(b) selectDate(b.dataset.d); };
+$('slots').onclick = e => {
+  const b = e.target.closest('button,a'); if(!b) return;
+  if(b.dataset.back){ selDate=null; render(); $('slots').classList.add('hide'); $('calView').classList.remove('hide'); return; }
+  if(b.dataset.p){ period=b.dataset.p; pickHour=null; selSlot=null; }
+  if(b.dataset.hours){ e.preventDefault(); pickHour=null; selSlot=null; }
+  if(b.dataset.h){ pickHour=Number(b.dataset.h); selSlot=null; }
+  if(b.dataset.s) selSlot=b.dataset.s;
+  if(b.dataset.go){
+    $('when').textContent = fmtT(selSlot)+", "+fmtD(selSlot);
+    $('whenRow').classList.remove('hide');
+    $('pick').classList.add('hide'); $('formWrap').classList.remove('hide');
+    return;
+  }
+  renderSlots();
+};
+$('back').onclick = () => { $('formWrap').classList.add('hide'); $('pick').classList.remove('hide'); };
+
+async function getSlots(date){
+  if(!CONFIG.API_URL){ // no live calendar yet: offer standard hours
+    const out = [];
+    for(let h=9; h<17; h++) for(const m of ["00","30"]){
+      const dt = new Date(date+"T"+String(h).padStart(2,"0")+":"+m+":00");
+      if(dt>new Date()) out.push(dt.toISOString());
+    }
+    return out;
+  }
+  const r = await fetch(CONFIG.API_URL+"?date="+date);
+  return (await r.json()).slots || [];
+}
+
+$('form').onsubmit = async e => {
+  e.preventDefault(); $('err').textContent = "";
+  const body = {start:selSlot, duration:CONFIG.duration, tz:TZ, place:PLACE, name:$('name').value, email:$('email').value, notes:$('notes').value};
+  if(!CONFIG.API_URL){
+    const text = "Name: "+body.name+"\nEmail: "+body.email+"\nTime: "+fmtT(selSlot)+", "+fmtD(selSlot)+" ("+TZ+")\n\n"+body.notes;
+    window.top.location.href = "mailto:"+CONFIG.contactEmail+"?subject="+encodeURIComponent("Meeting request")+"&body="+encodeURIComponent(text);
+    return;
+  }
+  $('submit').disabled = true; $('submit').textContent = "Scheduling…";
+  try{
+    const r = await fetch(CONFIG.API_URL, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify(body)});
+    const res = await r.json();
+    if(!res.ok) throw new Error(res.error || "Failed");
+    $('formWrap').classList.add('hide'); $('done').classList.remove('hide');
+    $('doneWhen').textContent = fmtT(selSlot)+", "+fmtD(selSlot);
+    if(res.meetLink && res.meetLink.startsWith("https://")){
+      const a = document.createElement('a'); a.href = a.textContent = res.meetLink;
+      $('meet').append("Google Meet: ", a);
+    }
+  }catch(err){
+    $('err').textContent = "Sorry, that time could not be booked. "+err.message;
+    $('submit').disabled = false; $('submit').textContent = "Schedule event";
+  }
+};
+async function selectDate(d){
+  selDate = d; selSlot = null; pickHour = null;
+  view = new Date(Number(d.slice(0,4)), Number(d.slice(5,7))-1, 1);
+  render();
+  $('calView').classList.add('hide');
+  $('slots').classList.remove('hide');
+  $('slots').innerHTML = '<p class="muted">Loading times…</p>';
+  try{ curSlots = await getSlots(d); renderSlots(); }
+  catch(err){ $('slots').innerHTML = '<p class="err">Could not load times. Please try again.</p>'; }
+}
+// First page shows the calendar only: jump to the first month that has bookable days
+(function init(){
+  const d = new Date(today);
+  while(d<=last && !CONFIG.workDays.includes(d.getDay())) d.setDate(d.getDate()+1);
+  view = new Date(d.getFullYear(), d.getMonth(), 1);
+  render();
+})();
+</script>
+</body>
+</html>

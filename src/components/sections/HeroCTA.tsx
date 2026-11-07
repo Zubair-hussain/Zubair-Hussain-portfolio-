@@ -92,7 +92,7 @@ export default function HeroCTA() {
                     Schedule a Call
                   </p>
                   <p className="text-[10px] font-mono uppercase tracking-[0.18em] text-white/35">
-                    Calendly booking
+                    Google Meet booking
                   </p>
                 </div>
               </div>
@@ -108,7 +108,7 @@ export default function HeroCTA() {
             </div>
 
             <iframe
-              src={`${PROFILE.actions.schedule.privateUrl}?hide_gdpr_banner=1&primary_color=e11d30`}
+              src="/book.html"
               title="Schedule a call with Zubair"
               className="h-full w-full flex-1 bg-white"
               data-lenis-prevent="true"
