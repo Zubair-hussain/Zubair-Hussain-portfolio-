@@ -20,7 +20,7 @@ describe('Next security headers', () => {
     expect(contentSecurityPolicy).toContain('upgrade-insecure-requests');
     expect(contentSecurityPolicy).toContain('https://challenges.cloudflare.com');
     expect(contentSecurityPolicy).toContain('https://api.github.com');
-    expect(contentSecurityPolicy).toContain('https://calendly.com');
+    expect(contentSecurityPolicy).toContain('https://script.google.com');
     expect(contentSecurityPolicy).toContain('https://api.emailjs.com');
     expect(contentSecurityPolicy).toContain('https://www.googletagmanager.com');
     expect(contentSecurityPolicy).toContain('https://www.google-analytics.com');

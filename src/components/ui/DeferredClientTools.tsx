@@ -36,10 +36,16 @@ export default function DeferredClientTools() {
 
   if (!ready) return null;
 
+  // Smooth scroll and the custom cursor are costly and only useful with a mouse.
+  const fancyPointer =
+    typeof window.matchMedia !== 'function' ||
+    (window.matchMedia('(pointer: fine)').matches &&
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
   return (
     <>
-      <LenisProvider />
-      <CustomCursor />
+      {fancyPointer && <LenisProvider />}
+      {fancyPointer && <CustomCursor />}
       <ScrollProgress />
       <AIChatbox />
       <BackToTop />

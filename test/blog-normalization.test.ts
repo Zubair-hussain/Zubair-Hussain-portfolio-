@@ -46,7 +46,7 @@ describe('Blogger content normalization', () => {
     expect(post.contentHtml).toContain('<h2>Article heading</h2>');
     expect(post.contentHtml).toContain('/s1200/photo.jpg');
     expect(post.contentHtml).toContain('loading="lazy"');
-    expect(post.url).toBe('/blog/useful');
+    expect(post.url).toBe('/blogs/useful');
     expect(post.sourceUrl).toBe('https://example.blogspot.com/2026/09/useful.html');
   });
 
@@ -145,7 +145,7 @@ describe('Blogger content normalization', () => {
       seoKeywords: ['mobile application', 'React Native', 'app development', 'Mobile', 'Development'],
       lang: 'en',
       image: 'https://blogger.googleusercontent.com/example/s1200/mobile.jpg',
-      translations: [{ lang: 'ur', url: '/blog/mobile-application-review-ur' }],
+      translations: [{ lang: 'ur', url: '/blogs/mobile-application-review-ur' }],
     });
     expect(posts[0].contentHtml).toContain('The complete English portfolio article.');
     expect(posts[0].contentHtml).not.toContain('visible Blogger review');
@@ -154,7 +154,7 @@ describe('Blogger content normalization', () => {
       title: 'موبائل ایپلیکیشن کا مکمل جائزہ',
       slug: 'mobile-application-review-ur',
       lang: 'ur',
-      translations: [{ lang: 'en', url: '/blog/mobile-application-review' }],
+      translations: [{ lang: 'en', url: '/blogs/mobile-application-review' }],
     });
     expect(posts[1].contentHtml).toContain('یہ مکمل اردو مضمون ہے۔');
   });

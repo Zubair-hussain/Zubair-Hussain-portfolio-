@@ -32,7 +32,7 @@ vi.mock('framer-motion', () => {
 });
 
 describe('HeroCTA', () => {
-  it('opens Calendly in an in-app scheduler dialog', () => {
+  it('opens the booking calendar in an in-app dialog', () => {
     const { getByRole, getByText, queryByRole } = render(<HeroCTA />);
 
     fireEvent.click(getByRole('button', { name: PROFILE.actions.schedule.label }));

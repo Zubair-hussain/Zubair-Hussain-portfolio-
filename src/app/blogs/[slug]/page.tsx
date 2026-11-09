@@ -60,7 +60,7 @@ export async function generateMetadata({
     };
   }
 
-  const canonical = `${siteUrl}/blog/${post.slug}`;
+  const canonical = `${siteUrl}/blogs/${post.slug}`;
   const title = post.seoTitle || post.title;
   const description = metaDescription(post.seoDescription || post.excerpt);
   const topics = topicTags(post.tags);
@@ -157,7 +157,7 @@ export default async function BlogPostPage({ params }: PageProps) {
     .filter((item) => item.sourceUrl !== post.sourceUrl)
     .slice(0, 5);
   const siteUrl = getSiteUrl();
-  const canonical = `${siteUrl}/blog/${post.slug}`;
+  const canonical = `${siteUrl}/blogs/${post.slug}`;
   const isRtl = post.lang === "ur";
   const wasUpdated =
     Boolean(post.isoUpdated) && post.isoUpdated !== post.isoDate;
@@ -205,8 +205,8 @@ export default async function BlogPostPage({ params }: PageProps) {
     },
     isPartOf: {
       "@type": "Blog",
-      "@id": `${siteUrl}/blog#blog`,
-      url: `${siteUrl}/blog`,
+      "@id": `${siteUrl}/blogs#blog`,
+      url: `${siteUrl}/blogs`,
     },
     url: canonical,
     // Google requires an image for Article rich results; fall back to the site card.
@@ -237,7 +237,7 @@ export default async function BlogPostPage({ params }: PageProps) {
         "@type": "ListItem",
         position: 2,
         name: "Articles",
-        item: `${siteUrl}/blog`,
+        item: `${siteUrl}/blogs`,
       },
       { "@type": "ListItem", position: 3, name: post.title, item: canonical },
     ],

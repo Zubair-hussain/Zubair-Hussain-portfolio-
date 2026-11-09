@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 
 describe("mobile blog regression guards", () => {
   it("keeps article content and sidebars shrinkable inside the reader grid", () => {
-    const page = readFileSync("src/app/blog/[slug]/page.tsx", "utf8");
+    const page = readFileSync("src/app/blogs/[slug]/page.tsx", "utf8");
     expect(page).toContain("grid min-w-0");
     expect(page).toContain('<article lang={post.lang} className="min-w-0">');
     expect(page).toContain('<aside className="min-w-0');

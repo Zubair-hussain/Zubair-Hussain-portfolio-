@@ -2,6 +2,8 @@
   "nav": {
     "about": "Sobre mí",
     "skills": "Habilidades",
+    "video": "Vídeo",
+    "design": "Diseño",
     "projects": "Proyectos",
     "services": "Servicios",
     "articles": "Blog",
@@ -91,11 +93,16 @@
   },
   "footer": {
     "rights": "Todos los derechos reservados.",
-    "built": "Construido con Next.js 15 + React 19"
+    "built": "Construido con Next.js 15 + React 19",
+    "cookieSettings": "Configuración de cookies",
+    "videoEditing": "Edición de vídeo",
+    "graphicDesign": "Diseño gráfico",
+    "privacy": "Política de privacidad"
   },
   "cookie": {
     "message": "Este sitio utiliza cookies para mejorar tu experiencia.",
     "accept": "Aceptar",
-    "decline": "Rechazar"
+    "decline": "Rechazar",
+    "policy": "Política de privacidad"
   }
 }

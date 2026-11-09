@@ -5,7 +5,7 @@
  *  One place that turns the raw Blogger JSON feed into normalized posts that
  *  are rendered natively on this site (NOT redirected to Blogger). Used by:
  *    - /api/articles         (the home "Articles" grid)
- *    - /blog/[slug]          (the native reader page + per-article OG tags)
+ *    - /blogs/[slug]          (the native reader page + per-article OG tags)
  *    - /api/chat             (so the AI bot links to the on-site article pages)
  *    - /sitemap.ts           (so every article is indexable)
  *
@@ -617,7 +617,7 @@ function mapEntry(entry: BloggerFeedEntry, index: number): BlogPost[] {
       date: formatDate(entry.published?.$t || entry.updated?.$t || ""),
       isoDate: publishedIso,
       isoUpdated: updatedIso || publishedIso,
-      url: `/blog/${slug}`,
+      url: `/blogs/${slug}`,
       sourceUrl,
       image: variant.image
         ? upgradeBloggerImage(variant.image)

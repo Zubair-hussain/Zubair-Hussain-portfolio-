@@ -54,7 +54,7 @@
     "react-hook-form": "^7.88.0",
     "tailwind-merge": "^2.5.2",
     "three": "^0.183.2",
-    "zod": "^3.25.76"
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@testing-library/dom": "^10.4.2",
@@ -76,5 +76,9 @@
     "typescript": "^5.5.4",
     "vitest": "^4.1.11",
     "wrangler": "^4.77.0"
+  },
+  "overrides": {
+    "@grpc/grpc-js": "^1.14.7",
+    "glob": "^14.0.4"
   }
 }

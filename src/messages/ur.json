@@ -2,6 +2,8 @@
   "nav": {
     "about": "میرے بارے میں",
     "skills": "مہارتیں",
+    "video": "ویڈیو",
+    "design": "ڈیزائن",
     "projects": "پروجیکٹس",
     "services": "خدمات",
     "articles": "بلاگ",
@@ -91,11 +93,16 @@
   },
   "footer": {
     "rights": "تمام حقوق محفوظ ہیں۔",
-    "built": "Next.js 15 + React 19 کے ساتھ بنایا گیا"
+    "built": "Next.js 15 + React 19 کے ساتھ بنایا گیا",
+    "cookieSettings": "کوکی سیٹنگز",
+    "videoEditing": "ویڈیو ایڈیٹنگ",
+    "graphicDesign": "گرافک ڈیزائن",
+    "privacy": "رازداری کی پالیسی"
   },
   "cookie": {
     "message": "یہ سائٹ آپ کے تجربے کو بہتر بنانے کے لیے کوکیز استعمال کرتی ہے۔",
     "accept": "قبول کریں",
-    "decline": "مسترد کریں"
+    "decline": "مسترد کریں",
+    "policy": "رازداری کی پالیسی"
   }
 }

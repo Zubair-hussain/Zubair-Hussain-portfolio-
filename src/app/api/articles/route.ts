@@ -10,7 +10,7 @@ export async function GET() {
   const allPosts = await getLatestPostSummaries(HOMEPAGE_ARTICLE_LIMIT);
 
   // Card-shaped payload for the home "Articles" grid. Note `url` now points to
-  // the on-site reader (/blog/[slug]) so posts render here instead of
+  // the on-site reader (/blogs/[slug]) so posts render here instead of
   // redirecting to Blogger; `sourceUrl` keeps the original permalink.
   const posts = allPosts.map((post) => ({
     id: post.slug,

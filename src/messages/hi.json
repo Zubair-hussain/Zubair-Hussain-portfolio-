@@ -2,6 +2,8 @@
   "nav": {
     "about": "मेरे बारे में",
     "skills": "कौशल",
+    "video": "वीडियो",
+    "design": "डिज़ाइन",
     "projects": "परियोजनाएं",
     "services": "सेवाएं",
     "articles": "ब्लॉग",
@@ -91,11 +93,16 @@
   },
   "footer": {
     "rights": "सर्वाधिकार सुरक्षित।",
-    "built": "Next.js 15 + React 19 के साथ निर्मित"
+    "built": "Next.js 15 + React 19 के साथ निर्मित",
+    "cookieSettings": "कुकी सेटिंग्स",
+    "videoEditing": "वीडियो एडिटिंग",
+    "graphicDesign": "ग्राफिक डिज़ाइन",
+    "privacy": "गोपनीयता नीति"
   },
   "cookie": {
     "message": "यह साइट आपके अनुभव को बेहतर बनाने के लिए कुकीज़ का उपयोग करती है।",
     "accept": "स्वीकार करें",
-    "decline": "मना करें"
+    "decline": "मना करें",
+    "policy": "गोपनीयता नीति"
   }
 }

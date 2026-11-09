@@ -10,6 +10,8 @@ import HireMeModal from './HireMeModal';
 const navLinks = [
   { key: 'about',    href: '#about'    },
   { key: 'skills',   href: '#skills'   },
+  { key: 'video',    href: '/video-editing-services'  },
+  { key: 'design',   href: '/graphic-design-services' },
   { key: 'projects', href: '#projects' },
   { key: 'services', href: '#services' },
   { key: 'articles', href: '#articles' },
@@ -25,11 +27,15 @@ const locales = [
 ];
 
 function scrollTo(href: string) {
+  if (href.startsWith('/')) {
+    window.location.assign(href);
+    return;
+  }
   const el = document.getElementById(href.replace('#', ''));
   if (el) {
     el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   } else {
-    // On a subpage (e.g. /blog/[slug]) the section isn't here — go home to it.
+    // On a subpage (e.g. /blogs/[slug]) the section isn't here — go home to it.
     window.location.assign(`/${href}`);
   }
 }
@@ -195,7 +201,7 @@ const Navigation = memo(function Navigation() {
           </motion.button>
 
           {/* ── Centre links ── */}
-          <div ref={ref} className="hidden md:flex items-center gap-8 lg:gap-10 relative" onMouseLeave={onLeave}>
+          <div ref={ref} className="hidden md:flex items-center gap-4 lg:gap-7 relative" onMouseLeave={onLeave}>
             {/* sliding underline bar */}
             <motion.span
               className="absolute -bottom-[2px] h-[1.5px] rounded-full pointer-events-none"
@@ -216,7 +222,7 @@ const Navigation = memo(function Navigation() {
                 animate="visible"
                 onClick={() => scrollTo(href)}
                 onMouseEnter={e => onEnter(e.currentTarget as HTMLButtonElement)}
-                className="relative text-[11px] font-mono tracking-[0.22em] uppercase pb-0.5 transition-colors duration-200"
+                className="relative text-[10px] lg:text-[11px] font-mono tracking-[0.16em] uppercase pb-0.5 transition-colors duration-200"
                 style={{ color: navText }}
                 whileHover={{ color: navTextStrong } as any}
               >

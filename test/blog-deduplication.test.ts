@@ -60,7 +60,7 @@ describe("Blogger source and translation deduplication", () => {
       lang: "en",
     });
     expect(summaries[0].translations).toEqual([
-      { lang: "de", url: "/blog/original-article-de" },
+      { lang: "de", url: "/blogs/original-article-de" },
     ]);
   });
 
@@ -86,7 +86,7 @@ describe("Blogger source and translation deduplication", () => {
       lang: "de",
       slug: "article-de",
       title: "Deutsch",
-      url: "/blog/article-de",
+      url: "/blogs/article-de",
       sourceUrl: "https://blog.example/article",
     };
     const candidates: BlogPost[] = [
@@ -94,21 +94,21 @@ describe("Blogger source and translation deduplication", () => {
         ...base,
         slug: "article",
         title: "English",
-        url: "/blog/article",
+        url: "/blogs/article",
         sourceUrl: current.sourceUrl,
       },
       {
         ...base,
         slug: "other",
         title: "Other",
-        url: "/blog/other",
+        url: "/blogs/other",
         sourceUrl: "https://blog.example/other",
       },
       {
         ...base,
         slug: "other-copy",
         title: "Other copy",
-        url: "/blog/other-copy",
+        url: "/blogs/other-copy",
         sourceUrl: "https://blog.example/other",
       },
     ];

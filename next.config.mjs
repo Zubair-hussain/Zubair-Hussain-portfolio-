@@ -10,12 +10,13 @@ export const contentSecurityPolicy = [
   "form-action 'self'",
   "frame-ancestors 'none'",
   "object-src 'none'",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://static.cloudflareinsights.com https://challenges.cloudflare.com https://assets.calendly.com https://www.googletagmanager.com https://www.google-analytics.com",
-  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://assets.calendly.com",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://static.cloudflareinsights.com https://challenges.cloudflare.com https://www.googletagmanager.com https://www.google-analytics.com",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "img-src 'self' data: blob: https:",
   "font-src 'self' data: https://fonts.gstatic.com",
-  "connect-src 'self' https://api.github.com https://zubair-xovato.blogspot.com https://calendly.com https://*.firebase.com https://*.firebaseio.com https://*.googleapis.com https://*.gstatic.com https://api.emailjs.com https://api-inference.huggingface.co https://huggingface.co https://challenges.cloudflare.com https://cloudflareinsights.com https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https://www.googletagmanager.com wss://*.firebaseio.com wss://*.googleapis.com",
-  "frame-src 'self' https://calendly.com https://www.youtube.com https://www.youtube-nocookie.com https://www.googletagmanager.com https:",
+  "connect-src 'self' https://calendly-booking-navy.vercel.app https://script.google.com https://script.googleusercontent.com https://api.github.com https://zubair-xovato.blogspot.com https://*.firebase.com https://*.firebaseio.com https://*.googleapis.com https://*.gstatic.com https://api.emailjs.com https://api-inference.huggingface.co https://huggingface.co https://challenges.cloudflare.com https://cloudflareinsights.com https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https://www.googletagmanager.com wss://*.firebaseio.com wss://*.googleapis.com",
+  "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://www.googletagmanager.com https:",
+  "media-src 'self' https://res.cloudinary.com",
   "worker-src 'self' blob:",
   "manifest-src 'self'",
   "upgrade-insecure-requests",
@@ -62,22 +63,27 @@ const nextConfig = {
   compress: true,
   poweredByHeader: false,
   reactStrictMode: true,
+  rewrites: async () => [{ source: '/book', destination: '/book.html' }],
   redirects: async () => [
-    {
-      source: '/blog/gta-6-map-leak-explained',
-      destination: '/blog/gta-6-map-leak-vice-city-leonida-explained',
-      permanent: true,
-    },
-    {
-      source: '/blog/cursor-origin-vs-github',
-      destination: '/blog/cursor-origin-vs-github-git-hosting-2026',
-      permanent: true,
-    },
+    { source: '/blog/gta-6-map-leak-explained', destination: '/blogs/gta-6-map-leak-vice-city-leonida-explained', statusCode: 301 },
+    { source: '/blogs/gta-6-map-leak-explained', destination: '/blogs/gta-6-map-leak-vice-city-leonida-explained', statusCode: 301 },
+    { source: '/blog/cursor-origin-vs-github', destination: '/blogs/cursor-origin-vs-github-git-hosting-2026', statusCode: 301 },
+    { source: '/blogs/cursor-origin-vs-github', destination: '/blogs/cursor-origin-vs-github-git-hosting-2026', statusCode: 301 },
+    { source: '/blog', destination: '/blogs', statusCode: 301 },
+    { source: '/blog/:slug', destination: '/blogs/:slug', statusCode: 301 },
   ],
   headers: async () => [
     {
       source: '/(.*)',
       headers: securityHeaders,
+    },
+    {
+      // The booking page is the one page the hero popup may frame.
+      source: '/book.html',
+      headers: [
+        { key: 'Content-Security-Policy', value: contentSecurityPolicy.replace("frame-ancestors 'none'", "frame-ancestors 'self'") },
+        { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+      ],
     },
     {
       source: '/fonts/(.*)',

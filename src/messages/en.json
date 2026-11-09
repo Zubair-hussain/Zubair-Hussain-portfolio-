@@ -2,6 +2,8 @@
   "nav": {
     "about": "About",
     "skills": "Skills",
+    "video": "Video",
+    "design": "Design",
     "projects": "Projects",
     "services": "Services",
     "articles": "Blog",
@@ -91,11 +93,16 @@
   },
   "footer": {
     "rights": "All rights reserved.",
-    "built": "Built with Next.js 15 + React 19"
+    "built": "Built with Next.js 15 + React 19",
+    "cookieSettings": "Cookie settings",
+    "videoEditing": "Video Editing",
+    "graphicDesign": "Graphic Design",
+    "privacy": "Privacy Policy"
   },
   "cookie": {
     "message": "This site uses cookies to enhance your experience.",
     "accept": "Accept",
-    "decline": "Decline"
+    "decline": "Decline",
+    "policy": "Privacy Policy"
   }
 }

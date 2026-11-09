@@ -86,7 +86,13 @@ export default function CookieConsent() {
               </p>
             </div>
             <p className="text-sm text-[hsl(var(--foreground)/0.8)] leading-relaxed">
-              {t('message')}
+              {t('message')}{' '}
+              <a
+                href="/privacy-policy"
+                className="underline text-[hsl(var(--primary))] whitespace-nowrap"
+              >
+                {t('policy')}
+              </a>
             </p>
             <div className="flex gap-3">
               <button onClick={accept} className="btn-primary text-xs flex-1 justify-center">
