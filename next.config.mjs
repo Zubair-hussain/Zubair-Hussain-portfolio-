@@ -65,12 +65,12 @@ const nextConfig = {
   reactStrictMode: true,
   rewrites: async () => [{ source: '/book', destination: '/book.html' }],
   redirects: async () => [
-    { source: '/blog/gta-6-map-leak-explained', destination: '/blogs/gta-6-map-leak-vice-city-leonida-explained', permanent: true },
-    { source: '/blogs/gta-6-map-leak-explained', destination: '/blogs/gta-6-map-leak-vice-city-leonida-explained', permanent: true },
-    { source: '/blog/cursor-origin-vs-github', destination: '/blogs/cursor-origin-vs-github-git-hosting-2026', permanent: true },
-    { source: '/blogs/cursor-origin-vs-github', destination: '/blogs/cursor-origin-vs-github-git-hosting-2026', permanent: true },
-    { source: '/blog', destination: '/blogs', permanent: true },
-    { source: '/blog/:slug', destination: '/blogs/:slug', permanent: true },
+    { source: '/blog/gta-6-map-leak-explained', destination: '/blogs/gta-6-map-leak-vice-city-leonida-explained', statusCode: 301 },
+    { source: '/blogs/gta-6-map-leak-explained', destination: '/blogs/gta-6-map-leak-vice-city-leonida-explained', statusCode: 301 },
+    { source: '/blog/cursor-origin-vs-github', destination: '/blogs/cursor-origin-vs-github-git-hosting-2026', statusCode: 301 },
+    { source: '/blogs/cursor-origin-vs-github', destination: '/blogs/cursor-origin-vs-github-git-hosting-2026', statusCode: 301 },
+    { source: '/blog', destination: '/blogs', statusCode: 301 },
+    { source: '/blog/:slug', destination: '/blogs/:slug', statusCode: 301 },
   ],
   headers: async () => [
     {

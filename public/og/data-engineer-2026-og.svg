@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <filter id="s" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="12" stdDeviation="18" flood-color="#000" flood-opacity=".08"/></filter>
+  </defs>
+  <rect width="1200" height="630" fill="#f8f6f2"/>
+  <text x="70" y="88" font-family="Consolas,monospace" font-size="18" letter-spacing="6" fill="#77737f">THE SAME JOB, FOUR DIFFERENT YEARS</text>
+  <text x="70" y="200" font-family="Georgia,serif" font-size="108" font-weight="700" fill="#8a6bb1">Data Engineer</text>
+  <text x="70" y="290" font-family="Georgia,serif" font-size="58" font-style="italic" fill="#2b2a33">still worth it in 2026?</text>
+  <g filter="url(#s)"><rect x="70" y="330" width="1060" height="170" rx="14" fill="#fff" stroke="#e6e1d8"/></g>
+  <g fill="#8a6bb1">
+    <g transform="translate(110 415)">
+      <rect x="0" y="-14" width="70" height="28" rx="14"/><rect x="90" y="-8" width="30" height="16" rx="8"/><rect x="140" y="-4" width="12" height="8" rx="4"/><rect x="170" y="-10" width="110" height="20" rx="10"/>
+      <rect x="320" y="-4" width="10" height="8" rx="4"/><rect x="350" y="-12" width="40" height="24" rx="12"/><rect x="410" y="-6" width="20" height="12" rx="6"/><rect x="450" y="-8" width="60" height="16" rx="8"/>
+      <rect x="540" y="-12" width="70" height="24" rx="12"/><rect x="630" y="-6" width="20" height="12" rx="6"/><rect x="670" y="-9" width="60" height="18" rx="9"/><rect x="760" y="-4" width="140" height="8" rx="4"/>
+    </g>
+    <rect x="690" y="350" width="3" height="130"/>
+  </g>
+  <text x="100" y="370" font-family="Consolas,monospace" font-size="14" letter-spacing="4" fill="#77737f">● RANKING · LAYOFFS · RESUME · FREE CERTS</text>
+  <g font-family="Consolas,monospace" font-size="15" letter-spacing="3">
+    <rect x="70" y="540" width="250" height="4" fill="#4f7cac"/><text x="70" y="570" fill="#4f7cac">NVIDIA</text>
+    <rect x="340" y="540" width="250" height="4" fill="#6b8f4e"/><text x="340" y="570" fill="#6b8f4e">GOOGLE</text>
+    <rect x="610" y="540" width="250" height="4" fill="#b8952e"/><text x="610" y="570" fill="#b8952e">MICROSOFT</text>
+    <rect x="880" y="540" width="250" height="4" fill="#8a6bb1"/><text x="880" y="570" fill="#8a6bb1">INTERNSHIPS</text>
+  </g>
+  <text x="1130" y="88" text-anchor="end" font-family="Consolas,monospace" font-size="18" letter-spacing="3" fill="#8a6bb1">zubairhussain.xyz</text>
+</svg>

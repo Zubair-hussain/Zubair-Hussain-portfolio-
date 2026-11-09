@@ -1,5 +1,321 @@
 [
   {
+    "slug": "data-engineer-2026-ranking-resume-internship",
+    "title": "Data Engineer in 2026: Ranking, Layoffs, Resume and the Internship Playbook",
+    "seoTitle": "Data Engineer 2026: Job Ranking, Layoffs, Resume & Free Certs",
+    "excerpt": "Is data engineering still a safe bet in 2026? My ranking, what the layoffs hit, the resume I'd send, and free NVIDIA, Google and Microsoft courses.",
+    "seoDescription": "Is data engineering still a top job in 2026? Honest ranking vs layoffs, an ATS resume that gets interviews, free NVIDIA, Google and Microsoft courses, and an internship plan.",
+    "contentHtml": "<p>I get the same DM every week: \"Is data engineering dead because of AI?\" No. It's one of the jobs AI made more necessary. This is the portfolio version of my guide, written as a checklist you can act on.</p>\n<h2>The verdict in four lines</h2>\n<ul>\n<li>Demand: high, driven by AI and RAG systems that need governed data.</li>\n<li>Layoff exposure: lower than reporting-only BI or junior frontend roles.</li>\n<li>Entry: harder than 2021. Projects matter more than certificates.</li>\n<li>Pay: still above most analytics roles at the same level.</li>\n</ul>\n<h2>My ranking of tech jobs for 2026</h2>\n<ol><li>AI/ML engineer (production)</li><li>Data engineer</li><li>Cloud/platform engineer</li><li>Cybersecurity engineer</li><li>Analytics engineer</li><li>Generalist data scientist</li><li>Junior frontend developer</li></ol>\n<p>This is my opinion from job-board research, weighted for a fresher trying to get hired.</p>\n<h2>Resume rules I follow</h2>\n<ul><li>One column, one page, no icons or progress bars.</li><li>Every bullet has a number: rows, minutes saved, dollars cut.</li><li>Tool names copied from the job post.</li><li>Three GitHub projects with diagrams and READMEs.</li></ul>\n<h2>Free learning</h2>\n<ul><li>NVIDIA Deep Learning Institute free self-paced courses.</li><li>Google Cloud Skills Boost data engineering path and badges.</li><li>Microsoft Learn DP-900 and DP-700 paths.</li><li>Databricks Academy and DataTalksClub DE Zoomcamp.</li></ul>\n<h2>Internship checklist</h2>\n<ul><li>Apply August–October for the next summer.</li><li>Ask engineers one specific stack question before asking for a referral.</li><li>Look at fintech, logistics and healthtech, not only big tech.</li><li>Follow up once after a week.</li></ul>\n<h2>Interview problems to rehearse</h2>\n<p>Idempotent loads after retries, late-arriving data, schema drift, Spark skew, cloud cost from SELECT *, and storing everything in UTC. Plus the ROW_NUMBER dedupe query, until you can write it half asleep.</p>\n<p>Start one project today. The full illustrated version with the video, memes and resume template is on my Blogger.</p>",
+    "tags": [
+      "Most Recent",
+      "Trending",
+      "Data Engineering"
+    ],
+    "seoKeywords": [
+      "data engineer 2026",
+      "data engineering jobs",
+      "tech layoffs 2026",
+      "data engineer resume",
+      "free data engineering certification",
+      "data engineering internship",
+      "best tech jobs 2026",
+      "Data Engineering",
+      "Careers",
+      "AI"
+    ],
+    "readTime": "2 min",
+    "date": "Nov 09, 2026",
+    "isoDate": "2026-11-09T07:03:45.307Z",
+    "isoUpdated": "2026-11-09T07:03:45.307Z",
+    "url": "/blogs/data-engineer-2026-ranking-resume-internship",
+    "sourceUrl": "https://zubair-xovato.blogspot.com/2026/11/data-engineer-2026-ranking-resume-internship.html",
+    "image": "https://www.zubairhussain.xyz/og/data-engineer-2026-og.png",
+    "lang": "en",
+    "translations": [
+      {
+        "lang": "ur",
+        "url": "/blogs/data-engineer-2026-ur"
+      },
+      {
+        "lang": "es",
+        "url": "/blogs/data-engineer-2026-es"
+      },
+      {
+        "lang": "hi",
+        "url": "/blogs/data-engineer-2026-hi"
+      },
+      {
+        "lang": "ru",
+        "url": "/blogs/data-engineer-2026-ru"
+      },
+      {
+        "lang": "de",
+        "url": "/blogs/data-engineer-2026-de"
+      }
+    ],
+    "trending": true
+  },
+  {
+    "slug": "data-engineer-2026-ur",
+    "title": "2026 میں ڈیٹا انجینئر: رینکنگ، لے آف، ریزیومے اور انٹرن شپ",
+    "seoTitle": "ڈیٹا انجینئر 2026: نوکری، لے آف، ریزیومے اور مفت سرٹیفکیٹ",
+    "excerpt": "کیا 2026 میں ڈیٹا انجینئرنگ اب بھی اچھا کیریئر ہے؟ رینکنگ، ریزیومے اور مفت کورسز۔",
+    "seoDescription": "2026 میں ڈیٹا انجینئر کی نوکری کتنی محفوظ ہے؟ لے آف کا اثر، ATS ریزیومے، NVIDIA، Google اور Microsoft کے مفت کورسز اور انٹرن شپ حاصل کرنے کا طریقہ۔",
+    "contentHtml": "<p>ہر ہفتے مجھ سے یہی سوال پوچھا جاتا ہے: کیا AI کی وجہ سے ڈیٹا انجینئرنگ ختم ہو گئی؟ جواب ہے نہیں۔ AI کو صاف اور قابلِ اعتماد ڈیٹا چاہیے، اور یہ کام ڈیٹا انجینئر ہی کرتا ہے۔</p>\n<h2>لے آف کس پر پڑے؟</h2>\n<p>زیادہ تر صرف رپورٹنگ والی نوکریاں کم ہوئیں۔ جو لوگ پائپ لائن، ویئرہاؤس اور کلاؤڈ سنبھالتے ہیں وہ زیادہ تر محفوظ رہے۔</p>\n<h2>ریزیومے کیسا ہو</h2>\n<ul><li>ایک کالم، ایک صفحہ، کوئی آئیکن نہیں۔</li><li>ہر پوائنٹ میں کوئی نمبر: وقت کی بچت، ڈیٹا کا حجم۔</li><li>GitHub پر تین اصل پروجیکٹس۔</li></ul>\n<h2>مفت کورسز</h2>\n<p>NVIDIA DLI، Google Cloud Skills Boost، Microsoft Learn (DP-900)، Databricks Academy اور DE Zoomcamp۔</p>\n<h2>انٹرن شپ کیسے ملے</h2>\n<p>اگست سے اکتوبر کے درمیان اپلائی کریں، انجینئرز سے ان کے اسٹیک کے بارے میں ایک واضح سوال پوچھیں، اور صرف بڑی کمپنیوں تک محدود نہ رہیں۔</p>\n<p>آج ہی ایک پروجیکٹ شروع کریں۔</p>",
+    "tags": [
+      "ڈیٹا انجینئرنگ",
+      "کیریئر"
+    ],
+    "seoKeywords": [
+      "ڈیٹا انجینئر 2026",
+      "ڈیٹا انجینئرنگ نوکری",
+      "ریزیومے",
+      "مفت سرٹیفکیٹ",
+      "انٹرن شپ",
+      "ڈیٹا انجینئرنگ",
+      "کیریئر"
+    ],
+    "readTime": "1 min",
+    "date": "Nov 09, 2026",
+    "isoDate": "2026-11-09T07:03:45.307Z",
+    "isoUpdated": "2026-11-09T07:03:45.307Z",
+    "url": "/blogs/data-engineer-2026-ur",
+    "sourceUrl": "https://zubair-xovato.blogspot.com/2026/11/data-engineer-2026-ranking-resume-internship.html",
+    "image": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiK9Udeya5rNvP35BPRJzKTBANmSZ75bzz6SikxQJ4lKHa21sP1_PjfdIfrB5btTEV1a_Sqlqli9dT09EkLHGTTlxNqjRTEHpuUrFEzX9nfSAcLFlyzggIcp4nWsDMShdOf2lO3UDGLWvfyUmvi5sjo2YyjO8YP7QKsL4_7ISNqiIraqphwkzjmSXS7vwJ9/s1200/data-engineer-2026-og.png",
+    "lang": "ur",
+    "translations": [
+      {
+        "lang": "en",
+        "url": "/blogs/data-engineer-2026-ranking-resume-internship"
+      },
+      {
+        "lang": "es",
+        "url": "/blogs/data-engineer-2026-es"
+      },
+      {
+        "lang": "hi",
+        "url": "/blogs/data-engineer-2026-hi"
+      },
+      {
+        "lang": "ru",
+        "url": "/blogs/data-engineer-2026-ru"
+      },
+      {
+        "lang": "de",
+        "url": "/blogs/data-engineer-2026-de"
+      }
+    ],
+    "trending": false
+  },
+  {
+    "slug": "data-engineer-2026-es",
+    "title": "Ingeniero de datos en 2026: ranking, despidos, currículum y prácticas",
+    "seoTitle": "Ingeniero de Datos 2026: ranking, despidos y certificados gratis",
+    "excerpt": "¿Sigue valiendo la pena la ingeniería de datos en 2026? Ranking, CV y cursos gratis.",
+    "seoDescription": "¿Es la ingeniería de datos un buen trabajo en 2026? Ranking frente a despidos, un CV que pasa el ATS, cursos gratis de NVIDIA, Google y Microsoft y cómo conseguir prácticas.",
+    "contentHtml": "<p>La IA no eliminó la ingeniería de datos. La hizo más necesaria, porque cada modelo necesita datos limpios y gobernados.</p>\n<h2>Quién sufrió los despidos</h2>\n<p>Sobre todo los perfiles que solo hacían informes. Quien mantiene pipelines, almacenes y costes en la nube siguió contratado.</p>\n<h2>Cómo debe verse tu CV</h2>\n<ul><li>Una columna y una página.</li><li>Cada punto con una cifra concreta.</li><li>Tres proyectos en GitHub con diagrama y README.</li></ul>\n<h2>Cursos gratis</h2>\n<p>NVIDIA DLI, Google Cloud Skills Boost, Microsoft Learn (DP-900 y DP-700), Databricks Academy y DE Zoomcamp.</p>\n<h2>Prácticas</h2>\n<p>Postula entre agosto y octubre, haz una pregunta técnica concreta antes de pedir una referencia y mira empresas fintech y de logística.</p>",
+    "tags": [
+      "Ingeniería de datos",
+      "Carrera"
+    ],
+    "seoKeywords": [
+      "ingeniero de datos 2026",
+      "empleo ingeniería de datos",
+      "despidos tecnología",
+      "currículum ingeniero de datos",
+      "certificados gratis",
+      "Ingeniería de datos",
+      "Carrera"
+    ],
+    "readTime": "1 min",
+    "date": "Nov 09, 2026",
+    "isoDate": "2026-11-09T07:03:45.307Z",
+    "isoUpdated": "2026-11-09T07:03:45.307Z",
+    "url": "/blogs/data-engineer-2026-es",
+    "sourceUrl": "https://zubair-xovato.blogspot.com/2026/11/data-engineer-2026-ranking-resume-internship.html",
+    "image": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiK9Udeya5rNvP35BPRJzKTBANmSZ75bzz6SikxQJ4lKHa21sP1_PjfdIfrB5btTEV1a_Sqlqli9dT09EkLHGTTlxNqjRTEHpuUrFEzX9nfSAcLFlyzggIcp4nWsDMShdOf2lO3UDGLWvfyUmvi5sjo2YyjO8YP7QKsL4_7ISNqiIraqphwkzjmSXS7vwJ9/s1200/data-engineer-2026-og.png",
+    "lang": "es",
+    "translations": [
+      {
+        "lang": "en",
+        "url": "/blogs/data-engineer-2026-ranking-resume-internship"
+      },
+      {
+        "lang": "ur",
+        "url": "/blogs/data-engineer-2026-ur"
+      },
+      {
+        "lang": "hi",
+        "url": "/blogs/data-engineer-2026-hi"
+      },
+      {
+        "lang": "ru",
+        "url": "/blogs/data-engineer-2026-ru"
+      },
+      {
+        "lang": "de",
+        "url": "/blogs/data-engineer-2026-de"
+      }
+    ],
+    "trending": false
+  },
+  {
+    "slug": "data-engineer-2026-hi",
+    "title": "2026 में डेटा इंजीनियर: रैंकिंग, छंटनी, रिज़्यूमे और इंटर्नशिप",
+    "seoTitle": "डेटा इंजीनियर 2026: नौकरी रैंकिंग, छंटनी और मुफ्त सर्टिफिकेट",
+    "excerpt": "क्या 2026 में डेटा इंजीनियरिंग अच्छा करियर है? रैंकिंग, रिज़्यूमे और मुफ्त कोर्स।",
+    "seoDescription": "2026 में डेटा इंजीनियर की नौकरी कितनी सुरक्षित है? छंटनी का असर, ATS रिज़्यूमे, NVIDIA, Google और Microsoft के मुफ्त कोर्स और इंटर्नशिप पाने का तरीका।",
+    "contentHtml": "<p>AI ने डेटा इंजीनियरिंग को खत्म नहीं किया। हर AI मॉडल को साफ डेटा चाहिए, और वो काम डेटा इंजीनियर करता है।</p>\n<h2>छंटनी किस पर पड़ी</h2>\n<p>सिर्फ रिपोर्ट बनाने वाली भूमिकाएँ ज़्यादा कटीं। पाइपलाइन और क्लाउड संभालने वाले लोग ज़्यादातर बचे रहे।</p>\n<h2>रिज़्यूमे</h2>\n<ul><li>एक कॉलम, एक पेज।</li><li>हर पॉइंट में एक नंबर।</li><li>GitHub पर तीन असली प्रोजेक्ट।</li></ul>\n<h2>मुफ्त कोर्स</h2>\n<p>NVIDIA DLI, Google Cloud Skills Boost, Microsoft Learn (DP-900), Databricks Academy और DE Zoomcamp।</p>\n<h2>इंटर्नशिप</h2>\n<p>अगस्त से अक्टूबर के बीच अप्लाई करें और सिर्फ बड़ी कंपनियों पर निर्भर न रहें।</p>",
+    "tags": [
+      "डेटा इंजीनियरिंग",
+      "करियर"
+    ],
+    "seoKeywords": [
+      "डेटा इंजीनियर 2026",
+      "डेटा इंजीनियरिंग जॉब",
+      "रिज़्यूमे",
+      "मुफ्त सर्टिफिकेट",
+      "इंटर्नशिप",
+      "डेटा इंजीनियरिंग",
+      "करियर"
+    ],
+    "readTime": "1 min",
+    "date": "Nov 09, 2026",
+    "isoDate": "2026-11-09T07:03:45.307Z",
+    "isoUpdated": "2026-11-09T07:03:45.307Z",
+    "url": "/blogs/data-engineer-2026-hi",
+    "sourceUrl": "https://zubair-xovato.blogspot.com/2026/11/data-engineer-2026-ranking-resume-internship.html",
+    "image": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiK9Udeya5rNvP35BPRJzKTBANmSZ75bzz6SikxQJ4lKHa21sP1_PjfdIfrB5btTEV1a_Sqlqli9dT09EkLHGTTlxNqjRTEHpuUrFEzX9nfSAcLFlyzggIcp4nWsDMShdOf2lO3UDGLWvfyUmvi5sjo2YyjO8YP7QKsL4_7ISNqiIraqphwkzjmSXS7vwJ9/s1200/data-engineer-2026-og.png",
+    "lang": "hi",
+    "translations": [
+      {
+        "lang": "en",
+        "url": "/blogs/data-engineer-2026-ranking-resume-internship"
+      },
+      {
+        "lang": "ur",
+        "url": "/blogs/data-engineer-2026-ur"
+      },
+      {
+        "lang": "es",
+        "url": "/blogs/data-engineer-2026-es"
+      },
+      {
+        "lang": "ru",
+        "url": "/blogs/data-engineer-2026-ru"
+      },
+      {
+        "lang": "de",
+        "url": "/blogs/data-engineer-2026-de"
+      }
+    ],
+    "trending": false
+  },
+  {
+    "slug": "data-engineer-2026-ru",
+    "title": "Дата-инженер в 2026 году: рейтинг, сокращения, резюме и стажировки",
+    "seoTitle": "Дата-инженер 2026: рейтинг профессий, сокращения и бесплатные курсы",
+    "excerpt": "Стоит ли идти в дата-инженерию в 2026 году? Рейтинг, резюме и бесплатные курсы.",
+    "seoDescription": "Насколько востребован дата-инженер в 2026 году? Рейтинг против сокращений, резюме под ATS, бесплатные курсы NVIDIA, Google и Microsoft и как получить стажировку.",
+    "contentHtml": "<p>ИИ не убил профессию дата-инженера. Наоборот: каждой модели нужны чистые и управляемые данные.</p>\n<h2>Кого коснулись сокращения</h2>\n<p>В первую очередь тех, кто только строил отчёты. Люди, отвечающие за пайплайны и облако, в основном остались.</p>\n<h2>Резюме</h2>\n<ul><li>Одна колонка, одна страница.</li><li>В каждом пункте цифра.</li><li>Три проекта на GitHub со схемой и README.</li></ul>\n<h2>Бесплатное обучение</h2>\n<p>NVIDIA DLI, Google Cloud Skills Boost, Microsoft Learn (DP-900), Databricks Academy, DE Zoomcamp.</p>",
+    "tags": [
+      "Дата-инженерия",
+      "Карьера"
+    ],
+    "seoKeywords": [
+      "дата-инженер 2026",
+      "вакансии дата-инженер",
+      "сокращения в IT",
+      "резюме дата-инженера",
+      "бесплатные курсы",
+      "Дата-инженерия",
+      "Карьера"
+    ],
+    "readTime": "1 min",
+    "date": "Nov 09, 2026",
+    "isoDate": "2026-11-09T07:03:45.307Z",
+    "isoUpdated": "2026-11-09T07:03:45.307Z",
+    "url": "/blogs/data-engineer-2026-ru",
+    "sourceUrl": "https://zubair-xovato.blogspot.com/2026/11/data-engineer-2026-ranking-resume-internship.html",
+    "image": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiK9Udeya5rNvP35BPRJzKTBANmSZ75bzz6SikxQJ4lKHa21sP1_PjfdIfrB5btTEV1a_Sqlqli9dT09EkLHGTTlxNqjRTEHpuUrFEzX9nfSAcLFlyzggIcp4nWsDMShdOf2lO3UDGLWvfyUmvi5sjo2YyjO8YP7QKsL4_7ISNqiIraqphwkzjmSXS7vwJ9/s1200/data-engineer-2026-og.png",
+    "lang": "ru",
+    "translations": [
+      {
+        "lang": "en",
+        "url": "/blogs/data-engineer-2026-ranking-resume-internship"
+      },
+      {
+        "lang": "ur",
+        "url": "/blogs/data-engineer-2026-ur"
+      },
+      {
+        "lang": "es",
+        "url": "/blogs/data-engineer-2026-es"
+      },
+      {
+        "lang": "hi",
+        "url": "/blogs/data-engineer-2026-hi"
+      },
+      {
+        "lang": "de",
+        "url": "/blogs/data-engineer-2026-de"
+      }
+    ],
+    "trending": false
+  },
+  {
+    "slug": "data-engineer-2026-de",
+    "title": "Data Engineer 2026: Ranking, Entlassungen, Lebenslauf und Praktikum",
+    "seoTitle": "Data Engineer 2026: Job-Ranking, Entlassungen & kostenlose Zertifikate",
+    "excerpt": "Lohnt sich Data Engineering 2026 noch? Ranking, Lebenslauf und kostenlose Kurse.",
+    "seoDescription": "Ist Data Engineer 2026 noch ein sicherer Job? Ranking trotz Entlassungen, ein ATS-tauglicher Lebenslauf, kostenlose Kurse von NVIDIA, Google und Microsoft und Tipps fürs Praktikum.",
+    "contentHtml": "<p>KI hat Data Engineering nicht ersetzt. Jedes Modell braucht saubere Daten, und genau darum kümmern sich Data Engineers.</p>\n<h2>Wen die Entlassungen trafen</h2>\n<p>Vor allem reine Reporting-Rollen. Wer Pipelines, Warehouses und Cloud-Kosten betreut, blieb meist.</p>\n<h2>Lebenslauf</h2>\n<ul><li>Einspaltig, eine Seite.</li><li>Jeder Punkt mit einer Zahl.</li><li>Drei GitHub-Projekte mit Diagramm und README.</li></ul>\n<h2>Kostenlos lernen</h2>\n<p>NVIDIA DLI, Google Cloud Skills Boost, Microsoft Learn (DP-900, DP-700), Databricks Academy, DE Zoomcamp.</p>",
+    "tags": [
+      "Data Engineering",
+      "Karriere"
+    ],
+    "seoKeywords": [
+      "Data Engineer 2026",
+      "Data Engineering Jobs",
+      "Entlassungen Tech",
+      "Lebenslauf Data Engineer",
+      "kostenlose Zertifikate",
+      "Data Engineering",
+      "Karriere"
+    ],
+    "readTime": "1 min",
+    "date": "Nov 09, 2026",
+    "isoDate": "2026-11-09T07:03:45.307Z",
+    "isoUpdated": "2026-11-09T07:03:45.307Z",
+    "url": "/blogs/data-engineer-2026-de",
+    "sourceUrl": "https://zubair-xovato.blogspot.com/2026/11/data-engineer-2026-ranking-resume-internship.html",
+    "image": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiK9Udeya5rNvP35BPRJzKTBANmSZ75bzz6SikxQJ4lKHa21sP1_PjfdIfrB5btTEV1a_Sqlqli9dT09EkLHGTTlxNqjRTEHpuUrFEzX9nfSAcLFlyzggIcp4nWsDMShdOf2lO3UDGLWvfyUmvi5sjo2YyjO8YP7QKsL4_7ISNqiIraqphwkzjmSXS7vwJ9/s1200/data-engineer-2026-og.png",
+    "lang": "de",
+    "translations": [
+      {
+        "lang": "en",
+        "url": "/blogs/data-engineer-2026-ranking-resume-internship"
+      },
+      {
+        "lang": "ur",
+        "url": "/blogs/data-engineer-2026-ur"
+      },
+      {
+        "lang": "es",
+        "url": "/blogs/data-engineer-2026-es"
+      },
+      {
+        "lang": "hi",
+        "url": "/blogs/data-engineer-2026-hi"
+      },
+      {
+        "lang": "ru",
+        "url": "/blogs/data-engineer-2026-ru"
+      }
+    ],
+    "trending": false
+  },
+  {
     "slug": "new-ai-models-october-2026-claude-duet-gemini-4-gpt-6-1-terra",
     "title": "New AI models in October 2026: Claude Duet, Gemini 4 and GPT-6.1 Terra explained",
     "seoTitle": "Claude Duet, Gemini 4 & GPT-6.1 Terra: Oct 2026 AI Guide",
@@ -7,9 +323,11 @@
     "seoDescription": "Claude Duet, Gemini 4 Argon and Carbon, and GPT-6.1 Terra compared: release dates, access, specs, hardware, safety rules, and a video on building a Duet-style agent with Opus 5.5.",
     "contentHtml": "<p><strong>Short answer:</strong> In the last week of October 2026, Anthropic released Claude Duet (21 Oct), an agent app on Claude Opus 5.5 that works before you ask. OpenAI released GPT-6.1 Terra (26 Oct), a faster and cheaper mid-range model with a 1,050,000-token context window. Google made Gemini 4 Argon generally available and announced Gemini 4 Carbon (28 Oct) for cybersecurity work.</p>\n\n  <svg class=\"article-svg\" viewBox=\"0 0 1600 900\" width=\"100%\" role=\"img\" aria-labelledby=\"t5\" xmlns=\"http://www.w3.org/2000/svg\" font-family=\"Google Sans, Roboto, Arial, sans-serif\"><defs><linearGradient id=\"g5\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"#4285f4\"/><stop offset=\".5\" stop-color=\"#9b72cb\"/><stop offset=\"1\" stop-color=\"#d96570\"/></linearGradient></defs><rect width=\"1600\" height=\"900\" fill=\"#131314\"/><text x=\"800\" y=\"110\" text-anchor=\"middle\" font-size=\"56\" font-weight=\"600\" fill=\"url(#g5)\">AI inference cluster</text><text x=\"800\" y=\"160\" text-anchor=\"middle\" font-size=\"26\" fill=\"#c4c7c5\">Data-centre GPU racks that run models like Opus 5.5, Gemini 4 and GPT-6.1 Terra</text><rect x=\"180\" y=\"220\" width=\"360\" height=\"580\" rx=\"20\" fill=\"#1e1f20\" stroke=\"#333537\" stroke-width=\"3\"/><text x=\"360\" y=\"262\" text-anchor=\"middle\" font-size=\"22\" fill=\"#c4c7c5\">Rack 1</text><rect x=\"204\" y=\"290\" width=\"312\" height=\"48\" rx=\"8\" fill=\"#2a2b2d\"/><rect x=\"220\" y=\"304\" width=\"150\" height=\"20\" rx=\"4\" fill=\"#76b900\"/><text x=\"232\" y=\"320\" font-size=\"15\" font-weight=\"700\" fill=\"#131314\">NVIDIA GPU</text><circle cx=\"480\" cy=\"314\" r=\"7\" fill=\"url(#g5)\"/><rect x=\"390\" y=\"308\" width=\"70\" height=\"12\" rx=\"6\" fill=\"#444746\"/><rect x=\"204\" y=\"352\" width=\"312\" height=\"48\" rx=\"8\" fill=\"#2a2b2d\"/><rect x=\"220\" y=\"366\" width=\"150\" height=\"20\" rx=\"4\" fill=\"#76b900\"/><text x=\"232\" y=\"382\" font-size=\"15\" font-weight=\"700\" fill=\"#131314\">NVIDIA GPU</text><circle cx=\"480\" cy=\"376\" r=\"7\" fill=\"url(#g5)\"/><rect x=\"390\" y=\"370\" width=\"70\" height=\"12\" rx=\"6\" fill=\"#444746\"/><rect x=\"204\" y=\"414\" width=\"312\" height=\"48\" rx=\"8\" fill=\"#2a2b2d\"/><rect x=\"220\" y=\"428\" width=\"150\" height=\"20\" rx=\"4\" fill=\"#76b900\"/><text x=\"232\" y=\"444\" font-size=\"15\" font-weight=\"700\" fill=\"#131314\">NVIDIA GPU</text><circle cx=\"480\" cy=\"438\" r=\"7\" fill=\"url(#g5)\"/><rect x=\"390\" y=\"432\" width=\"70\" height=\"12\" rx=\"6\" fill=\"#444746\"/><rect x=\"204\" y=\"476\" width=\"312\" height=\"48\" rx=\"8\" fill=\"#2a2b2d\"/><rect x=\"220\" y=\"490\" width=\"150\" height=\"20\" rx=\"4\" fill=\"#76b900\"/><text x=\"232\" y=\"506\" font-size=\"15\" font-weight=\"700\" fill=\"#131314\">NVIDIA GPU</text><circle cx=\"480\" cy=\"500\" r=\"7\" fill=\"url(#g5)\"/><rect x=\"390\" y=\"494\" width=\"70\" height=\"12\" rx=\"6\" fill=\"#444746\"/><rect x=\"204\" y=\"538\" width=\"312\" height=\"48\" rx=\"8\" fill=\"#2a2b2d\"/><rect x=\"220\" y=\"552\" width=\"150\" height=\"20\" rx=\"4\" fill=\"#76b900\"/><text x=\"232\" y=\"568\" font-size=\"15\" font-weight=\"700\" fill=\"#131314\">NVIDIA GPU</text><circle cx=\"480\" cy=\"562\" r=\"7\" fill=\"url(#g5)\"/><rect x=\"390\" y=\"556\" width=\"70\" height=\"12\" rx=\"6\" fill=\"#444746\"/><rect x=\"204\" y=\"600\" width=\"312\" height=\"48\" rx=\"8\" fill=\"#2a2b2d\"/><rect x=\"220\" y=\"614\" width=\"150\" height=\"20\" rx=\"4\" fill=\"#76b900\"/><text x=\"232\" y=\"630\" font-size=\"15\" font-weight=\"700\" fill=\"#131314\">NVIDIA GPU</text><circle cx=\"480\" cy=\"624\" r=\"7\" fill=\"url(#g5)\"/><rect x=\"390\" y=\"618\" width=\"70\" height=\"12\" rx=\"6\" fill=\"#444746\"/><rect x=\"204\" y=\"662\" width=\"312\" height=\"48\" rx=\"8\" fill=\"#2a2b2d\"/><rect x=\"220\" y=\"676\" width=\"150\" height=\"20\" rx=\"4\" fill=\"#76b900\"/><text x=\"232\" y=\"692\" font-size=\"15\" font-weight=\"700\" fill=\"#131314\">NVIDIA GPU</text><circle cx=\"480\" cy=\"686\" r=\"7\" fill=\"url(#g5)\"/><rect x=\"390\" y=\"680\" width=\"70\" height=\"12\" rx=\"6\" fill=\"#444746\"/><rect x=\"204\" y=\"724\" width=\"312\" height=\"48\" rx=\"8\" fill=\"#2a2b2d\"/><rect x=\"220\" y=\"738\" width=\"150\" height=\"20\" rx=\"4\" fill=\"#76b900\"/><text x=\"232\" y=\"754\" font-size=\"15\" font-weight=\"700\" fill=\"#131314\">NVIDIA GPU</text><circle cx=\"480\" cy=\"748\" r=\"7\" fill=\"url(#g5)\"/><rect x=\"390\" y=\"742\" width=\"70\" height=\"12\" rx=\"6\" fill=\"#444746\"/><rect x=\"620\" y=\"220\" width=\"360\" height=\"580\" rx=\"20\" fill=\"#1e1f20\" stroke=\"#333537\" stroke-width=\"3\"/><text x=\"800\" y=\"262\" text-anchor=\"middle\" font-size=\"22\" fill=\"#c4c7c5\">Rack 2</text><rect x=\"644\" y=\"290\" width=\"312\" height=\"48\" rx=\"8\" fill=\"#2a2b2d\"/><rect x=\"660\" y=\"304\" width=\"150\" height=\"20\" rx=\"4\" fill=\"#76b900\"/><text x=\"672\" y=\"320\" font-size=\"15\" font-weight=\"700\" fill=\"#131314\">NVIDIA GPU</text><circle cx=\"920\" cy=\"314\" r=\"7\" fill=\"url(#g5)\"/><rect x=\"830\" y=\"308\" width=\"70\" height=\"12\" rx=\"6\" fill=\"#444746\"/><rect x=\"644\" y=\"352\" width=\"312\" height=\"48\" rx=\"8\" fill=\"#2a2b2d\"/><rect x=\"660\" y=\"366\" width=\"150\" height=\"20\" rx=\"4\" fill=\"#76b900\"/><text x=\"672\" y=\"382\" font-size=\"15\" font-weight=\"700\" fill=\"#131314\">NVIDIA GPU</text><circle cx=\"920\" cy=\"376\" r=\"7\" fill=\"url(#g5)\"/><rect x=\"830\" y=\"370\" width=\"70\" height=\"12\" rx=\"6\" fill=\"#444746\"/><rect x=\"644\" y=\"414\" width=\"312\" height=\"48\" rx=\"8\" fill=\"#2a2b2d\"/><rect x=\"660\" y=\"428\" width=\"150\" height=\"20\" rx=\"4\" fill=\"#76b900\"/><text x=\"672\" y=\"444\" font-size=\"15\" font-weight=\"700\" fill=\"#131314\">NVIDIA GPU</text><circle cx=\"920\" cy=\"438\" r=\"7\" fill=\"url(#g5)\"/><rect x=\"830\" y=\"432\" width=\"70\" height=\"12\" rx=\"6\" fill=\"#444746\"/><rect x=\"644\" y=\"476\" width=\"312\" height=\"48\" rx=\"8\" fill=\"#2a2b2d\"/><rect x=\"660\" y=\"490\" width=\"150\" height=\"20\" rx=\"4\" fill=\"#76b900\"/><text x=\"672\" y=\"506\" font-size=\"15\" font-weight=\"700\" fill=\"#131314\">NVIDIA GPU</text><circle cx=\"920\" cy=\"500\" r=\"7\" fill=\"url(#g5)\"/><rect x=\"830\" y=\"494\" width=\"70\" height=\"12\" rx=\"6\" fill=\"#444746\"/><rect x=\"644\" y=\"538\" width=\"312\" height=\"48\" rx=\"8\" fill=\"#2a2b2d\"/><rect x=\"660\" y=\"552\" width=\"150\" height=\"20\" rx=\"4\" fill=\"#76b900\"/><text x=\"672\" y=\"568\" font-size=\"15\" font-weight=\"700\" fill=\"#131314\">NVIDIA GPU</text><circle cx=\"920\" cy=\"562\" r=\"7\" fill=\"url(#g5)\"/><rect x=\"830\" y=\"556\" width=\"70\" height=\"12\" rx=\"6\" fill=\"#444746\"/><rect x=\"644\" y=\"600\" width=\"312\" height=\"48\" rx=\"8\" fill=\"#2a2b2d\"/><rect x=\"660\" y=\"614\" width=\"150\" height=\"20\" rx=\"4\" fill=\"#76b900\"/><text x=\"672\" y=\"630\" font-size=\"15\" font-weight=\"700\" fill=\"#131314\">NVIDIA GPU</text><circle cx=\"920\" cy=\"624\" r=\"7\" fill=\"url(#g5)\"/><rect x=\"830\" y=\"618\" width=\"70\" height=\"12\" rx=\"6\" fill=\"#444746\"/><rect x=\"644\" y=\"662\" width=\"312\" height=\"48\" rx=\"8\" fill=\"#2a2b2d\"/><rect x=\"660\" y=\"676\" width=\"150\" height=\"20\" rx=\"4\" fill=\"#76b900\"/><text x=\"672\" y=\"692\" font-size=\"15\" font-weight=\"700\" fill=\"#131314\">NVIDIA GPU</text><circle cx=\"920\" cy=\"686\" r=\"7\" fill=\"url(#g5)\"/><rect x=\"830\" y=\"680\" width=\"70\" height=\"12\" rx=\"6\" fill=\"#444746\"/><rect x=\"644\" y=\"724\" width=\"312\" height=\"48\" rx=\"8\" fill=\"#2a2b2d\"/><rect x=\"660\" y=\"738\" width=\"150\" height=\"20\" rx=\"4\" fill=\"#76b900\"/><text x=\"672\" y=\"754\" font-size=\"15\" font-weight=\"700\" fill=\"#131314\">NVIDIA GPU</text><circle cx=\"920\" cy=\"748\" r=\"7\" fill=\"url(#g5)\"/><rect x=\"830\" y=\"742\" width=\"70\" height=\"12\" rx=\"6\" fill=\"#444746\"/><rect x=\"1060\" y=\"220\" width=\"360\" height=\"580\" rx=\"20\" fill=\"#1e1f20\" stroke=\"#333537\" stroke-width=\"3\"/><text x=\"1240\" y=\"262\" text-anchor=\"middle\" font-size=\"22\" fill=\"#c4c7c5\">Rack 3</text><rect x=\"1084\" y=\"290\" width=\"312\" height=\"48\" rx=\"8\" fill=\"#2a2b2d\"/><rect x=\"1100\" y=\"304\" width=\"150\" height=\"20\" rx=\"4\" fill=\"#76b900\"/><text x=\"1112\" y=\"320\" font-size=\"15\" font-weight=\"700\" fill=\"#131314\">NVIDIA GPU</text><circle cx=\"1360\" cy=\"314\" r=\"7\" fill=\"url(#g5)\"/><rect x=\"1270\" y=\"308\" width=\"70\" height=\"12\" rx=\"6\" fill=\"#444746\"/><rect x=\"1084\" y=\"352\" width=\"312\" height=\"48\" rx=\"8\" fill=\"#2a2b2d\"/><rect x=\"1100\" y=\"366\" width=\"150\" height=\"20\" rx=\"4\" fill=\"#76b900\"/><text x=\"1112\" y=\"382\" font-size=\"15\" font-weight=\"700\" fill=\"#131314\">NVIDIA GPU</text><circle cx=\"1360\" cy=\"376\" r=\"7\" fill=\"url(#g5)\"/><rect x=\"1270\" y=\"370\" width=\"70\" height=\"12\" rx=\"6\" fill=\"#444746\"/><rect x=\"1084\" y=\"414\" width=\"312\" height=\"48\" rx=\"8\" fill=\"#2a2b2d\"/><rect x=\"1100\" y=\"428\" width=\"150\" height=\"20\" rx=\"4\" fill=\"#76b900\"/><text x=\"1112\" y=\"444\" font-size=\"15\" font-weight=\"700\" fill=\"#131314\">NVIDIA GPU</text><circle cx=\"1360\" cy=\"438\" r=\"7\" fill=\"url(#g5)\"/><rect x=\"1270\" y=\"432\" width=\"70\" height=\"12\" rx=\"6\" fill=\"#444746\"/><rect x=\"1084\" y=\"476\" width=\"312\" height=\"48\" rx=\"8\" fill=\"#2a2b2d\"/><rect x=\"1100\" y=\"490\" width=\"150\" height=\"20\" rx=\"4\" fill=\"#76b900\"/><text x=\"1112\" y=\"506\" font-size=\"15\" font-weight=\"700\" fill=\"#131314\">NVIDIA GPU</text><circle cx=\"1360\" cy=\"500\" r=\"7\" fill=\"url(#g5)\"/><rect x=\"1270\" y=\"494\" width=\"70\" height=\"12\" rx=\"6\" fill=\"#444746\"/><rect x=\"1084\" y=\"538\" width=\"312\" height=\"48\" rx=\"8\" fill=\"#2a2b2d\"/><rect x=\"1100\" y=\"552\" width=\"150\" height=\"20\" rx=\"4\" fill=\"#76b900\"/><text x=\"1112\" y=\"568\" font-size=\"15\" font-weight=\"700\" fill=\"#131314\">NVIDIA GPU</text><circle cx=\"1360\" cy=\"562\" r=\"7\" fill=\"url(#g5)\"/><rect x=\"1270\" y=\"556\" width=\"70\" height=\"12\" rx=\"6\" fill=\"#444746\"/><rect x=\"1084\" y=\"600\" width=\"312\" height=\"48\" rx=\"8\" fill=\"#2a2b2d\"/><rect x=\"1100\" y=\"614\" width=\"150\" height=\"20\" rx=\"4\" fill=\"#76b900\"/><text x=\"1112\" y=\"630\" font-size=\"15\" font-weight=\"700\" fill=\"#131314\">NVIDIA GPU</text><circle cx=\"1360\" cy=\"624\" r=\"7\" fill=\"url(#g5)\"/><rect x=\"1270\" y=\"618\" width=\"70\" height=\"12\" rx=\"6\" fill=\"#444746\"/><rect x=\"1084\" y=\"662\" width=\"312\" height=\"48\" rx=\"8\" fill=\"#2a2b2d\"/><rect x=\"1100\" y=\"676\" width=\"150\" height=\"20\" rx=\"4\" fill=\"#76b900\"/><text x=\"1112\" y=\"692\" font-size=\"15\" font-weight=\"700\" fill=\"#131314\">NVIDIA GPU</text><circle cx=\"1360\" cy=\"686\" r=\"7\" fill=\"url(#g5)\"/><rect x=\"1270\" y=\"680\" width=\"70\" height=\"12\" rx=\"6\" fill=\"#444746\"/><rect x=\"1084\" y=\"724\" width=\"312\" height=\"48\" rx=\"8\" fill=\"#2a2b2d\"/><rect x=\"1100\" y=\"738\" width=\"150\" height=\"20\" rx=\"4\" fill=\"#76b900\"/><text x=\"1112\" y=\"754\" font-size=\"15\" font-weight=\"700\" fill=\"#131314\">NVIDIA GPU</text><circle cx=\"1360\" cy=\"748\" r=\"7\" fill=\"url(#g5)\"/><rect x=\"1270\" y=\"742\" width=\"70\" height=\"12\" rx=\"6\" fill=\"#444746\"/><text x=\"800\" y=\"860\" text-anchor=\"middle\" font-size=\"22\" fill=\"#c4c7c5\">High-bandwidth memory &#183; NVLink interconnect &#183; liquid cooling &#183; tensor cores</text></svg>\n\n  <h2>Video: how to build a Duet-style agent with Claude Opus 5.5</h2>\n  <p>The video plays muted and on loop. It walks through the build described at the end of this article.</p>\n  <div class=\"video-embed\">\n    <iframe src=\"https://www.youtube-nocookie.com/embed/G8wfFOVQMNA?autoplay=1&amp;mute=1&amp;loop=1&amp;playlist=G8wfFOVQMNA&amp;controls=1&amp;playsinline=1&amp;rel=0\" title=\"How to build a Duet-style AI agent with Claude Opus 5.5\" width=\"1280\" height=\"720\" loading=\"lazy\" allow=\"autoplay; encrypted-media; picture-in-picture\" allowfullscreen referrerpolicy=\"strict-origin-when-cross-origin\"></iframe>\n  </div>\n\n  <h2>What is Claude Duet?</h2>\n  <p>Claude Duet is Anthropic's proactive agent for professionals and small business owners. It opened as a research preview on 21 October 2026 as a standalone app on web, iOS and Android, for Pro and Max subscribers in the US through a waitlist. Team and Enterprise plans are not supported yet.</p>\n  <p>It runs on Claude Opus 5.5. Each morning it sends a brief of what matters in your connected apps and alerts you when something needs attention. It handles scheduling and admin, and larger jobs such as dashboards, financial forecasts and small web apps.</p>\n  <p>The safety rules are strict. Duet asks before it sends a message, makes a payment, signs a document or deletes a file. Trading securities and moving money between accounts stay blocked even if you approve. Anthropic says Duet never sees your passwords, and a classifier checks outgoing messages for leaks of sensitive data. CNBC reports Anthropic sees Meta's Muse and OpenAI's Dots as the competition.</p>\n\n  <svg class=\"article-svg\" viewBox=\"0 0 1600 1000\" width=\"100%\" role=\"img\" aria-labelledby=\"t6\" xmlns=\"http://www.w3.org/2000/svg\" font-family=\"Google Sans, Roboto, Arial, sans-serif\"><defs><linearGradient id=\"g6\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"#4285f4\"/><stop offset=\".5\" stop-color=\"#9b72cb\"/><stop offset=\"1\" stop-color=\"#d96570\"/></linearGradient></defs><rect width=\"1600\" height=\"1000\" fill=\"#131314\"/><defs><marker id=\"a6\" viewBox=\"0 0 10 10\" refX=\"8\" refY=\"5\" markerWidth=\"6\" markerHeight=\"6\" orient=\"auto\"><path d=\"M0 0L10 5L0 10z\" fill=\"#9b72cb\"/></marker></defs><text x=\"800\" y=\"100\" text-anchor=\"middle\" font-size=\"52\" font-weight=\"600\" fill=\"url(#g6)\">Claude Duet agent loop</text><rect x=\"80\" y=\"200\" width=\"300\" height=\"160\" rx=\"22\" fill=\"#1e1f20\" stroke=\"url(#g6)\" stroke-width=\"3\"/><text x=\"230.0\" y=\"276.0\" text-anchor=\"middle\" font-size=\"30\" font-weight=\"600\" fill=\"#e3e3e3\">Trigger</text><text x=\"230.0\" y=\"312.0\" text-anchor=\"middle\" font-size=\"20\" fill=\"#c4c7c5\">schedule or new event</text><rect x=\"500\" y=\"200\" width=\"360\" height=\"160\" rx=\"22\" fill=\"#1e1f20\" stroke=\"url(#g6)\" stroke-width=\"3\"/><text x=\"680.0\" y=\"276.0\" text-anchor=\"middle\" font-size=\"30\" font-weight=\"600\" fill=\"#e3e3e3\">Claude Opus 5.5</text><text x=\"680.0\" y=\"312.0\" text-anchor=\"middle\" font-size=\"20\" fill=\"#c4c7c5\">plans and picks tools</text><rect x=\"980\" y=\"200\" width=\"300\" height=\"160\" rx=\"22\" fill=\"#1e1f20\" stroke=\"url(#g6)\" stroke-width=\"3\"/><text x=\"1130.0\" y=\"276.0\" text-anchor=\"middle\" font-size=\"30\" font-weight=\"600\" fill=\"#e3e3e3\">Connectors</text><text x=\"1130.0\" y=\"312.0\" text-anchor=\"middle\" font-size=\"20\" fill=\"#c4c7c5\">email, calendar, drive</text><rect x=\"500\" y=\"480\" width=\"360\" height=\"160\" rx=\"22\" fill=\"#1e1f20\" stroke=\"url(#g6)\" stroke-width=\"3\"/><text x=\"680.0\" y=\"556.0\" text-anchor=\"middle\" font-size=\"30\" font-weight=\"600\" fill=\"#e3e3e3\">Approval gate</text><text x=\"680.0\" y=\"592.0\" text-anchor=\"middle\" font-size=\"20\" fill=\"#c4c7c5\">send, pay, sign, delete</text><rect x=\"980\" y=\"480\" width=\"300\" height=\"160\" rx=\"22\" fill=\"#1e1f20\" stroke=\"url(#g6)\" stroke-width=\"3\"/><text x=\"1130.0\" y=\"556.0\" text-anchor=\"middle\" font-size=\"30\" font-weight=\"600\" fill=\"#e3e3e3\">Leak classifier</text><text x=\"1130.0\" y=\"592.0\" text-anchor=\"middle\" font-size=\"20\" fill=\"#c4c7c5\">checks outgoing text</text><rect x=\"80\" y=\"480\" width=\"300\" height=\"160\" rx=\"22\" fill=\"#2a2b2d\" stroke=\"url(#g6)\" stroke-width=\"3\"/><text x=\"230.0\" y=\"556.0\" text-anchor=\"middle\" font-size=\"30\" font-weight=\"600\" fill=\"#e3e3e3\">You</text><text x=\"230.0\" y=\"592.0\" text-anchor=\"middle\" font-size=\"20\" fill=\"#c4c7c5\">approve or decline</text><rect x=\"500\" y=\"760\" width=\"360\" height=\"140\" rx=\"22\" fill=\"#3a1d20\" stroke=\"url(#g6)\" stroke-width=\"3\"/><text x=\"680.0\" y=\"826.0\" text-anchor=\"middle\" font-size=\"30\" font-weight=\"600\" fill=\"#e3e3e3\">Blocked always</text><text x=\"680.0\" y=\"862.0\" text-anchor=\"middle\" font-size=\"20\" fill=\"#c4c7c5\">trading, transfers</text><line x1=\"380\" y1=\"280\" x2=\"495\" y2=\"280\" stroke=\"url(#g6)\" stroke-width=\"5\" marker-end=\"url(#a6)\"/><line x1=\"860\" y1=\"280\" x2=\"975\" y2=\"280\" stroke=\"url(#g6)\" stroke-width=\"5\" marker-end=\"url(#a6)\"/><line x1=\"680\" y1=\"360\" x2=\"680\" y2=\"475\" stroke=\"url(#g6)\" stroke-width=\"5\" marker-end=\"url(#a6)\"/><line x1=\"500\" y1=\"560\" x2=\"385\" y2=\"560\" stroke=\"url(#g6)\" stroke-width=\"5\" marker-end=\"url(#a6)\"/><line x1=\"860\" y1=\"560\" x2=\"975\" y2=\"560\" stroke=\"url(#g6)\" stroke-width=\"5\" marker-end=\"url(#a6)\"/><line x1=\"680\" y1=\"640\" x2=\"680\" y2=\"755\" stroke=\"url(#g6)\" stroke-width=\"5\" marker-end=\"url(#a6)\"/></svg>\n\n  <h2>How a Duet-style agent is built</h2>\n  <ol>\n    <li><strong>Trigger:</strong> a scheduler or an event (new email, calendar change) starts a run without a prompt.</li>\n    <li><strong>Model:</strong> Claude Opus 5.5 plans the steps and decides which tools to call.</li>\n    <li><strong>Connectors:</strong> email, calendar, drive and business apps give it data and actions.</li>\n    <li><strong>Approval gate:</strong> any send, pay, sign or delete waits for your yes.</li>\n    <li><strong>Output checks:</strong> a classifier scans messages for passwords, card numbers and private data before they leave.</li>\n    <li><strong>Hardware:</strong> the model itself runs on data-centre accelerators (NVIDIA GPUs, Google TPUs and AWS Trainium are all used across the industry), far from your phone.</li>\n  </ol>\n\n  <h2>GPT-6.1 Terra (not \"Terra 6.2\")</h2>\n  <p>OpenAI's release is called GPT-6.1 Terra. It arrived on 26 October 2026 in ChatGPT Work, Codex and the API, replacing GPT-5.6 Terra as the middle tier between the cheaper Luna and the stronger Sol and Astra models.</p>\n  <table>\n    <thead><tr><th>Spec</th><th>GPT-6.1 Terra</th></tr></thead>\n    <tbody>\n      <tr><td>Context window</td><td>1,050,000 tokens (up to 922,000 input)</td></tr>\n      <tr><td>Max output</td><td>128,000 tokens</td></tr>\n      <tr><td>Knowledge cutoff</td><td>1 June 2026</td></tr>\n      <tr><td>Reasoning effort</td><td>none, low, medium (default), high, xhigh, max</td></tr>\n      <tr><td>Terminal-Bench 4.0 (max effort)</td><td>50.3%, up from 21.5%</td></tr>\n      <tr><td>Price vs GPT-5.6 Terra</td><td>About 50% lower</td></tr>\n    </tbody>\n  </table>\n  <p>OpenAI says Terra runs up to three times faster than Sol and Astra, but still recommends those two for complex coding. One report on the system card says the model got around set restrictions in just under 30% of simulated test runs, so keep it on tight permissions when it controls a computer.</p>\n\n  <svg class=\"article-svg\" viewBox=\"0 0 1600 900\" width=\"100%\" role=\"img\" aria-labelledby=\"t7\" xmlns=\"http://www.w3.org/2000/svg\" font-family=\"Google Sans, Roboto, Arial, sans-serif\"><defs><linearGradient id=\"g7\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"#4285f4\"/><stop offset=\".5\" stop-color=\"#9b72cb\"/><stop offset=\"1\" stop-color=\"#d96570\"/></linearGradient></defs><rect width=\"1600\" height=\"900\" fill=\"#131314\"/><text x=\"800\" y=\"100\" text-anchor=\"middle\" font-size=\"52\" font-weight=\"600\" fill=\"url(#g7)\">OpenAI model tiers, October 2026</text><rect x=\"170\" y=\"560\" width=\"240\" height=\"220\" rx=\"20\" fill=\"#2a2b2d\"/><text x=\"290\" y=\"540\" text-anchor=\"middle\" font-size=\"30\" font-weight=\"600\" fill=\"#e3e3e3\">Luna</text><text x=\"290\" y=\"830\" text-anchor=\"middle\" font-size=\"22\" fill=\"#c4c7c5\">lowest cost</text><rect x=\"510\" y=\"400\" width=\"240\" height=\"380\" rx=\"20\" fill=\"url(#g7)\"/><text x=\"630\" y=\"380\" text-anchor=\"middle\" font-size=\"30\" font-weight=\"600\" fill=\"#e3e3e3\">GPT-6.1 Terra</text><text x=\"630\" y=\"830\" text-anchor=\"middle\" font-size=\"22\" fill=\"#c4c7c5\">fast mid-range</text><rect x=\"850\" y=\"260\" width=\"240\" height=\"520\" rx=\"20\" fill=\"#2a2b2d\"/><text x=\"970\" y=\"240\" text-anchor=\"middle\" font-size=\"30\" font-weight=\"600\" fill=\"#e3e3e3\">Sol</text><text x=\"970\" y=\"830\" text-anchor=\"middle\" font-size=\"22\" fill=\"#c4c7c5\">stronger</text><rect x=\"1190\" y=\"180\" width=\"240\" height=\"600\" rx=\"20\" fill=\"#2a2b2d\"/><text x=\"1310\" y=\"160\" text-anchor=\"middle\" font-size=\"30\" font-weight=\"600\" fill=\"#e3e3e3\">Astra</text><text x=\"1310\" y=\"830\" text-anchor=\"middle\" font-size=\"22\" fill=\"#c4c7c5\">strongest</text><text x=\"800\" y=\"150\" text-anchor=\"middle\" font-size=\"24\" fill=\"#c4c7c5\">GPT-6.1 Terra: 1.05M context &#183; 128K output &#183; ~50% cheaper</text></svg>\n\n  <h2>Gemini 4 Argon and Gemini 4 Carbon</h2>\n  <p>Gemini 4 Argon is Google's new frontier model with stronger reasoning. Developers and businesses get it through the Gemini API in AI Studio, and paid subscribers get it in the Gemini app and AI Mode in Search. It became generally available in Gemini Enterprise on 13 October and became the default model for AlphaEvolve on 26 October.</p>\n  <p>Gemini 4 Carbon, announced on 28 October, is built for cybersecurity and long tasks. Reporting puts it at 88.2% on the SEC-bench Pro vulnerability benchmark. Selected security defenders get it first; Google has not given a date for wider access. Gemini models run on Google's own TPU chips.</p>\n\n  <svg class=\"article-svg\" viewBox=\"0 0 1600 900\" width=\"100%\" role=\"img\" aria-labelledby=\"t8\" xmlns=\"http://www.w3.org/2000/svg\" font-family=\"Google Sans, Roboto, Arial, sans-serif\"><defs><linearGradient id=\"g8\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"#4285f4\"/><stop offset=\".5\" stop-color=\"#9b72cb\"/><stop offset=\"1\" stop-color=\"#d96570\"/></linearGradient></defs><rect width=\"1600\" height=\"900\" fill=\"#131314\"/><defs><marker id=\"a8\" viewBox=\"0 0 10 10\" refX=\"8\" refY=\"5\" markerWidth=\"6\" markerHeight=\"6\" orient=\"auto\"><path d=\"M0 0L10 5L0 10z\" fill=\"#9b72cb\"/></marker></defs><text x=\"800\" y=\"100\" text-anchor=\"middle\" font-size=\"52\" font-weight=\"600\" fill=\"url(#g8)\">Gemini 4 on Google TPUs</text><path d=\"M800 170 C812 230 830 248 890 260 C830 272 812 290 800 350 C788 290 770 272 710 260 C770 248 788 230 800 170Z\" fill=\"url(#g8)\"/><rect x=\"340\" y=\"400\" width=\"400\" height=\"150\" rx=\"22\" fill=\"#1e1f20\" stroke=\"url(#g8)\" stroke-width=\"3\"/><text x=\"540.0\" y=\"471.0\" text-anchor=\"middle\" font-size=\"30\" font-weight=\"600\" fill=\"#e3e3e3\">Gemini 4 Argon</text><text x=\"540.0\" y=\"507.0\" text-anchor=\"middle\" font-size=\"20\" fill=\"#c4c7c5\">frontier reasoning</text><rect x=\"860\" y=\"400\" width=\"400\" height=\"150\" rx=\"22\" fill=\"#1e1f20\" stroke=\"url(#g8)\" stroke-width=\"3\"/><text x=\"1060.0\" y=\"471.0\" text-anchor=\"middle\" font-size=\"30\" font-weight=\"600\" fill=\"#e3e3e3\">Gemini 4 Carbon</text><text x=\"1060.0\" y=\"507.0\" text-anchor=\"middle\" font-size=\"20\" fill=\"#c4c7c5\">cybersecurity, long tasks</text><rect x=\"100\" y=\"680\" width=\"300\" height=\"130\" rx=\"22\" fill=\"#2a2b2d\" stroke=\"url(#g8)\" stroke-width=\"3\"/><text x=\"250.0\" y=\"741.0\" text-anchor=\"middle\" font-size=\"30\" font-weight=\"600\" fill=\"#e3e3e3\">AI Studio / API</text><text x=\"250.0\" y=\"777.0\" text-anchor=\"middle\" font-size=\"20\" fill=\"#c4c7c5\">developers</text><rect x=\"460\" y=\"680\" width=\"300\" height=\"130\" rx=\"22\" fill=\"#2a2b2d\" stroke=\"url(#g8)\" stroke-width=\"3\"/><text x=\"610.0\" y=\"741.0\" text-anchor=\"middle\" font-size=\"30\" font-weight=\"600\" fill=\"#e3e3e3\">Gemini app</text><text x=\"610.0\" y=\"777.0\" text-anchor=\"middle\" font-size=\"20\" fill=\"#c4c7c5\">paid subscribers</text><rect x=\"820\" y=\"680\" width=\"300\" height=\"130\" rx=\"22\" fill=\"#2a2b2d\" stroke=\"url(#g8)\" stroke-width=\"3\"/><text x=\"970.0\" y=\"741.0\" text-anchor=\"middle\" font-size=\"30\" font-weight=\"600\" fill=\"#e3e3e3\">AI Mode</text><text x=\"970.0\" y=\"777.0\" text-anchor=\"middle\" font-size=\"20\" fill=\"#c4c7c5\">Google Search</text><rect x=\"1180\" y=\"680\" width=\"320\" height=\"130\" rx=\"22\" fill=\"#2a2b2d\" stroke=\"url(#g8)\" stroke-width=\"3\"/><text x=\"1340.0\" y=\"741.0\" text-anchor=\"middle\" font-size=\"30\" font-weight=\"600\" fill=\"#e3e3e3\">Defenders</text><text x=\"1340.0\" y=\"777.0\" text-anchor=\"middle\" font-size=\"20\" fill=\"#c4c7c5\">invite only</text><line x1=\"540\" y1=\"550\" x2=\"250\" y2=\"675\" stroke=\"url(#g8)\" stroke-width=\"5\" marker-end=\"url(#a8)\"/><line x1=\"540\" y1=\"550\" x2=\"610\" y2=\"675\" stroke=\"url(#g8)\" stroke-width=\"5\" marker-end=\"url(#a8)\"/><line x1=\"540\" y1=\"550\" x2=\"970\" y2=\"675\" stroke=\"url(#g8)\" stroke-width=\"5\" marker-end=\"url(#a8)\"/><line x1=\"1060\" y1=\"550\" x2=\"1340\" y2=\"675\" stroke=\"url(#g8)\" stroke-width=\"5\" marker-end=\"url(#a8)\"/><text x=\"800\" y=\"870\" text-anchor=\"middle\" font-size=\"22\" fill=\"#c4c7c5\">Served from TPU pods in Google data centres</text></svg>\n\n  <h2>Side-by-side comparison</h2>\n  <table>\n    <thead><tr><th></th><th>Claude Duet</th><th>Gemini 4 Argon</th><th>Gemini 4 Carbon</th><th>GPT-6.1 Terra</th></tr></thead>\n    <tbody>\n      <tr><td>Company</td><td>Anthropic</td><td>Google</td><td>Google</td><td>OpenAI</td></tr>\n      <tr><td>Type</td><td>Agent app</td><td>Frontier model</td><td>Security model</td><td>Mid-range model</td></tr>\n      <tr><td>Date</td><td>21 Oct 2026</td><td>GA 13 Oct 2026</td><td>Announced 28 Oct 2026</td><td>26 Oct 2026</td></tr>\n      <tr><td>Access</td><td>US Pro/Max, waitlist</td><td>API, Gemini app, AI Mode</td><td>Selected defenders</td><td>ChatGPT Work, Codex, API</td></tr>\n      <tr><td>Runs on</td><td>Claude Opus 5.5</td><td>Google TPUs</td><td>Google TPUs</td><td>OpenAI data centres</td></tr>\n    </tbody>\n  </table>\n\n  <h2>Key points to remember</h2>\n  <ul>\n    <li>Duet is an app built on a model (Opus 5.5); Argon, Carbon and Terra are models you can call.</li>\n    <li>The OpenAI model is GPT-6.1 Terra. Searches for \"Terra 6.2\" will not find an official model.</li>\n    <li>All three companies now ship agents that use computers and apps, so permission settings matter more than raw benchmark scores.</li>\n    <li>Carbon's benchmark number comes from early reporting. Check Google's own post before quoting it.</li>\n    <li>Access is limited: Duet is US only with a waitlist, and Carbon is invite only.</li>\n  </ul>\n\n  <h2>How to build your own Duet-style agent with Opus 5.5</h2>\n  <ol>\n    <li>Get a Claude API key and use the model ID <code>claude-opus-5-5</code>.</li>\n    <li>Define tools for read actions (list emails, read calendar) and write actions (send email, create event).</li>\n    <li>Run a scheduled job each morning that asks the model for a brief from the read tools.</li>\n    <li>Route every write tool through an approval step in your app. Never let it pay or move money.</li>\n    <li>Scan outgoing text for secrets before sending, and log every action for review.</li>\n  </ol>\n  <p>The video at the top of this page builds these five steps live.</p>\n\n  <h2>FAQ</h2>\n  <h3>When did Claude Duet launch?</h3>\n  <p>On 21 October 2026, as a research preview for US Pro and Max subscribers.</p>\n  <h3>Is GPT-6.1 Terra better than Sol?</h3>\n  <p>It is faster and cheaper. For hard coding work OpenAI still points people to Sol and Astra.</p>\n  <h3>Can anyone use Gemini 4 Carbon?</h3>\n  <p>Not yet. It goes first to selected cybersecurity defenders.</p>\n\n  <p><em>Sources: Anthropic coverage on MacRumors, 9to5Google, SiliconANGLE and CNBC (21-22 Oct 2026); OpenAI developer docs and 9to5Mac (26 Oct 2026); Google Cloud Gemini Enterprise release notes (Oct 2026). Last checked 29 October 2026.</em></p>",
     "tags": [
-      "Most Recent",
-      "Trending",
-      "Artificial Intelligence"
+      "Artificial Intelligence",
+      "AI Agents",
+      "Gemini",
+      "Claude",
+      "OpenAI"
     ],
     "seoKeywords": [
       "Claude Duet",
@@ -61,7 +379,7 @@
         "url": "/blogs/new-ai-models-october-2026-claude-duet-gemini-4-gpt-6-1-terra-fr"
       }
     ],
-    "trending": true
+    "trending": false
   },
   {
     "slug": "new-ai-models-october-2026-claude-duet-gemini-4-gpt-6-1-terra-ur",
