@@ -106,6 +106,8 @@ describe('Blogger content normalization', () => {
                 <!-- PORTFOLIO-CONTENT:en
                 TITLE: Complete mobile application review
                 SEO_TITLE: Mobile Application Review and Development Guide
+                OG_TITLE: A social title for the review
+                TWITTER_DESCRIPTION: A short description for X cards.
                 SLUG: mobile-application-review
                 EXCERPT: A short portfolio card description.
                 SEO_DESCRIPTION: A focused Google search description for the English article.
@@ -146,6 +148,20 @@ describe('Blogger content normalization', () => {
       lang: 'en',
       image: 'https://blogger.googleusercontent.com/example/s1200/mobile.jpg',
       translations: [{ lang: 'ur', url: '/blogs/mobile-application-review-ur' }],
+    });
+    // Authored social fields win; missing ones fall back along the chain.
+    expect(posts[0]).toMatchObject({
+      ogTitle: 'A social title for the review',
+      twitterTitle: 'A social title for the review',
+      ogDescription: 'A focused Google search description for the English article.',
+      twitterDescription: 'A short description for X cards.',
+    });
+    expect(posts[1]).toMatchObject({
+      seoTitle: posts[1].title,
+      ogTitle: posts[1].title,
+      twitterTitle: posts[1].title,
+      ogDescription: posts[1].seoDescription,
+      twitterDescription: posts[1].seoDescription,
     });
     expect(posts[0].contentHtml).toContain('The complete English portfolio article.');
     expect(posts[0].contentHtml).not.toContain('visible Blogger review');
