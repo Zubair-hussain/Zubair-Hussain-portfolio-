@@ -61,8 +61,16 @@ export async function generateMetadata({
   }
 
   const canonical = `${siteUrl}/blogs/${post.slug}`;
-  const title = post.seoTitle || post.title;
-  const description = metaDescription(post.seoDescription || post.excerpt);
+  // Fallback chain: X/Twitter -> Open Graph -> search -> visible title/excerpt.
+  // Older snapshot posts have no social fields, so every step must tolerate blanks.
+  const title = post.seoTitle || post.title || "Article";
+  const description = metaDescription(
+    post.seoDescription || post.excerpt || `${title}, an article by Zubair Hussain.`,
+  );
+  const ogTitle = post.ogTitle || title;
+  const ogDescription = metaDescription(post.ogDescription || description, 200);
+  const twitterTitle = post.twitterTitle || ogTitle;
+  const twitterDescription = metaDescription(post.twitterDescription || ogDescription, 200);
   const topics = topicTags(post.tags);
   const images = post.image
     ? [{ url: post.image, alt: post.title }]
@@ -109,8 +117,8 @@ export async function generateMetadata({
     openGraph: {
       type: "article",
       url: canonical,
-      title,
-      description,
+      title: ogTitle,
+      description: ogDescription,
       siteName: "Zubair Hussain Portfolio",
       locale: openGraphLocales[post.lang] ?? "en_US",
       publishedTime: post.isoDate || undefined,
@@ -122,8 +130,8 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title,
-      description,
+      title: twitterTitle,
+      description: twitterDescription,
       images,
     },
     robots: {
