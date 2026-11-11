@@ -27,6 +27,14 @@ export interface BlogPost {
   excerpt: string;
   /** SEO description authored in Blogger, with a clean content fallback. */
   seoDescription: string;
+  /** Open Graph title (Facebook, LinkedIn, WhatsApp); falls back to seoTitle. */
+  ogTitle?: string;
+  /** Open Graph description; falls back to seoDescription. */
+  ogDescription?: string;
+  /** X/Twitter card title; falls back to ogTitle. */
+  twitterTitle?: string;
+  /** X/Twitter card description; falls back to ogDescription. */
+  twitterDescription?: string;
   /** Sanitized post body HTML, safe to render with dangerouslySetInnerHTML. */
   contentHtml: string;
   tags: string[];
@@ -84,6 +92,10 @@ interface PortfolioContentBlock {
   seoTitle: string;
   excerpt: string;
   seoDescription: string;
+  ogTitle: string;
+  ogDescription: string;
+  twitterTitle: string;
+  twitterDescription: string;
   seoKeywords: string[];
   tags: string[];
   slug: string;
@@ -190,7 +202,9 @@ function safeSlug(value: string) {
  * Repeat this format once per language:
  *   PORTFOLIO-CONTENT:en
  *   TITLE: Portfolio article title
+ *   SEO_TITLE / OG_TITLE / TWITTER_TITLE: optional search and social titles
  *   SEO_DESCRIPTION: Search description
+ *   OG_DESCRIPTION / TWITTER_DESCRIPTION: optional social descriptions
  *   SEO_KEYWORDS: keyword one, keyword two
  *   ---
  *   <article><p>Complete portfolio-only body.</p></article>
@@ -227,6 +241,14 @@ function portfolioContentBlocks(value: string): PortfolioContentBlock[] {
         fields.get("EXCERPT") || fields.get("SHORT_DESCRIPTION") || description,
       ),
       seoDescription: stripHtml(fields.get("SEO_DESCRIPTION") || description),
+      ogTitle: stripHtml(fields.get("OG_TITLE") || fields.get("SOCIAL_TITLE") || ""),
+      ogDescription: stripHtml(
+        fields.get("OG_DESCRIPTION") || fields.get("SOCIAL_DESCRIPTION") || "",
+      ),
+      twitterTitle: stripHtml(fields.get("TWITTER_TITLE") || fields.get("X_TITLE") || ""),
+      twitterDescription: stripHtml(
+        fields.get("TWITTER_DESCRIPTION") || fields.get("X_DESCRIPTION") || "",
+      ),
       seoKeywords: commaSeparated(
         fields.get("SEO_KEYWORDS") || fields.get("KEYWORDS") || "",
       ),
@@ -572,6 +594,10 @@ function mapEntry(entry: BloggerFeedEntry, index: number): BlogPost[] {
           seoTitle: "",
           excerpt: "",
           seoDescription: bloggerDescription,
+          ogTitle: "",
+          ogDescription: "",
+          twitterTitle: "",
+          twitterDescription: "",
           seoKeywords: bloggerKeywords,
           tags: [],
           slug: baseSlug,
@@ -604,12 +630,22 @@ function mapEntry(entry: BloggerFeedEntry, index: number): BlogPost[] {
       ]),
     ].slice(0, 30);
 
+    // Each title and description falls back to the next most specific one, so a
+    // post with only TITLE filled in still gets complete search and social tags.
+    const seoTitle = variant.seoTitle || title;
+    const ogTitle = variant.ogTitle || seoTitle;
+    const ogDescription = variant.ogDescription || seoDescription;
+
     return {
       slug,
       title,
-      seoTitle: variant.seoTitle || title,
+      seoTitle,
       excerpt: clamp(variant.excerpt || seoDescription, 160),
       seoDescription,
+      ogTitle,
+      ogDescription,
+      twitterTitle: variant.twitterTitle || ogTitle,
+      twitterDescription: variant.twitterDescription || ogDescription,
       contentHtml,
       tags,
       seoKeywords: seoKeywords.length ? seoKeywords : ["Blog"],
@@ -870,6 +906,13 @@ async function getLiveFallbackPosts(): Promise<BlogPost[]> {
         posts,
       };
       return posts;
+    })
+    .catch((error) => {
+      // Blogger being slow or down must never turn an article URL into a 500.
+      // Serve the snapshot only and retry after a short pause.
+      console.error("Live blog fallback failed", error);
+      liveFallbackCache = { expiresAt: Date.now() + 60_000, posts: [] };
+      return [] as BlogPost[];
     })
     .finally(() => {
       liveFallbackRequest = undefined;
