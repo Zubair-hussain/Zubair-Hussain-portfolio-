@@ -56,7 +56,11 @@ export default function CreativeServicePage({ service, design }: { service: Crea
         description: service.metaDescription,
         url: canonical,
         provider: { '@id': `${siteUrl}/#person` },
-        areaServed: 'Worldwide',
+        areaServed: [
+          { '@type': 'City', name: 'Hyderabad, Sindh, Pakistan' },
+          { '@type': 'Country', name: 'Pakistan' },
+          'Worldwide',
+        ],
         ...(service.plans && {
           offers: service.plans.map((plan) => ({
             '@type': 'Offer',
@@ -106,6 +110,12 @@ export default function CreativeServicePage({ service, design }: { service: Crea
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(ld) }} />
         {design}
         <div className="container-custom pb-24">
+          {/* Plain-language summary: who, what and where, for readers and AI answers. */}
+          <section className="cv-auto mt-20 max-w-3xl">
+            <p className={eyebrow}>At a glance</p>
+            <h2 className={heading}>{service.metaTitle}</h2>
+            <p className={`mt-6 ${muted}`}>{service.answer}</p>
+          </section>
           <section className="cv-auto mt-20 max-w-3xl">
             <p className={eyebrow}>FAQ</p>
             <h2 className={heading}>Common questions</h2>
