@@ -45,6 +45,12 @@ const openGraphLocales: Record<string, string> = {
   de: 'de_DE',
 };
 
+// Name first for brand searches, then the three services people search for.
+const HOME_TITLE = 'Zubair Hussain | Web Developer, Video Editor & Designer';
+const HOME_DESCRIPTION =
+  'Zubair Hussain is a web developer, video editor and graphic designer in Hyderabad, Pakistan. Next.js websites, mobile apps and AI chatbots. Book a free call.';
+const HOME_SOCIAL_DESCRIPTION =
+  'Websites, mobile apps, AI chatbots, video editing and graphic design by Zubair Hussain in Hyderabad, Pakistan. See projects and reviews, then book a free call.';
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
@@ -54,19 +60,23 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     metadataBase: new URL(siteUrl),
     title: {
-      default: 'Zubair Hussain | Full Stack Next.js & React Native Developer',
+      default: HOME_TITLE,
       template: '%s | Zubair Hussain',
     },
-    description:
-      'Hire Zubair Hussain, a full-stack developer in Hyderabad, Pakistan building fast Next.js, React Native & AI apps. Co-founder of Xovato. Book a free call.',
+    description: HOME_DESCRIPTION,
     applicationName: 'Zubair Hussain Portfolio',
     alternates: {
       canonical,
     },
     keywords: [
       'Zubair Hussain',
+      'Zubair',
       'Syed Zubair Hussain Shah',
       'zubairhussain.xyz',
+      'Web Developer in Hyderabad Pakistan',
+      'Website Development Services',
+      'Video Editor in Hyderabad Pakistan',
+      'Graphic Designer in Hyderabad Pakistan',
       'Zubair Hussain portfolio',
       'Zubair Hussain developer',
       'Full Stack Developer',
@@ -97,9 +107,8 @@ export async function generateMetadata(): Promise<Metadata> {
       type: 'profile',
       locale: openGraphLocales[locale] ?? 'en_US',
       url: canonical,
-      title: 'Zubair Hussain | Full Stack Next.js & React Native Developer',
-      description:
-        'Fast Next.js websites, React Native apps and AI chatbots that turn visitors into clients. See projects, reviews and book a free call with Zubair.',
+      title: HOME_TITLE,
+      description: HOME_SOCIAL_DESCRIPTION,
       siteName: 'Zubair Hussain Portfolio',
       firstName: 'Zubair',
       lastName: 'Hussain',
@@ -108,9 +117,8 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Zubair Hussain | Full Stack Next.js & React Native Developer',
-      description:
-        'Fast Next.js websites, React Native apps and AI chatbots that turn visitors into clients. Book a free call.',
+      title: HOME_TITLE,
+      description: HOME_SOCIAL_DESCRIPTION,
       // Twitter image reuses the dynamic opengraph-image.
     },
     robots: {
@@ -186,15 +194,21 @@ export default async function RootLayout({
                   alternateName: 'Zubair Hussain',
                   url: getSiteUrl(),
                   image: `${getSiteUrl()}/opengraph-image`,
-                  jobTitle: PROFILE.role,
+                  jobTitle: ['Full Stack Web Developer', 'Video Editor', 'Graphic Designer'],
                   email: `mailto:${PROFILE.email}`,
                   description: PROFILE.tagline,
                   address: {
                     '@type': 'PostalAddress',
                     addressLocality: 'Hyderabad',
+                    addressRegion: 'Sindh',
                     addressCountry: 'PK',
                   },
-                  knowsAbout: Object.values(PROFILE.skills).flat(),
+                  knowsAbout: [
+                    ...Object.values(PROFILE.skills).flat(),
+                    'Web development',
+                    'Graphic design',
+                    'Logo design',
+                  ],
                   sameAs: [
                     PROFILE.socials.github,
                     PROFILE.socials.linkedin,
@@ -206,6 +220,53 @@ export default async function RootLayout({
                     PROFILE.socials.fiverr,
                     PROFILE.socials.upwork,
                   ].filter(Boolean),
+                },
+                {
+                  // Ties the three services to a named place, so search engines and
+                  // AI assistants can answer "video editor in Hyderabad" style queries.
+                  '@type': 'ProfessionalService',
+                  '@id': `${getSiteUrl()}/#business`,
+                  name: 'Zubair Hussain: Web Development, Video Editing & Graphic Design',
+                  url: getSiteUrl(),
+                  image: `${getSiteUrl()}/opengraph-image`,
+                  email: `mailto:${PROFILE.email}`,
+                  description: HOME_DESCRIPTION,
+                  founder: { '@id': `${getSiteUrl()}/#person` },
+                  address: {
+                    '@type': 'PostalAddress',
+                    addressLocality: 'Hyderabad',
+                    addressRegion: 'Sindh',
+                    addressCountry: 'PK',
+                  },
+                  areaServed: [
+                    { '@type': 'City', name: 'Hyderabad, Sindh, Pakistan' },
+                    { '@type': 'Country', name: 'Pakistan' },
+                    'Worldwide',
+                  ],
+                  hasOfferCatalog: {
+                    '@type': 'OfferCatalog',
+                    name: 'Services',
+                    itemListElement: [
+                      {
+                        name: 'Website and web app development',
+                        description: 'Next.js and React websites, React Native mobile apps and AI chatbot integration.',
+                        url: `${getSiteUrl()}/web-development-services`,
+                      },
+                      {
+                        name: 'Video editing',
+                        description: 'YouTube, Reels, TikTok, podcast and ad editing with sound design and color grading.',
+                        url: `${getSiteUrl()}/video-editing-services`,
+                      },
+                      {
+                        name: 'Graphic and UI/UX design',
+                        description: 'Logos, brand identity, social media creatives, thumbnails and UI/UX design.',
+                        url: `${getSiteUrl()}/graphic-design-services`,
+                      },
+                    ].map((item) => ({
+                      '@type': 'Offer',
+                      itemOffered: { '@type': 'Service', ...item, provider: { '@id': `${getSiteUrl()}/#person` } },
+                    })),
+                  },
                 },
                 {
                   '@type': 'WebSite',
