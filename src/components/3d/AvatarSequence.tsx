@@ -314,7 +314,7 @@ export default function AvatarSequence() {
                    ref={imgRef}
                    src={frames[0]}
                    data-frame="0"
-                   alt="Avatar Animation Mobile"
+                   alt="Zubair Hussain, web developer, video editor and designer in Hyderabad, Pakistan"
                    loading="eager"
                    fetchPriority="high"
                    decoding="async"
@@ -343,7 +343,7 @@ export default function AvatarSequence() {
                    ref={imgRef}
                    src={frames[0]}
                    data-frame="0"
-                   alt="Avatar Animation Desktop"
+                   alt="Zubair Hussain, web developer, video editor and designer in Hyderabad, Pakistan"
                    loading="eager"
                    fetchPriority="high"
                    decoding="async"
