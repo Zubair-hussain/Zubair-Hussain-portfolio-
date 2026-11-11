@@ -7,6 +7,7 @@ import ThemeProvider from "@/components/ui/ThemeProvider";
 import DeferredClientTools from "@/components/ui/DeferredClientTools";
 import { getSiteUrl } from "@/lib/site-url";
 import { PROFILE } from "@/lib/zubair-profile";
+import { jsonLd } from "@/lib/seo";
 
 export const dynamic = "force-static";
 export const revalidate = false;
@@ -31,6 +32,11 @@ export function generateMetadata(): Metadata {
       title: `${TITLE} | Zubair Hussain`,
       description: DESCRIPTION,
       siteName: "Zubair Hussain Portfolio",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${TITLE} | Zubair Hussain`,
+      description: DESCRIPTION,
     },
     robots: { index: true, follow: true },
   };
@@ -57,6 +63,32 @@ function Section({
 
 export default function PrivacyPolicyPage() {
   const email = PROFILE.email;
+  const siteUrl = getSiteUrl();
+  const canonical = `${siteUrl}/privacy-policy`;
+  const pageLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": `${canonical}#webpage`,
+        url: canonical,
+        name: `${TITLE} | Zubair Hussain`,
+        description: DESCRIPTION,
+        inLanguage: "en",
+        isPartOf: { "@id": `${siteUrl}/#website` },
+        about: { "@id": `${siteUrl}/#person` },
+        breadcrumb: { "@id": `${canonical}#breadcrumb` },
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${canonical}#breadcrumb`,
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+          { "@type": "ListItem", position: 2, name: TITLE, item: canonical },
+        ],
+      },
+    ],
+  };
 
   return (
     <ThemeProvider>
@@ -65,6 +97,10 @@ export default function PrivacyPolicyPage() {
         id="main-content"
         className="section-padding relative min-h-screen overflow-hidden"
       >
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: jsonLd(pageLd) }}
+        />
         <div className="container-custom">
           <Link
             href="/"
