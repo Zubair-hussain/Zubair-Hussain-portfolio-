@@ -79,6 +79,11 @@ export default function Footer() {
                 </li>
               ))}
               <li>
+                <a href="/web-development-services" className="text-xs font-mono tracking-wider uppercase text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--primary))] transition-colors duration-200">
+                  {t('webDevelopment')}
+                </a>
+              </li>
+              <li>
                 <a href="/video-editing-services" className="text-xs font-mono tracking-wider uppercase text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--primary))] transition-colors duration-200">
                   {t('videoEditing')}
                 </a>
