@@ -15,11 +15,11 @@ export async function GET() {
     '@type': 'Person',
     name: PROFILE.name,
     alternateName: 'Zubair Hussain',
-    jobTitle: PROFILE.role,
+    jobTitle: ['Full Stack Web Developer', 'Video Editor', 'Graphic Designer'],
     description: PROFILE.tagline,
     url: site,
     email: `mailto:${PROFILE.email}`,
-    address: { '@type': 'PostalAddress', addressLocality: 'Hyderabad', addressCountry: 'PK' },
+    address: { '@type': 'PostalAddress', addressLocality: 'Hyderabad', addressRegion: 'Sindh', addressCountry: 'PK' },
     knowsAbout: Object.values(PROFILE.skills).flat(),
     sameAs: Object.values(PROFILE.socials),
     contact: {
