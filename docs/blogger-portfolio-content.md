@@ -35,10 +35,14 @@ another HTML comment inside a portfolio block.
 | Field | Purpose | Fallback |
 | --- | --- | --- |
 | `TITLE` | On-page article heading | Blogger title |
-| `SEO_TITLE` | Browser, Google, Open Graph, and X/Twitter title | `TITLE` |
+| `SEO_TITLE` | Browser tab and Google/Bing result title | `TITLE` |
+| `OG_TITLE` or `SOCIAL_TITLE` | Facebook, LinkedIn and WhatsApp preview title | `SEO_TITLE` |
+| `TWITTER_TITLE` or `X_TITLE` | X/Twitter card title | `OG_TITLE` |
 | `SLUG` | URL after `/blog/` | Blogger permalink slug; translated blocks get a language suffix |
 | `EXCERPT` or `SHORT_DESCRIPTION` | Portfolio card description | SEO description |
-| `SEO_DESCRIPTION` or `DESCRIPTION` | Search/social description | Text extracted from the article |
+| `SEO_DESCRIPTION` or `DESCRIPTION` | Google/Bing result description | Text extracted from the article |
+| `OG_DESCRIPTION` or `SOCIAL_DESCRIPTION` | Facebook, LinkedIn and WhatsApp preview description | `SEO_DESCRIPTION` |
+| `TWITTER_DESCRIPTION` or `X_DESCRIPTION` | X/Twitter card description | `OG_DESCRIPTION` |
 | `SEO_KEYWORDS` or `KEYWORDS` | Comma-separated search topics | Blogger keywords and labels |
 | `TAGS` | Comma-separated visible tags | Blogger labels |
 | `IMAGE` | Absolute social/cover image URL | First image in that locale's content |

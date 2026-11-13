@@ -7,6 +7,10 @@ import { Plus } from 'lucide-react';
 
 const faqs = [
   {
+    q: 'Where is Zubair Hussain based and what services are offered?',
+    a: 'Zubair Hussain is based in Hyderabad, Sindh, Pakistan and works online with clients across Pakistan and worldwide. Services cover website and app development with Next.js and React Native, AI chatbot integration, video editing, and graphic and UI/UX design.',
+  },
+  {
     q: 'What is your typical project timeline?',
     a: 'Most projects take 2–6 weeks depending on scope. A landing page or MVP is usually 1–2 weeks; a full SaaS platform can take 4–8 weeks. I always provide a detailed timeline in the proposal.',
   },
