@@ -1031,3 +1031,15 @@ h3 {
 .ve-playhead { animation: ve-head 10s linear infinite alternate; }
 @keyframes ve-track { from { transform: translateX(-10%); } to { transform: translateX(-20%); } }
 @keyframes ve-head { from { left: 0; } to { left: 100%; } }
+
+/* Quick-answer box added by src/lib/seo-overrides.ts (featured-snippet friendly). */
+.blog-content .seo-quick-answer {
+  margin: 0 0 2rem;
+  padding: 1.1rem 1.25rem;
+  border-left: 4px solid var(--brand-solid);
+  border-radius: 0.75rem;
+  background: rgba(var(--brand-rgb), 0.08);
+}
+.blog-content .seo-quick-answer p { margin: 0 0 0.5rem; }
+.blog-content .seo-quick-answer ul { margin: 0; padding-left: 1.1rem; }
+.blog-content .seo-quick-answer li { margin: 0.35rem 0; }
