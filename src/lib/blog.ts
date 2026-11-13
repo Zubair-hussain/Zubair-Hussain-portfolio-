@@ -16,6 +16,7 @@
 
 import { PROFILE } from "@/lib/zubair-profile";
 import generatedBlogPosts from "@/generated/blog-posts.json";
+import { applySeoOverrides } from "@/lib/seo-overrides";
 
 export interface BlogPost {
   /** URL-safe id derived from the Blogger permalink (e.g. gta-6-map-leak-explained). */
@@ -838,9 +839,12 @@ function primaryPosts(posts: BlogPost[]): BlogPost[] {
 }
 
 /** Full bodies for the native article reader. */
+let overriddenSnapshot: BlogPost[] | undefined;
+
 export async function getAllPosts(): Promise<BlogPost[]> {
   if (process.env.NODE_ENV === "test") return fetchPosts(true);
-  return generatedBlogPosts as BlogPost[];
+  overriddenSnapshot ??= applySeoOverrides(generatedBlogPosts as BlogPost[]);
+  return overriddenSnapshot;
 }
 
 /**
@@ -900,7 +904,8 @@ async function getLiveFallbackPosts(): Promise<BlogPost[]> {
   if (liveFallbackRequest) return liveFallbackRequest;
 
   liveFallbackRequest = fetchPosts(true, LIVE_FALLBACK_SOURCE_LIMIT)
-    .then((posts) => {
+    .then((fetched) => {
+      const posts = applySeoOverrides(fetched);
       liveFallbackCache = {
         expiresAt: Date.now() + LIVE_FALLBACK_TTL_MS,
         posts,
