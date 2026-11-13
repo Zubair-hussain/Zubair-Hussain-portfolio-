@@ -1,0 +1,331 @@
+/* ============================================================================
+   Live chat widget — Crisp-style messenger in the portfolio's brand.
+   Everything is scoped under .zc so the site's global theme overrides (which
+   rewrite Tailwind colour utilities in the light theme) can't touch it, and the
+   widget ships its own surface tokens for each site theme.
+   ========================================================================== */
+
+.zc {
+  --zc-brand: var(--brand-solid, #c8141e);
+  --zc-brand-2: rgb(var(--brand-rgb-2, 220, 40, 50));
+  --zc-surface: #101012;
+  --zc-surface-2: #18181b;
+  --zc-line: rgba(255, 255, 255, 0.08);
+  --zc-text: #f4f4f5;
+  --zc-muted: #9b9ba3;
+  --zc-bubble: #1f1f23;
+  --zc-ai: #1b1c2e;
+  --zc-ai-accent: #a5b4fc;
+  --zc-online: #22c55e;
+  --zc-away: #f59e0b;
+  --zc-shadow: 0 24px 70px rgba(0, 0, 0, 0.6), 0 2px 10px rgba(0, 0, 0, 0.4);
+
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 14px;
+  font-family: var(--font-body, "DM Sans", system-ui, sans-serif);
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--zc-text);
+  pointer-events: none; /* only the panel and launcher catch clicks */
+}
+
+html[data-theme="light"] .zc {
+  --zc-surface: #ffffff;
+  --zc-surface-2: #f6f6f8;
+  --zc-line: rgba(15, 18, 30, 0.09);
+  --zc-text: #171923;
+  --zc-muted: #6b7080;
+  --zc-bubble: #f0f1f4;
+  --zc-ai: #eef0ff;
+  --zc-ai-accent: #4f46e5;
+  --zc-shadow: 0 24px 70px rgba(20, 22, 34, 0.22), 0 2px 10px rgba(20, 22, 34, 0.1);
+}
+
+@media (min-width: 640px) {
+  .zc { right: 24px; bottom: 24px; }
+}
+
+.zc *, .zc *::before, .zc *::after { box-sizing: border-box; }
+.zc button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; padding: 0; }
+.zc :focus-visible { outline: 2px solid var(--zc-brand-2); outline-offset: 2px; }
+
+/* ── Launcher ─────────────────────────────────────────────────────────────── */
+.zc-launcher {
+  pointer-events: auto;
+  position: relative;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #fff !important;
+  background: var(--zc-brand) !important;
+  box-shadow: 0 12px 32px rgba(var(--brand-rgb, 200, 20, 30), 0.45);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.zc-launcher:hover { transform: scale(1.06); }
+.zc-launcher:active { transform: scale(0.96); }
+.zc-unread {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--zc-brand);
+  font-size: 12px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* ── Panel ────────────────────────────────────────────────────────────────── */
+.zc-panel {
+  pointer-events: auto;
+  width: min(calc(100vw - 32px), 384px);
+  height: min(620px, calc(100dvh - 116px));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 20px;
+  background: var(--zc-surface);
+  border: 1px solid var(--zc-line);
+  box-shadow: var(--zc-shadow);
+}
+
+@media (max-width: 480px) {
+  .zc.zc-open { right: 0; bottom: 0; left: 0; top: 0; align-items: stretch; gap: 0; }
+  .zc.zc-open .zc-panel { width: 100%; height: 100dvh; border-radius: 0; border: 0; }
+  .zc.zc-open .zc-launcher { display: none; }
+}
+
+/* ── Header ───────────────────────────────────────────────────────────────── */
+.zc-header {
+  position: relative;
+  padding: 18px 18px 22px;
+  color: #fff;
+  background: var(--zc-brand);
+}
+.zc-header-row { display: flex; align-items: center; gap: 12px; }
+.zc-header h2 {
+  margin: 0;
+  font-family: inherit;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #fff !important;
+}
+.zc-header p { margin: 2px 0 0; font-size: 12.5px; color: rgba(255, 255, 255, 0.86) !important; display: flex; align-items: center; gap: 6px; }
+.zc-header-text { flex: 1; min-width: 0; }
+.zc-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: grid !important;
+  place-items: center;
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.14) !important;
+  transition: background 0.15s ease;
+}
+.zc-close:hover { background: rgba(255, 255, 255, 0.26) !important; }
+
+.zc-avatars { display: flex; }
+.zc-pick { position: relative; border-radius: 50% !important; opacity: .55; transition: opacity .15s ease, transform .15s ease; }
+.zc-pick + .zc-pick { margin-left: -8px; }
+.zc-pick:not(:disabled):hover { opacity: .9; transform: translateY(-1px); }
+.zc-pick:disabled { cursor: default; }
+.zc-pick[aria-selected="true"] { opacity: 1; z-index: 1; }
+.zc-pick[aria-selected="true"] .zc-avatar { box-shadow: 0 0 0 2px var(--zc-brand), 0 0 0 4px #fff; }
+.zc-header p.zc-who { font-weight: 600; margin-top: 2px; }
+
+/* ── Avatars: Zubair and the AI are deliberately different ────────────────── */
+.zc-avatar {
+  position: relative;
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+}
+.zc-avatar.lg { width: 40px; height: 40px; font-size: 18px; border: 2px solid rgba(255, 255, 255, 0.9); }
+.zc-avatar.human {
+  background: var(--zc-brand);
+  color: #fff;
+  font-family: var(--font-display, Georgia, serif);
+  font-style: italic;
+  font-weight: 700;
+}
+.zc-header .zc-avatar.human { background: #fff; color: var(--zc-brand); }
+.zc-avatar.ai { background: var(--zc-ai); color: var(--zc-ai-accent); border: 1px solid color-mix(in srgb, var(--zc-ai-accent) 35%, transparent); }
+.zc-header .zc-avatar.ai { background: #1b1c2e; color: #c7d2fe; }
+.zc-presence {
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  background: var(--zc-away);
+}
+.zc-presence.online { background: var(--zc-online); }
+
+.zc-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--zc-away); flex: none; }
+.zc-dot.online { background: var(--zc-online); box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.25); }
+
+/* ── Messages ─────────────────────────────────────────────────────────────── */
+.zc-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 16px 14px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  scrollbar-width: thin;
+}
+.zc-day { align-self: center; margin: 4px 0 8px; font-size: 11px; color: var(--zc-muted); }
+
+.zc-row { display: flex; align-items: flex-end; gap: 8px; max-width: 100%; }
+.zc-row.me { justify-content: flex-end; }
+.zc-row.first { margin-top: 10px; }
+.zc-row .zc-avatar.ghost { visibility: hidden; }
+.zc-stack { display: flex; flex-direction: column; gap: 3px; min-width: 0; max-width: 82%; }
+.zc-row.me .zc-stack { align-items: flex-end; }
+
+.zc-author { display: flex; align-items: center; gap: 6px; padding: 0 4px; font-size: 11.5px; font-weight: 600; color: var(--zc-muted); }
+.zc-chip {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: var(--zc-ai);
+  color: var(--zc-ai-accent);
+}
+
+.zc-bubble {
+  padding: 9px 13px;
+  border-radius: 16px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 13.5px;
+  background: var(--zc-bubble);
+  color: var(--zc-text);
+  border-bottom-left-radius: 5px;
+}
+.zc-bubble.ai { background: var(--zc-ai); }
+.zc-bubble.me {
+  background: var(--zc-brand);
+  color: #fff;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 5px;
+}
+.zc-bubble.pending { opacity: 0.6; }
+.zc-bubble a { color: var(--zc-brand-2); text-decoration: underline; text-underline-offset: 2px; }
+.zc-bubble.ai a { color: var(--zc-ai-accent); }
+.zc-bubble strong { font-weight: 700; }
+.zc-time { padding: 0 4px; font-size: 10.5px; color: var(--zc-muted); }
+
+.zc-typing { display: inline-flex; gap: 4px; padding: 3px 0; }
+.zc-typing i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.35; animation: zc-bounce 1.2s infinite ease-in-out; }
+.zc-typing i:nth-child(2) { animation-delay: 0.15s; }
+.zc-typing i:nth-child(3) { animation-delay: 0.3s; }
+@keyframes zc-bounce { 0%, 60%, 100% { transform: translateY(0); opacity: 0.35; } 30% { transform: translateY(-4px); opacity: 0.9; } }
+@media (prefers-reduced-motion: reduce) { .zc-typing i { animation: none; } .zc-launcher { transition: none; } }
+
+/* ── Quick replies & email card ───────────────────────────────────────────── */
+.zc-quick { display: flex; flex-wrap: wrap; gap: 6px; padding: 6px 14px 4px; }
+.zc-quick button {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  border: 1px solid var(--zc-line);
+  background: var(--zc-surface-2);
+  color: var(--zc-text);
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.zc-quick button:hover { border-color: var(--zc-brand-2); color: var(--zc-brand-2); }
+.zc-quick button.human { border-color: color-mix(in srgb, var(--zc-brand) 55%, transparent); color: var(--zc-brand-2); font-weight: 600; }
+
+.zc-card {
+  margin: 10px 0 4px 38px;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid var(--zc-line);
+  background: var(--zc-surface-2);
+}
+.zc-card p { margin: 0 0 8px; font-size: 12.5px; color: var(--zc-muted); }
+.zc-card strong { display: block; color: var(--zc-text); font-size: 13px; margin-bottom: 2px; }
+.zc-card form { display: flex; gap: 6px; }
+.zc-card input {
+  flex: 1;
+  min-width: 0;
+  font: inherit;
+  font-size: 13px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--zc-line);
+  background: var(--zc-surface);
+  color: var(--zc-text);
+}
+.zc-card .zc-save { padding: 8px 12px; border-radius: 10px; background: var(--zc-brand) !important; color: #fff !important; font-size: 12.5px; font-weight: 600; }
+.zc-card .zc-skip { margin-top: 6px; font-size: 11.5px; color: var(--zc-muted); text-decoration: underline; }
+.zc-card .zc-error { color: var(--zc-brand-2); margin: 6px 0 0; }
+
+/* ── Composer ─────────────────────────────────────────────────────────────── */
+.zc-composer { display: flex; align-items: flex-end; gap: 8px; padding: 10px 12px; border-top: 1px solid var(--zc-line); }
+.zc-composer textarea {
+  flex: 1;
+  resize: none;
+  max-height: 110px;
+  font: inherit;
+  font-size: 14px;
+  padding: 9px 12px;
+  border-radius: 14px;
+  border: 1px solid var(--zc-line);
+  background: var(--zc-surface-2);
+  color: var(--zc-text);
+}
+.zc-composer textarea:focus, .zc-card input:focus { outline: none; border-color: var(--zc-brand-2); box-shadow: 0 0 0 3px rgba(var(--brand-rgb, 200, 20, 30), 0.18); }
+.zc-composer textarea::placeholder { color: var(--zc-muted); }
+.zc-send {
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: grid !important;
+  place-items: center;
+  color: #fff !important;
+  background: var(--zc-brand) !important;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.zc-send:disabled { opacity: 0.4; cursor: not-allowed; }
+.zc-send:not(:disabled):hover { transform: scale(1.06); }
+
+/* ── Footer: "active / replies within 1 hour" ─────────────────────────────── */
+.zc-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px calc(9px + env(safe-area-inset-bottom));
+  font-size: 11.5px;
+  color: var(--zc-muted);
+  background: var(--zc-surface-2);
+  border-top: 1px solid var(--zc-line);
+}
+.zc-footer span { flex: 1; min-width: 0; }
+.zc-footer a { color: var(--zc-muted); display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; }
+.zc-footer a:hover { color: var(--zc-brand-2); background: var(--zc-bubble); }
