@@ -2,7 +2,7 @@
 import { NextRequest } from 'next/server';
 import { describe, expect, it } from 'vitest';
 import nextConfig from '../next.config.mjs';
-import { middleware } from '../middleware';
+import { middleware } from '../src/middleware';
 
 describe('301 redirects for Google', () => {
   it('redirects old workers.dev URLs to zubairhussain.xyz with a 301 and keeps path + query', () => {
@@ -23,6 +23,23 @@ describe('301 redirects for Google', () => {
     );
     expect(response.status).toBe(301);
     expect(response.headers.get('location')).toBe('https://zubairhussain.xyz/sitemap.xml');
+  });
+
+  it('redirects www to the apex domain with one 301', () => {
+    const response = middleware(new NextRequest('https://www.zubairhussain.xyz/blogs/a-post?x=1'));
+    expect(response.status).toBe(301);
+    expect(response.headers.get('location')).toBe('https://zubairhussain.xyz/blogs/a-post?x=1');
+  });
+
+  it('redirects http to https on the canonical domain', () => {
+    const response = middleware(new NextRequest('http://zubairhussain.xyz/blogs/a-post'));
+    expect(response.status).toBe(301);
+    expect(response.headers.get('location')).toBe('https://zubairhussain.xyz/blogs/a-post');
+  });
+
+  it('does not redirect localhost over http', () => {
+    const response = middleware(new NextRequest('http://localhost:3000/blogs'));
+    expect(response.headers.get('location')).toBeNull();
   });
 
   it('does not redirect the canonical domain', () => {

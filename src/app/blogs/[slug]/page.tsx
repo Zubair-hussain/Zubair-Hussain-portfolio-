@@ -15,6 +15,7 @@ import {
 import { getSiteUrl } from "@/lib/site-url";
 import { PROFILE } from "@/lib/zubair-profile";
 import {
+  extractFaq,
   jsonLd,
   metaDescription,
   readTimeToIsoDuration,
@@ -235,6 +236,22 @@ export default async function BlogPostPage({ params }: PageProps) {
       : {}),
   };
 
+  // FAQPage schema from the article's own FAQ section (only when it has one).
+  const faq = extractFaq(post.contentHtml);
+  const faqLd = faq.length
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "@id": `${canonical}#faq`,
+        inLanguage: post.lang,
+        mainEntity: faq.map(({ question, answer }) => ({
+          "@type": "Question",
+          name: question,
+          acceptedAnswer: { "@type": "Answer", text: answer },
+        })),
+      }
+    : null;
+
   const breadcrumbLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -267,6 +284,12 @@ export default async function BlogPostPage({ params }: PageProps) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: jsonLd(breadcrumbLd) }}
         />
+        {faqLd && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: jsonLd(faqLd) }}
+          />
+        )}
 
         <div className="container-custom">
           <Link

@@ -4,6 +4,18 @@ import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare';
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
+// Origin of the live-chat backend (Zubair-Agent). Only a well-formed https
+// origin (or localhost in dev) is ever added to the CSP — never a raw string.
+function chatApiOrigin() {
+  try {
+    const url = new URL(process.env.NEXT_PUBLIC_CHAT_API_URL || '');
+    const local = url.hostname === 'localhost' || url.hostname === '127.0.0.1';
+    return url.protocol === 'https:' || (local && url.protocol === 'http:') ? ` ${url.origin}` : '';
+  } catch {
+    return '';
+  }
+}
+
 export const contentSecurityPolicy = [
   "default-src 'self'",
   "base-uri 'self'",
@@ -14,7 +26,7 @@ export const contentSecurityPolicy = [
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "img-src 'self' data: blob: https:",
   "font-src 'self' data: https://fonts.gstatic.com",
-  "connect-src 'self' https://calendly-booking-navy.vercel.app https://script.google.com https://script.googleusercontent.com https://api.github.com https://zubair-xovato.blogspot.com https://*.firebase.com https://*.firebaseio.com https://*.googleapis.com https://*.gstatic.com https://api.emailjs.com https://api-inference.huggingface.co https://huggingface.co https://challenges.cloudflare.com https://cloudflareinsights.com https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https://www.googletagmanager.com wss://*.firebaseio.com wss://*.googleapis.com",
+  `connect-src 'self'${chatApiOrigin()} https://calendly-booking-navy.vercel.app https://script.google.com https://script.googleusercontent.com https://api.github.com https://zubair-xovato.blogspot.com https://*.firebase.com https://*.firebaseio.com https://*.googleapis.com https://*.gstatic.com https://api.emailjs.com https://api-inference.huggingface.co https://huggingface.co https://challenges.cloudflare.com https://cloudflareinsights.com https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https://www.googletagmanager.com wss://*.firebaseio.com wss://*.googleapis.com`,
   "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://www.googletagmanager.com https:",
   "media-src 'self' https://res.cloudinary.com",
   "worker-src 'self' blob:",
