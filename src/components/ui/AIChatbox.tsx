@@ -25,8 +25,8 @@ import './chat-widget.css';
 
 const API_BASE = (process.env.NEXT_PUBLIC_CHAT_API_URL || '').replace(/\/+$/, '');
 const STORAGE_KEY = 'zh-live-chat';
-const POLL_OPEN_MS = 3000;
-const POLL_CLOSED_MS = 20000;
+const POLL_OPEN_MS = 4000;
+const POLL_CLOSED_MS = 60000;
 const MAX_LENGTH = 2000;
 
 type Author = 'visitor' | 'ai' | 'zubair';
