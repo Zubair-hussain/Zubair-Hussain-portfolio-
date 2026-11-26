@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next';
 import { getSiteUrl } from '@/lib/site-url';
 import { getAllPosts } from '@/lib/blog';
+import { hreflangFor } from '@/lib/hreflang';
 import { SITE_PAGES } from '@/lib/site-pages';
 
 export const dynamic = 'force-static';
@@ -15,8 +16,6 @@ export const revalidate = false;
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = getSiteUrl();
   const posts = await getAllPosts();
-  const absolute = (url: string) => (url.startsWith('http') ? url : `${siteUrl}${url}`);
-  const onSite = (url: string) => absolute(url).startsWith(`${siteUrl}/blogs/`);
 
   const latestPostModified = posts.reduce<Date>((latest, post) => {
     const updated = post.isoUpdated ? new Date(post.isoUpdated) : null;
@@ -25,22 +24,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const postEntries: MetadataRoute.Sitemap = posts.map((post) => {
     const url = `${siteUrl}/blogs/${post.slug}`;
-    const others = post.translations.filter((t) => onSite(t.url));
-    const english = post.lang === 'en' ? url : others.find((t) => t.lang === 'en')?.url;
-    const languages: Record<string, string> = others.length
-      ? Object.fromEntries([
-          [post.lang, url],
-          ...others.map((t) => [t.lang, absolute(t.url)]),
-          ...(english ? [['x-default', absolute(english)]] : []),
-        ])
-      : {};
+    const languages = hreflangFor(post, siteUrl);
+    const hasAlternates = Object.keys(languages).length > 0;
 
     return {
       url,
       lastModified: post.isoUpdated ? new Date(post.isoUpdated) : new Date(),
       changeFrequency: 'weekly',
       priority: post.lang === 'en' ? 0.7 : 0.5,
-      ...(others.length ? { alternates: { languages } } : {}),
+      ...(hasAlternates ? { alternates: { languages } } : {}),
     };
   });
 

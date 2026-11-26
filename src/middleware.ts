@@ -20,9 +20,24 @@ const validLocales = new Set(['en', 'ur', 'es', 'hi', 'ru', 'de']);
 const CANONICAL_HOST = 'zubairhussain.xyz';
 const CANONICAL_ORIGIN = `https://${CANONICAL_HOST}`;
 
+// Renamed articles. Mirrors the redirects in next.config.mjs so a wrong-host
+// request reaches the final URL in ONE hop instead of host hop + route hop.
+const RENAMED_SLUGS: Record<string, string> = {
+  'gta-6-map-leak-explained': 'gta-6-map-leak-vice-city-leonida-explained',
+  'cursor-origin-vs-github': 'cursor-origin-vs-github-git-hosting-2026',
+};
+
+/** Final canonical path: legacy /blog/ -> /blogs/, renamed slugs, no trailing slash. */
+function canonicalPath(pathname: string): string {
+  let path = pathname === '/blog' || pathname.startsWith('/blog/') ? `/blogs${pathname.slice(5)}` : pathname;
+  const match = path.match(/^\/blogs\/([^/]+)$/);
+  if (match && RENAMED_SLUGS[match[1]]) path = `/blogs/${RENAMED_SLUGS[match[1]]}`;
+  return path.length > 1 ? path.replace(/\/+$/, '') : path;
+}
+
 function canonicalRedirect(request: NextRequest): NextResponse | null {
   const hostname = request.nextUrl.hostname.toLowerCase();
-  const path = `${request.nextUrl.pathname}${request.nextUrl.search}`;
+  const path = `${canonicalPath(request.nextUrl.pathname)}${request.nextUrl.search}`;
 
   const wrongHost = hostname === `www.${CANONICAL_HOST}` || hostname.endsWith('.workers.dev');
   const forwardedProto = request.headers.get('x-forwarded-proto');
@@ -51,6 +66,7 @@ export function middleware(request: NextRequest) {
 
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set('x-locale', locale);
+  requestHeaders.set('x-pathname', request.nextUrl.pathname);
 
   const response = NextResponse.next({ request: { headers: requestHeaders } });
   response.cookies.set('locale', locale, { path: '/', maxAge: 31536000, sameSite: 'lax' });

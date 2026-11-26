@@ -1,0 +1,34 @@
+name: Memory Report
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  memory:
+    name: Type-check and test memory
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Measure peak memory
+        run: |
+          echo "## Memory report" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Step | Peak RSS (MB) |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|---|---|" >> "$GITHUB_STEP_SUMMARY"
+          measure() {
+            name="$1"; shift
+            /usr/bin/time -f "%M" -o /tmp/rss "$@" > /dev/null
+            echo "| $name | $(( $(cat /tmp/rss) / 1024 )) |" >> "$GITHUB_STEP_SUMMARY"
+          }
+          measure "type-check" npm run type-check
+          measure "unit tests" npm test

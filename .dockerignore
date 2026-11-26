@@ -1,0 +1,11 @@
+node_modules
+.next
+.git
+.github
+coverage
+coverage-full
+records
+brag-output
+deliverables
+.env*
+*.md

@@ -1,0 +1,41 @@
+name: Commit Policy
+
+# Every commit in a PR must touch exactly one file and must not carry an AI
+# co-author trailer. History is reviewed one file at a time.
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  one-file-per-commit:
+    name: One file per commit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Check commits
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          failed=0
+          for sha in $(git rev-list --no-merges "$BASE..$HEAD"); do
+            subject=$(git log -1 --format=%s "$sha")
+            files=$(git show --pretty= --name-only "$sha" | grep -c . || true)
+            if [ "$files" -ne 1 ]; then
+              echo "::error::$sha '$subject' changes $files files (exactly 1 required)"
+              failed=1
+            fi
+            if git log -1 --format=%B "$sha" | grep -Eiq 'co-authored-by:.*(claude|anthropic|openai|copilot|gemini|chatgpt)|generated with'; then
+              echo "::error::$sha '$subject' contains an AI attribution"
+              failed=1
+            fi
+          done
+          exit $failed
