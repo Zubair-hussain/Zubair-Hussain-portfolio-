@@ -14,6 +14,7 @@
  * ============================================================================
  */
 
+import { reconcileTranslations } from "@/lib/hreflang";
 import { PROFILE } from "@/lib/zubair-profile";
 import generatedBlogPosts from "@/generated/blog-posts.json";
 import { applySeoOverrides } from "@/lib/seo-overrides";
@@ -843,7 +844,9 @@ let overriddenSnapshot: BlogPost[] | undefined;
 
 export async function getAllPosts(): Promise<BlogPost[]> {
   if (process.env.NODE_ENV === "test") return fetchPosts(true);
-  overriddenSnapshot ??= applySeoOverrides(generatedBlogPosts as BlogPost[]);
+  overriddenSnapshot ??= reconcileTranslations(
+    applySeoOverrides(generatedBlogPosts as BlogPost[]),
+  );
   return overriddenSnapshot;
 }
 
@@ -905,7 +908,7 @@ async function getLiveFallbackPosts(): Promise<BlogPost[]> {
 
   liveFallbackRequest = fetchPosts(true, LIVE_FALLBACK_SOURCE_LIMIT)
     .then((fetched) => {
-      const posts = applySeoOverrides(fetched);
+      const posts = reconcileTranslations(applySeoOverrides(fetched));
       liveFallbackCache = {
         expiresAt: Date.now() + LIVE_FALLBACK_TTL_MS,
         posts,
