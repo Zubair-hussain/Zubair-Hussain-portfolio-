@@ -1,0 +1,51 @@
+name: Cloudflare Security Check
+
+# Probes the live Cloudflare-fronted site for the protections the audit docs
+# expect: HTTPS/host redirects, security headers, crawler access, SEO files.
+# Needs no secrets, so it also runs on PRs.
+
+on:
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '45 3 * * 3'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  edge:
+    name: Edge security checks
+    runs-on: ubuntu-latest
+    env:
+      SITE: https://zubairhussain.xyz
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Redirects and headers
+        run: |
+          fail=0
+          h=$(curl -sI "$SITE/")
+          for header in strict-transport-security x-content-type-options x-frame-options content-security-policy referrer-policy permissions-policy; do
+            echo "$h" | grep -qi "^$header:" || { echo "::error::missing $header"; fail=1; }
+          done
+          if echo "$h" | grep -qi '^x-robots-tag:.*noindex'; then echo "::error::noindex header on /"; fail=1; fi
+          loc=$(curl -sI http://zubairhussain.xyz/ | grep -i '^location:' | tr -d '\r')
+          echo "$loc" | grep -qi "https://zubairhussain.xyz" || { echo "::error::http does not redirect to https apex"; fail=1; }
+          loc=$(curl -sI https://www.zubairhussain.xyz/ | grep -i '^location:' | tr -d '\r')
+          echo "$loc" | grep -qi "https://zubairhussain.xyz" || { echo "::error::www does not redirect to apex"; fail=1; }
+          code=$(curl -s -o /dev/null -w '%{http_code}' -A Googlebot "$SITE/blogs/does-not-exist-404-check")
+          [ "$code" = 404 ] || { echo "::error::unknown article returned $code (soft 404?)"; fail=1; }
+          code=$(curl -s -o /dev/null -w '%{http_code}' -A Googlebot "$SITE/robots.txt")
+          [ "$code" = 200 ] || { echo "::error::robots.txt returned $code for Googlebot"; fail=1; }
+          exit $fail
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: SEO files audit
+        run: |
+          curl -fsS "$SITE/sitemap.xml" -o sitemap.xml
+          curl -fsS "$SITE/" -o home.html
+          node .github/scripts/audit-production.mjs "$SITE" sitemap.xml home.html
