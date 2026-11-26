@@ -38,6 +38,7 @@ jobs:
         uses: aquasecurity/trivy-action@v0.33.1
         with:
           image-ref: portfolio:ci
+          version: latest
           severity: CRITICAL,HIGH
           ignore-unfixed: true
           exit-code: '1'
