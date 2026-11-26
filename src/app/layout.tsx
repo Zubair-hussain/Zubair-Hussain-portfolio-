@@ -5,6 +5,8 @@ import { getLocale, getMessages } from 'next-intl/server';
 import { NextIntlClientProvider } from 'next-intl';
 import { PROFILE } from '@/lib/zubair-profile';
 import { getSiteUrl } from '@/lib/site-url';
+import { headers } from 'next/headers';
+import { getAllPosts } from '@/lib/blog';
 import '../styles/globals.css';
 
 const cormorant = Cormorant_Garamond({
@@ -158,11 +160,17 @@ export default async function RootLayout({
 }) {
   const locale = await getLocale();
   const messages = await getMessages();
-  const isRTL = locale === 'ur';
+  // Article pages declare the article's own language on <html>, not the
+  // visitor's UI locale, so translations are served with the right lang.
+  const pathname = (await headers()).get('x-pathname') ?? '';
+  const slug = pathname.match(/^\/blogs\/([^/]+)$/)?.[1];
+  const articleLang = slug ? (await getAllPosts()).find((p) => p.slug === slug)?.lang : undefined;
+  const htmlLang = articleLang ?? locale;
+  const isRTL = htmlLang === 'ur' || htmlLang === 'ar';
 
   return (
     <html
-      lang={locale}
+      lang={htmlLang}
       dir={isRTL ? 'rtl' : 'ltr'}
       data-theme="dark"
       suppressHydrationWarning
