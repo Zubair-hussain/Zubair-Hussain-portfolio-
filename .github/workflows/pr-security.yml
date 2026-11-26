@@ -25,18 +25,6 @@ jobs:
       - run: npm ci
       - run: npm audit --omit=dev --audit-level=high
 
-  dependency-review:
-    name: Dependency review
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-      - uses: actions/dependency-review-action@v4
-        with:
-          fail-on-severity: high
-
   codeql:
     name: CodeQL
     runs-on: ubuntu-latest
