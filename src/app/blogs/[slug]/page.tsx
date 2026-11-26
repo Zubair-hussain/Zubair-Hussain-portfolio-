@@ -13,6 +13,7 @@ import {
   getRelatedPosts,
 } from "@/lib/blog";
 import { getSiteUrl } from "@/lib/site-url";
+import { hreflangFor } from "@/lib/hreflang";
 import { PROFILE } from "@/lib/zubair-profile";
 import {
   extractFaq,
@@ -83,24 +84,7 @@ export async function generateMetadata({
           alt: post.title,
         },
       ];
-  const translationUrls = post.translations.map((translation) => [
-    translation.lang,
-    translation.url.startsWith("http")
-      ? translation.url
-      : `${siteUrl}${translation.url}`,
-  ]);
-  const englishUrl =
-    post.lang === "en"
-      ? canonical
-      : translationUrls.find(([lang]) => lang === "en")?.[1];
-  const languageAlternates = Object.fromEntries([
-    [post.lang, canonical],
-    ...translationUrls,
-    // hreflang x-default only matters when the article exists in several languages.
-    ...(translationUrls.length > 0 && englishUrl
-      ? [["x-default", englishUrl]]
-      : []),
-  ]);
+  const languageAlternates = hreflangFor(post, siteUrl);
 
   return {
     metadataBase: new URL(siteUrl),
@@ -113,7 +97,9 @@ export async function generateMetadata({
     category: topics[0],
     alternates: {
       canonical,
-      languages: languageAlternates,
+      ...(Object.keys(languageAlternates).length
+        ? { languages: languageAlternates }
+        : {}),
     },
     openGraph: {
       type: "article",
@@ -223,15 +209,15 @@ export default async function BlogPostPage({ params }: PageProps) {
     keywords: post.seoKeywords.join(", "),
     ...(topics[0] ? { articleSection: topics[0] } : {}),
     ...(timeRequired ? { timeRequired } : {}),
-    ...(post.translations.length
+    ...(Object.keys(hreflangFor(post, siteUrl)).length > 1
       ? {
-          workTranslation: post.translations.map((translation) => ({
-            "@type": "BlogPosting",
-            inLanguage: translation.lang,
-            url: translation.url.startsWith("http")
-              ? translation.url
-              : `${siteUrl}${translation.url}`,
-          })),
+          workTranslation: Object.entries(hreflangFor(post, siteUrl))
+            .filter(([lang, url]) => lang !== "x-default" && url !== canonical)
+            .map(([lang, url]) => ({
+              "@type": "BlogPosting",
+              inLanguage: lang,
+              url,
+            })),
         }
       : {}),
   };
